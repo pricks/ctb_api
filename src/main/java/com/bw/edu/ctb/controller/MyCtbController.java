@@ -2,6 +2,7 @@ package com.bw.edu.ctb.controller;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.dto.CtbDTO;
+import com.bw.edu.ctb.dto.CtbDTO2;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,23 @@ public class MyCtbController {
         }
 
         return Result.success(buildMyCtbList());
+    }
+
+    private List<CtbDTO2> buildMyCtbList2(){
+        DateFormat df = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+        List<CtbDTO2> ctbDTOList = new ArrayList<>();
+
+        for(int i = 0; i < 15; i++){
+            CtbDTO2 ctbDTO = new CtbDTO2();
+            ctbDTO.setId(Long.valueOf(i));
+            ctbDTO.setTitle("20以内加减法错误" + i);
+            ctbDTO.setPublishedAt(new Date());
+            ctbDTO.setAuthorName("审理三");
+            ctbDTO.setCommentsCount(i*2+(i*3+5));
+            ctbDTO.setPostId(Long.valueOf(i+9));
+            ctbDTOList.add(ctbDTO);
+        }
+        return ctbDTOList;
     }
 
     private List<CtbDTO> buildMyCtbList(){
