@@ -22,7 +22,10 @@ public class MyCtbController {
             return Result.failure(001, "参数为空");
         }
 
-        return Result.success(buildMyCtbList());
+        //test 上传图片到cos
+
+
+        return Result.success(buildMyCtbList2());
     }
 
     private List<CtbDTO2> buildMyCtbList2(){
@@ -33,7 +36,7 @@ public class MyCtbController {
             CtbDTO2 ctbDTO = new CtbDTO2();
             ctbDTO.setId(Long.valueOf(i));
             ctbDTO.setTitle("20以内加减法错误" + i);
-            ctbDTO.setPublishedAt(new Date());
+            ctbDTO.setPublishedAt(df.format(new Date()));
             ctbDTO.setAuthorName("审理三");
             ctbDTO.setCommentsCount(i*2+(i*3+5));
             ctbDTO.setPostId(Long.valueOf(i+9));

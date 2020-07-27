@@ -6,7 +6,7 @@ import java.util.Date;
 public class CtbDTO2 {
     private Long id;
     private Integer articleType;
-    private Date publishedAt;
+    private String publishedAt;
     private String title;
     private String cover;//图片url
     private String authorName;
@@ -29,11 +29,11 @@ public class CtbDTO2 {
         this.articleType = articleType;
     }
 
-    public Date getPublishedAt() {
+    public String getPublishedAt() {
         return publishedAt;
     }
 
-    public void setPublishedAt(Date publishedAt) {
+    public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
     }
 
