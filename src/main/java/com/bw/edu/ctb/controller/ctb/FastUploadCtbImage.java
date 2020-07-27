@@ -34,7 +34,7 @@ public class FastUploadCtbImage {
         int size = (int) file.getSize();
         System.out.println(fileName + "-->" + size);
 
-        String path = "F:/test" ;
+        String path = "/Users/zaichen/Downloads";
         File dest = new File(path + "/" + fileName);
         if(!dest.getParentFile().exists()){ //判断文件父目录是否存在
             dest.getParentFile().mkdir();
