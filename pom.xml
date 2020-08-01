@@ -69,6 +69,7 @@
 		<!-- spring end -->
 
 
+		<!-- 腾讯cos. https://console.cloud.tencent.com/cos5 -->
 		<dependency>
 			<groupId>com.qcloud</groupId>
 			<artifactId>cos_api</artifactId>

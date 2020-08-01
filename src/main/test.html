@@ -1,0 +1,36 @@
+<div name="content" id="editor">
+        <p></p>
+ </div>
+<script src="./ckeditor.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+
+    var data;
+    ClassicEditor.create(document.querySelector('#editor'), {
+        language: 'zh-cn', //设置中文
+        ckfinder: {
+            uploadUrl: 'http://localhost:8080/myctb/fuci/upload'
+        }
+    }
+    ).then(editor => {
+        window.editor = editor;
+    } )
+    .catch(error => {
+        console.log(error);
+    } );
+
+
+</script>
+
+<style>
+    .ck-editor__main{
+        width:100%;
+        padding-right: 0;
+        float: right;
+    }
+
+    .ck-editor__editable {
+        min-height: 300px;
+    }
+</style>
