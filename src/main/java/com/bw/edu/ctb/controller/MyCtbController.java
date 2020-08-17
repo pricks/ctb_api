@@ -3,11 +3,11 @@ package com.bw.edu.ctb.controller;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.dto.CtbDTO;
 import com.bw.edu.ctb.dto.CtbDTO2;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,6 +26,18 @@ public class MyCtbController {
 
 
         return Result.success(buildMyCtbList2());
+    }
+
+    /**
+     * 实现文件上传
+     * */
+    @RequestMapping("form")
+    @ResponseBody
+    public String formSubmit(@RequestParam("title") String title,
+                             @RequestParam("module") String module,
+                             @RequestParam("content") String content){
+        System.out.println(title);
+        return "hello";
     }
 
     private List<CtbDTO2> buildMyCtbList2(){
