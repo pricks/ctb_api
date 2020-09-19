@@ -19,9 +19,14 @@ public class CtbApplication {
 	public static final String PROJECT_NAME = "project.name";
 
 	/**
+	 * 本地开发环境
+	 */
+	public static final String ENV_DEV = "dev";
+
+	/**
 	 * Spring当前激活的profile
 	 */
-	public static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
+	public static final String ENV = ENV_DEV;
 
 	/**
 	 * 日志输出的类型：file - 文件；console - 控制台。
@@ -46,16 +51,16 @@ public class CtbApplication {
 		}
 
 		// 如果未指定profile，默认以dev方式启动（本地开发模式）
-		if (System.getProperty(SPRING_PROFILES_ACTIVE) == null) {
+		if (System.getProperty(ENV) == null || ENV_DEV.equals(System.getProperty(ENV))) {
 			System.out.println("本地dev方式启动");
 			URL devPropertyFile = Thread.currentThread().getContextClassLoader().getResource(
 					"application-dev.properties");
 
 			// 如果本地没有application-dev.properties配置文件，说明无个性化配置，fallback到日常的配置启动应用进行开发
 			if (devPropertyFile == null) {
-				System.setProperty(SPRING_PROFILES_ACTIVE, "testing");
+				System.setProperty(ENV, ENV_DEV);
 			} else {
-				System.setProperty(SPRING_PROFILES_ACTIVE, "dev");
+				System.setProperty(ENV, ENV_DEV);
 			}
 
 			// 设置log输出的类型为console

@@ -36,20 +36,21 @@
 
     <!-- 查询项 -->
     <sql id="query">
-        <if test="grade != null">grade = #{grade} </if>
-        <if test="classType != null">and class = #{classType} </if>
-        <if test="type != null">and type = #{type} </if>
-        <if test="dagang != null">and dagang = #{dagang} </if>
-        <if test="region != null">and region = #{region} </if>
-        <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
-        <if test="begin != null">limit #{begin}, #{num}</if>
+        <where>
+            <if test="grade != null">grade = #{grade} </if>
+            <if test="classType != null">and class = #{classType} </if>
+            <if test="type != null">and type = #{type} </if>
+            <if test="dagang != null">and dagang = #{dagang} </if>
+            <if test="region != null">and region = #{region} </if>
+            <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
+            <if test="begin != null">limit #{begin}, #{num}</if>
+        </where>
     </sql>
 
     <!-- selectNewest  查询最新版本的processConfig-->
     <select id="selectByPage" parameterType="com.bw.edu.ctb.common.qo.TitleQO" resultMap="BaseResultMap">
         select *
         from ct_title
-        where
         <include refid="query"/>
     </select>
 

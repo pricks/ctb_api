@@ -1,5 +1,6 @@
 package com.bw.edu.ctb.config;
 
+import com.bw.edu.ctb.CtbApplication;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
@@ -10,7 +11,7 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class HttpsConfig {
     @Value("${server.http-port}")
     private int httpPort;
@@ -30,6 +31,11 @@ public class HttpsConfig {
                 context.addConstraint(constraint);
             }
         };
+
+        if (System.getProperty(CtbApplication.ENV) == null || CtbApplication.ENV_DEV.equals(System.getProperty(CtbApplication.ENV))) {
+            return factory;
+        }//本地测试环境启动时就不强制http跳转成https了，不然浏览器打不开
+
         factory.addAdditionalTomcatConnectors(createTomcatConnector());
         return factory;
     }

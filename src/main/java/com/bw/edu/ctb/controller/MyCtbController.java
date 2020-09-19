@@ -34,6 +34,7 @@ public class MyCtbController {
     private CtbTitleMapper titleMapper;
 
     @RequestMapping("quetry")
+//    @PostMapping("/quetry")
     public Result queryTitle(TitleQO titleQO, HttpServletRequest request){
         logger.error("query title. raddr=" + request.getRemoteAddr());
         Result titleDTOResult = new Result();
