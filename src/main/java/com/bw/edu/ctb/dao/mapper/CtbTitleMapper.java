@@ -15,6 +15,5 @@ public interface CtbTitleMapper {
      */
     int save(CtbTitleEntity titleEntity);
     List<CtbTitleEntity> selectByPage(TitleQO titleQO);
-    List<CtbTitleEntity> getAll();
     List<CtbTitleEntity> getById(Long id);
 }

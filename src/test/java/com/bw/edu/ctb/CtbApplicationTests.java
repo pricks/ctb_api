@@ -16,14 +16,14 @@ public abstract class CtbApplicationTests {
 	@Autowired
 	private CtbTitleMapper ctbTitleMapper;
 
-	@Test
+//	@Test
 	public void testGetById(){
-//		List<CtbTitleEntity> titleEntityList = ctbTitleMapper.getById(1L);
-		List<CtbTitleEntity> titleEntityList = ctbTitleMapper.getAll();
+		List<CtbTitleEntity> titleEntityList = ctbTitleMapper.getById(1L);
+//		List<CtbTitleEntity> titleEntityList = ctbTitleMapper.getAll();
 		System.out.println("=======" + titleEntityList.size());
 	}
 
-	@Test
+//	@Test
 	public void testSave(){
 		CtbTitleEntity titleEntity = new CtbTitleEntity();
 		titleEntity.setShortContent("2221332testtt");

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Cainiao.com Inc.
+  ~ Copyright (c) 2013-2017 All Rights Reserved.
+  -->
+
+<included>
+
+    <appender name="edu-ctb-error"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${edu-ctb.log.home.dir}/ctb.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${edu-ctb.log.home.dir}/ctb.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern><![CDATA[%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %C{0}.%M\(%L\) | %m%n]]></pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="edu-ctb-default"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${edu-ctb.log.home.dir}/ctb-default.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${edu-ctb.log.home.dir}/ctb-default.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern><![CDATA[%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %C{0}.%M\(%L\) | %m%n]]></pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.bw.edt.ctb" level="${edu-ctb.log.level}" additivity="false">
+        <appender-ref ref="edu-ctb-error"/>
+        <appender-ref ref="edu-ctb-default"/>
+    </logger>
+
+    <root level="${edt-ctb.log.level}">
+        <appender-ref ref="edu-ctb-error"/>
+        <appender-ref ref="edu-ctb-default"/>
+    </root>
+</included>

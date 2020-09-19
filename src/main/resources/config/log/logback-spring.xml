@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Cainiao.com Inc.
+  ~ Copyright (c) 2013-2017 All Rights Reserved.
+  -->
+
+<configuration debug="false" scan="false">
+    <contextName>edu-ctb</contextName>
+
+    <springProperty scope="context" name="log.output.type" source="log.output.type"
+                    defaultValue="file"/>
+    <springProperty scope="context" name="edu-ctb.log.home.dir" source="edu-ctb.log.home.dir"/>
+    <springProperty scope="context" name="edu-ctb.log.level" source="edu-ctb.log.level"/>
+
+    <include resource="config/log/logback-${log.output.type}.xml"/>
+
+</configuration>

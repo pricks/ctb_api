@@ -10,11 +10,14 @@ import com.bw.edu.ctb.dto.CtbTitleDTO;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.util.QCosUtil;
 import com.bw.edu.ctb.vo.TitleVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,11 +28,14 @@ import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 @RestController
 @RequestMapping("/myctb")
 public class MyCtbController {
+    private final static Logger logger = LoggerFactory.getLogger(MyCtbController.class);
+
     @Autowired
     private CtbTitleMapper titleMapper;
 
     @RequestMapping("quetry")
-    public Result queryTitle(TitleQO titleQO){
+    public Result queryTitle(TitleQO titleQO, HttpServletRequest request){
+        logger.error("query title. raddr=" + request.getRemoteAddr());
         Result titleDTOResult = new Result();
         List<CtbTitleEntity> titleEntityList = titleMapper.selectByPage(titleQO);
         return Result.success(titleEntityList);
@@ -65,7 +71,6 @@ public class MyCtbController {
             CtbTitleEntity titleEntity = convert(titleVO);
 
             //3.save
-            titleMapper.getAll();
             int saveRs = titleMapper.save(titleEntity);
             if(saveRs <= 0){
                 System.out.println("保存失败");
