@@ -2,10 +2,10 @@ package com.bw.edu.ctb.common;
 
 import java.io.Serializable;
 
-public class Result implements Serializable {
+public class Result<T> implements Serializable {
     private Integer code;
     private String message;
-    private Object data;
+    private T data;
     private Boolean success;
 
     public Result(){}
@@ -47,11 +47,11 @@ public class Result implements Serializable {
         this.message = message;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 
