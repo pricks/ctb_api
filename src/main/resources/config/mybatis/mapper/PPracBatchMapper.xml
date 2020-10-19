@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.PPracBatchEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gmt_create,gmt_modified,userId,status,titleIds,dagangVersion,grade,classId,unitId
+        id,gmt_create,gmt_modified,user_id,status,title_ids,dagang_version,grade,class_id,unit_id
     </sql>
     <sql id="BaseProperties" >
         #{id},now(),now(),#{title},#{userId},#{status},#{titleIds},#{dagangVersion},#{grade},#{classId},#{unitId}
