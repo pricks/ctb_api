@@ -4,7 +4,7 @@ import com.bw.edu.ctb.common.qo.PPracBatchQO;
 import com.bw.edu.ctb.dao.entity.PPracBatchEntity;
 import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
+//@Mapper
 public interface PPracBatchMapper {
 
     /**
