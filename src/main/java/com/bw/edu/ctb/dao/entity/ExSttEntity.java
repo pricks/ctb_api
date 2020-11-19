@@ -1,7 +1,5 @@
 package com.bw.edu.ctb.dao.entity;
 
-import lombok.Data;
-
 import java.util.Date;
 
 /**
@@ -13,12 +11,12 @@ public class ExSttEntity {
     private Long uid;
     private Long un;
     private Integer rd;
-    private Long dl;
+    private Integer dl;
     private Integer tpg;
-    private String tkps;
-    private String mwkps;
-    private Integer avsc;//average score
-    private Integer lsc;
+    private String tKps;
+    private String mwKps;
+    private Integer aSc;//average score
+    private Integer lSc;
     private Integer status;
 
     public Long getId() {
@@ -69,11 +67,11 @@ public class ExSttEntity {
         this.rd = rd;
     }
 
-    public Long getDl() {
+    public Integer getDl() {
         return dl;
     }
 
-    public void setDl(Long dl) {
+    public void setDl(Integer dl) {
         this.dl = dl;
     }
 
@@ -85,36 +83,36 @@ public class ExSttEntity {
         this.tpg = tpg;
     }
 
-    public String getTkps() {
-        return tkps;
+    public String gettKps() {
+        return tKps;
     }
 
-    public void setTkps(String tkps) {
-        this.tkps = tkps;
+    public void settKps(String tKps) {
+        this.tKps = tKps;
     }
 
-    public String getMwkps() {
-        return mwkps;
+    public String getMwKps() {
+        return mwKps;
     }
 
-    public void setMwkps(String mwkps) {
-        this.mwkps = mwkps;
+    public void setMwKps(String mwKps) {
+        this.mwKps = mwKps;
     }
 
-    public Integer getAvsc() {
-        return avsc;
+    public Integer getaSc() {
+        return aSc;
     }
 
-    public void setAvsc(Integer avsc) {
-        this.avsc = avsc;
+    public void setaSc(Integer aSc) {
+        this.aSc = aSc;
     }
 
-    public Integer getLsc() {
-        return lsc;
+    public Integer getlSc() {
+        return lSc;
     }
 
-    public void setLsc(Integer lsc) {
-        this.lsc = lsc;
+    public void setlSc(Integer lSc) {
+        this.lSc = lSc;
     }
 
     public Integer getStatus() {

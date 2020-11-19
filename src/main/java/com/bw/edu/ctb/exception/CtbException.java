@@ -9,9 +9,11 @@ public class CtbException extends RuntimeException{
      *
      * @param msg The error message
      */
-    public CtbException(String msg)
-    {
+    public CtbException(String msg){
         super(msg);
+    }
+    public CtbException(CtbExceptionEnum exceptionEnum){
+        this(exceptionEnum.getCode(), exceptionEnum.getDesc());
     }
 
     public CtbException(String code, String msg){

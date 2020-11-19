@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.edu.ctb.dao.mapper.UnitMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.UnitEntity" autoMapping="true" />
+
+    <sql id="Base_Column_List" >
+        id,gc,gm,dg,gd,cl,bl,code,name
+    </sql>
+    <sql id="BaseProperties" >
+        #{id},now(),now(),#{dg},#{gd},#{cl},#{bl},#{code},#{name}
+    </sql>
+
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.UnitEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into unit
+        (<include refid="Base_Column_List"></include>)
+        values
+        (<include refid="BaseProperties"></include>)
+    </insert>
+
+    <!-- 查询项 -->
+    <sql id="query">
+        <where>
+            <if test="code != null">code = #{code} </if>
+            <if test="gd != null">and gd = #{gd} </if>
+            <if test="cl != null">and cl = #{cl} </if>
+            <if test="status != null">and status = #{status} </if>
+        </where>
+    </sql>
+
+    <!-- getByCode -->
+    <select id="getByCode" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select *
+        from unit
+        where code=#{code}
+    </select>
+
+    <!-- selectNewest -->
+    <select id="selectByPage" parameterType="com.bw.edu.ctb.common.qo.UnitQO" resultMap="BaseResultMap">
+        select *
+        from unit
+        <include refid="query"/>
+    </select>
+</mapper>

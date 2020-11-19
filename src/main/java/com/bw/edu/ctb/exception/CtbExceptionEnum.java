@@ -16,6 +16,10 @@ public enum CtbExceptionEnum {
     QUOTA_REMAINING_IS_NULL(11001034, "QUOTA_REMAINING_IS_NULL", "配额余量为空"),
 
 
+    /** ======================CECE错误码：1003开头============================ */
+    UNIT_IS_NULL(11003001, "UNIT_IS_NULL", "单元为空"),
+    UNIT_TOO_MANY(11003002, "UNIT_TOO_MANY", "单元太多"),
+
 
     /** ======================各模块通用错误码：999开头============================ */
     OBJECT_NULL(1999001, "OBJECT_IS_NULL", "对象为空"),

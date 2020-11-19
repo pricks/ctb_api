@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bw.edu.ctb.dao.mapper.CtbTitleMapper" >
-    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.CtbTitleEntity" >
-        <result column="id" property="id" jdbcType="BIGINT" />
-        <result column="gmt_create" property="gmtCreate" jdbcType="DATE" />
-        <result column="gmt_modified" property="gmtModified" jdbcType="DATE" />
-        <result column="title" property="title" jdbcType="VARCHAR"/>
-        <result column="short_content" property="shortContent" jdbcType="VARCHAR" />
-        <result column="content" property="content" jdbcType="VARCHAR" />
-        <result column="answer" property="answer" jdbcType="VARCHAR" />
-        <result column="covers" property="covers" jdbcType="VARCHAR" />
-        <result column="type" property="type" jdbcType="TINYINT" />
-        <result column="author_name" property="authorName" jdbcType="VARCHAR"/>
-        <result column="author_id" property="authorId" jdbcType="BIGINT" />
-        <result column="comments_count" property="commentsCount" jdbcType="INTEGER" />
-        <result column="class" property="classType" jdbcType="TINYINT" />
-        <result column="grade" property="grade" jdbcType="TINYINT" />
-        <result column="region" property="region" jdbcType="TINYINT"/>
-        <result column="dagang" property="dagang" jdbcType="TINYINT" />
-    </resultMap>
+<mapper namespace="com.bw.edu.ctb.dao.mapper.ExSttMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.ExSttEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gmt_create,gmt_modified,title,short_content,content,answer,covers,type,author_name,author_id,comments_count,class,grade,region,dagang
+        id,gc,gm,uid,un,rd,dl,tpg,t_kps,mw_kps,a_sc,l_sc,status
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),now(),#{title},#{shortContent},#{content},#{answer},#{covers},#{type},#{authorName},#{authorId},#{commentsCount},#{classType},#{grade},#{region},#{dagang}
+        #{id},now(),now(),#{uid},#{un},#{rd},#{dl},#{tpg},#{tKps},#{mwKps},#{aSc},#{lSc},#{status}
     </sql>
 
-    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.CtbTitleEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        insert into ct_title
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.ExSttEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into ex_stt
         (<include refid="Base_Column_List"></include>)
         values
         (<include refid="BaseProperties"></include>)
@@ -37,50 +20,25 @@
     <!-- 查询项 -->
     <sql id="query">
         <where>
-            <if test="grade != null">grade = #{grade} </if>
-            <if test="classType != null">and class = #{classType} </if>
-            <if test="type != null">and type = #{type} </if>
-            <if test="dagang != null">and dagang = #{dagang} </if>
-            <if test="region != null">and region = #{region} </if>
+            <if test="uid != null">uid = #{uid} </if>
+            <if test="un != null">and un = #{un} </if>
+            <if test="status != null">and status = #{status} </if>
             <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
             <if test="begin != null">limit #{begin}, #{num}</if>
         </where>
     </sql>
 
-    <!-- selectNewest  查询最新版本的processConfig-->
-    <select id="selectByPage" parameterType="com.bw.edu.ctb.common.qo.TitleQO" resultMap="BaseResultMap">
-        select *
-        from ct_title
+    <!-- 仅查询简单的信息 -->
+    <select id="selectProfile" parameterType="com.bw.edu.ctb.common.qo.ExSttQO" resultMap="BaseResultMap">
+        select un,rd,dl,tpg,mw_kps,a_sc,l_sc
+        from ex_stt
         <include refid="query"/>
     </select>
 
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap" >
-        SELECT
-        <include refid="Base_Column_List" />
-        FROM ct_title
-        WHERE id = #{id}
+    <!-- selectNewest -->
+    <select id="selectByPage" parameterType="com.bw.edu.ctb.common.qo.ExSttQO" resultMap="BaseResultMap">
+        select *
+        from ex_stt
+        <include refid="query"/>
     </select>
-
-    <insert id="insert" parameterType="com.bw.edu.ctb.dao.entity.CtbTitleEntity" >
-        INSERT INTO
-        ct_title
-        (userName,passWord,user_sex)
-        VALUES
-        (#{userName}, #{passWord}, #{userSex})
-    </insert>
-
-    <update id="update" parameterType="com.bw.edu.ctb.dao.entity.CtbTitleEntity" >
-        update ct_title set
-        <if test="userName != null">userName = #{userName},</if>
-        <if test="passWord != null">passWord = #{passWord},</if>
-        nick_name = #{nickName}
-        WHERE
-        id = #{id}
-    </update>
-
-    <delete id="delete" parameterType="java.lang.Long" >
-        delete from ct_title
-        WHERE
-        id =#{id}
-    </delete>
 </mapper>

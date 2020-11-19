@@ -25,4 +25,30 @@ public class CtbTitleDAOTest extends CtbApplicationTests {
         List<CtbTitleEntity> titleEntityList = ctbTitleMapper.selectByPage(titleQO);
         System.out.println("size="+titleEntityList.size());
     }
+
+    @Test
+    public void testGetById(){
+        List<CtbTitleEntity> titleEntityList = ctbTitleMapper.getById(1L);
+//		List<CtbTitleEntity> titleEntityList = ctbTitleMapper.getAll();
+        System.out.println("=======" + titleEntityList.size());
+    }
+
+    @Test
+    public void testSave(){
+        CtbTitleEntity titleEntity = new CtbTitleEntity();
+        titleEntity.setShortContent("2221332testtt");
+        titleEntity.setCommentsCount(1);
+        titleEntity.setAuthorName("system");
+        titleEntity.setAuthorId(1L);
+        titleEntity.setClassType(1);
+        titleEntity.setCovers("");
+        titleEntity.setContent("232311223fdsafsagsa");
+        titleEntity.setDagang(2);
+        titleEntity.setGrade(3);
+        titleEntity.setRegion(1);
+        titleEntity.setType(1);
+        titleEntity.setAnswer("no answer");
+        int rs = ctbTitleMapper.save(titleEntity);
+        System.out.println("id===" + titleEntity.getId());
+    }
 }
