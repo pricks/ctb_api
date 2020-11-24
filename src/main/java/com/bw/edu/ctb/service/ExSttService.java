@@ -25,14 +25,19 @@ public class ExSttService {
 
     /**
      * 查询指定用户在当前课程下的ex_stt_by_class todo 走缓存
-     * @param uq
      * @param uid
+     * @param cl
      * @return
      */
     public Result<ExSttByclEntity> queryExSttBycl(Long uid, Integer cl){
         ExSttByclQO exSttQO = new ExSttByclQO();
-        ExSttByclEntity exSttEntity = exSttByclMapper.get(uid, cl);
-        return Result.success(exSttEntity);
+        exSttQO.setUid(uid);
+        exSttQO.setCl(cl);
+        List<ExSttByclEntity> exSttEntityList = exSttByclMapper.select(exSttQO);
+        if(exSttEntityList != null && exSttEntityList.size() > 1){
+            throw new CtbException(CtbExceptionEnum.EX_STT_BYCL_TOO_MANY, "uid="+uid+", cl="+cl);
+        }
+        return Result.success(exSttEntityList.get(0));
     }
 
     /**
