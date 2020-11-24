@@ -1,9 +1,11 @@
 package com.bw.edu.ctb.common;
 
+import com.bw.edu.ctb.exception.CtbException;
+
 import java.io.Serializable;
 
 public class Result<T> implements Serializable {
-    private Integer code;
+    private String code;
     private String message;
     private T data;
     private Boolean success;
@@ -23,7 +25,7 @@ public class Result<T> implements Serializable {
         return result;
     }
 
-    public static Result failure(Integer code, String message){
+    public static Result failure(String code, String message){
         Result result = new Result();
         result.setSuccess(false);
         result.setCode(code);
@@ -31,11 +33,22 @@ public class Result<T> implements Serializable {
         return result;
     }
 
-    public Integer getCode() {
+    public static Result failure(){
+        Result result = new Result();
+        result.setSuccess(false);
+        result.setMessage("SYSTEM ERROR");
+        return result;
+    }
+
+    public static Result failure(CtbException e){
+        return failure(e.getCode(), e.getMessage());
+    }
+
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -55,7 +68,7 @@ public class Result<T> implements Serializable {
         this.data = data;
     }
 
-    public Boolean getSuccess() {
+    public Boolean isSuccess() {
         return success;
     }
 

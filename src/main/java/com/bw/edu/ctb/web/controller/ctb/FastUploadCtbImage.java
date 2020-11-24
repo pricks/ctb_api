@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.controller.ctb;
+package com.bw.edu.ctb.web.controller.ctb;
 
 
 import com.bw.edu.ctb.util.QCosUtil;
@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,10 +1,13 @@
 package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.qo.ExSttByclQO;
 import com.bw.edu.ctb.common.qo.ExSttQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
+import com.bw.edu.ctb.dao.entity.ExSttByclEntity;
 import com.bw.edu.ctb.dao.entity.ExSttEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
+import com.bw.edu.ctb.dao.mapper.ExSttByclMapper;
 import com.bw.edu.ctb.dao.mapper.ExSttMapper;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
@@ -17,6 +20,20 @@ import java.util.List;
 public class ExSttService {
     @Autowired
     private ExSttMapper exSttMapper;
+    @Autowired
+    private ExSttByclMapper exSttByclMapper;
+
+    /**
+     * 查询指定用户在当前课程下的ex_stt_by_class todo 走缓存
+     * @param uq
+     * @param uid
+     * @return
+     */
+    public Result<ExSttByclEntity> queryExSttBycl(Long uid, Integer cl){
+        ExSttByclQO exSttQO = new ExSttByclQO();
+        ExSttByclEntity exSttEntity = exSttByclMapper.get(uid, cl);
+        return Result.success(exSttEntity);
+    }
 
     /**
      * 查询指定用户在当前课程下的所有ex_stt todo 走缓存

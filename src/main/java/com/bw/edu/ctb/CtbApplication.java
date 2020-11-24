@@ -6,11 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import java.net.URL;
 
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @SpringBootApplication
+@ServletComponentScan
 @MapperScan("com.bw.edu.ctb.dao.mapper")
 public class CtbApplication {
 	/**
@@ -71,47 +73,3 @@ public class CtbApplication {
 	}
 
 }
-/**
-
-
- ReentrantLock.unlock() {
- 	sync.release(1);
- }
- aqs.release(int arg) {
-	 if (tryRelease(arg)) {
-	 	Node h = head;
-		 if (h != null && h.waitStatus != 0)
-			 unparkSuccessor(h);
- 		return true;
-	 }
-	 return false;
- }
- NonfairSync.tryRelease(int releases) {
-	 int c = getState() - releases;
-	 if (Thread.currentThread() != getExclusiveOwnerThread())
-	 	throw new IllegalMonitorStateException();
-	 boolean free = false;
-	 if (c == 0) {
-		 free = true;
-		 setExclusiveOwnerThread(null);
-	 }
-	 setState(c);
-	 return free;
- }
- aqs.unparkSuccessor(Node node) {
-		int ws = node.waitStatus;
-        if (ws < 0)
-			compareAndSetWaitStatus(node, ws, 0);
-
-		Node s = node.next;
-		if (s == null || s.waitStatus > 0) {
-			s = null;
-			for (Node t = tail; t != null && t != node; t = t.prev)
-				if (t.waitStatus <= 0)
-					s = t;
-			}
-		if (s != null)
- 			LockSupport.unpark(s.thread);
- }
-
- */

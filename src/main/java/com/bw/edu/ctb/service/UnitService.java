@@ -21,14 +21,14 @@ public class UnitService {
     @Autowired
     private ExSttMapper exSttMapper;
 
-    public Result<UnitEntity> queryExStt(UnitQO uq){
+    public Result<List<UnitEntity>> query(UnitQO uq){
         //1.查询所有unit
         List<UnitEntity> unitEntityList = unitMapper.selectByPage(uq);
         if(unitEntityList==null || unitEntityList.size()==0){
-            throw new CtbException(CtbExceptionEnum.UNIT_IS_NULL);
+            throw new CtbException(CtbExceptionEnum.UNIT_IS_NULL, uq.toString());
         }
         if(unitEntityList.size() > 30){
-            throw new CtbException(CtbExceptionEnum.UNIT_TOO_MANY);
+            throw new CtbException(CtbExceptionEnum.UNIT_TOO_MANY, uq.toString());
         }
         return Result.success(unitEntityList);
     }

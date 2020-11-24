@@ -15,6 +15,9 @@ public class CtbException extends RuntimeException{
     public CtbException(CtbExceptionEnum exceptionEnum){
         this(exceptionEnum.getCode(), exceptionEnum.getDesc());
     }
+    public CtbException(CtbExceptionEnum exceptionEnum, String bizInfo){
+        this(exceptionEnum.getCode(), exceptionEnum.getDesc() + ". biz info=" + bizInfo);
+    }
 
     public CtbException(String code, String msg){
         super(String.format("code=%s, error=%s", code, msg));

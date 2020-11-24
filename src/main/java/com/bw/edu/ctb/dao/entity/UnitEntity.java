@@ -13,6 +13,7 @@ public class UnitEntity {
     private Long code;
     private String name;
     private Integer status;
+    private String dls;
 
     public Long getId() {
         return id;
@@ -92,5 +93,13 @@ public class UnitEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getDls() {
+        return dls;
+    }
+
+    public void setDls(String dls) {
+        this.dls = dls;
     }
 }

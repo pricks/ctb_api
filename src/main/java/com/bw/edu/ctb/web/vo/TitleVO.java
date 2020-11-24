@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.vo;
+package com.bw.edu.ctb.web.vo;
 
 import java.io.Serializable;
 

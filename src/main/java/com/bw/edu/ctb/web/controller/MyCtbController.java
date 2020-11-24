@@ -1,11 +1,11 @@
-package com.bw.edu.ctb.controller;
+package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.dao.entity.CtbTitleEntity;
 import com.bw.edu.ctb.dao.mapper.CtbTitleMapper;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
-import com.bw.edu.ctb.vo.TitleVO;
+import com.bw.edu.ctb.web.vo.TitleVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
