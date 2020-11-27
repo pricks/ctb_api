@@ -9,9 +9,6 @@ public class TTEntity {
     private Long id;
     private Date gc;
     private Date gm;
-    private Integer dg;
-    private Integer gd;
-    private Integer cl;
     private Long un;
     private Long dl;
     private Integer eok;
