@@ -20,6 +20,7 @@ public enum CtbExceptionEnum {
     UNIT_IS_NULL(11003001, "UNIT_IS_NULL", "单元为空"),
     UNIT_TOO_MANY(11003002, "UNIT_TOO_MANY", "单元太多"),
     EX_STT_BYCL_TOO_MANY(11003003, "EX_STT_BYCL_TOO_MANY", "单元统计太多"),
+    KP_IS_NULL(11003004, "KP_IS_NULL", "知识点分类不存在"),
 
 
     /** ======================各模块通用错误码：999开头============================ */

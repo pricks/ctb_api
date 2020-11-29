@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.edu.ctb.dao.mapper.KpMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.KpEntity" autoMapping="true" />
+
+    <sql id="Base_Column_List" >
+        id,gc,gm,un,dl,pid,korder,level,point,penc,status
+    </sql>
+    <sql id="BaseProperties" >
+        #{id},now(),now(),#{un},#{dl},#{pid},#{korder},#{level},#{point},#{penc},#{status}
+    </sql>
+
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.KpEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into t_kp
+        (<include refid="Base_Column_List"></include>)
+        values
+        (<include refid="BaseProperties"></include>)
+    </insert>
+
+    <!-- 查询项 -->
+    <sql id="query">
+        <where>
+            <if test="id != null">id = #{id} </if>
+            <if test="un != null">and un = #{un} </if>
+            <if test="dl != null">and dl = #{dl} </if>
+            <if test="pid != null">and pid = #{pid} </if>
+            <if test="level != null">and level = #{level} </if>
+            <if test="status != null">and status = #{status} </if>
+            <if test="korder != null">and korder > #{korder} </if>
+        </where>
+    </sql>
+
+    <!-- select -->
+    <select id="select" parameterType="com.bw.edu.ctb.common.qo.KpQO" resultMap="BaseResultMap">
+        select *
+        from t_kp
+        <include refid="query"/>
+    </select>
+
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select *
+        from t_kp
+        where id=#{id}
+    </select>
+</mapper>

@@ -16,8 +16,8 @@ public class CtbTitleDAOTest extends CtbApplicationTests {
     @Test
     public void testQeuryByPage(){
         TitleQO titleQO = new TitleQO();
-        titleQO.setGrade(3);
-        titleQO.setClassType(1);
+//        titleQO.setGrade(3);
+//        titleQO.setClassType(1);
 //        titleQO.setType(1);
 //        titleQO.setDagang(1);
 //        titleQO.setRegion(1);

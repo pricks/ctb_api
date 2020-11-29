@@ -1,21 +1,15 @@
-package com.bw.edu.ctb.dao.entity;
+package com.bw.edu.ctb.common.qo;
 
-import com.bw.edu.ctb.util.MD5Utils;
-import lombok.Data;
+import java.io.Serializable;
 
-import java.util.Date;
-
-public class KpEntity {
+public class KpQO extends Paging implements Serializable {
     private Long id;
-    private Date gc;
-    private Date gm;
     private Long un;
     private Long dl;
     private Long pid;
-    private String point;
-    private String penc;
     private Integer korder;
     private Integer level;
+    private Integer status;
 
     public Long getId() {
         return id;
@@ -23,22 +17,6 @@ public class KpEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Date getGc() {
-        return gc;
-    }
-
-    public void setGc(Date gc) {
-        this.gc = gc;
-    }
-
-    public Date getGm() {
-        return gm;
-    }
-
-    public void setGm(Date gm) {
-        this.gm = gm;
     }
 
     public Long getUn() {
@@ -65,19 +43,6 @@ public class KpEntity {
         this.pid = pid;
     }
 
-    public String getPoint() {
-        return point;
-    }
-
-    public void setPoint(String point) {
-        this.point = point;
-        this.setPenc(MD5Utils.stringToMD5(point));
-    }
-
-    public void setPenc(String penc) {
-        this.penc = penc;
-    }
-
     public Integer getKorder() {
         return korder;
     }
@@ -92,5 +57,13 @@ public class KpEntity {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

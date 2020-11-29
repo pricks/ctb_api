@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.TTEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,gm,un,dl,eok,kp,tc,ts,tType,oi,tgi,ots,tat,tav,tca,aid
+        id,gc,gm,un,dl,eok,tc,tc_enc,ts,t_type,oi,tgi,ots,tat,tav,tca,aid
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),now(),#{un},#{dl},#{eok},#{kp},#{tc},#{ts},#{tType},#{oi},#{tgi},#{ots},#{tat},#{tav},#{tca},#{aid}
+        #{id},now(),now(),#{un},#{dl},#{eok},#{tc},#{tcEnc},#{ts},#{tType},#{oi},#{tgi},#{ots},#{tat},#{tav},#{tca},#{aid}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.TTEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -24,6 +24,11 @@
             <if test="un != null">and un = #{un} </if>
             <if test="dl != null">and dl = #{dl} </if>
             <if test="eok != null">and eok = #{eok} </if>
+            <if test="ids != null">and id in
+                <foreach  item="ids" collection="list" index="index"  open="(" separator="," close=")">
+                    #{ids}
+                </foreach>
+            </if>
         </where>
     </sql>
 
