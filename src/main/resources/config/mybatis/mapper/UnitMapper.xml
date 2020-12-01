@@ -24,6 +24,8 @@
             <if test="gd != null">and gd = #{gd} </if>
             <if test="cl != null">and cl = #{cl} </if>
             <if test="status != null">and status = #{status} </if>
+            <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
+            <if test="begin != null">limit #{begin}, #{num}</if>
         </where>
     </sql>
 

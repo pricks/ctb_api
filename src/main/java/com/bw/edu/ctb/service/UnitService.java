@@ -9,6 +9,7 @@ import com.bw.edu.ctb.dao.mapper.ExSttMapper;
 import com.bw.edu.ctb.dao.mapper.UnitMapper;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
+import com.bw.edu.ctb.manager.UnitManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,9 @@ import java.util.List;
 @Service
 public class UnitService {
     @Autowired
-    private UnitMapper unitMapper;
-    @Autowired
-    private ExSttMapper exSttMapper;
+    private UnitManager unitManager;
 
-    public Result<List<UnitEntity>> query(UnitQO uq){
-        //1.查询所有unit
-        List<UnitEntity> unitEntityList = unitMapper.selectByPage(uq);
-        if(unitEntityList==null || unitEntityList.size()==0){
-            throw new CtbException(CtbExceptionEnum.UNIT_IS_NULL, uq.toString());
-        }
-        if(unitEntityList.size() > 30){
-            throw new CtbException(CtbExceptionEnum.UNIT_TOO_MANY, uq.toString());
-        }
-        return Result.success(unitEntityList);
+    public Result<List<UnitEntity>> queryByCl(UnitQO uq){
+        return Result.success(unitManager.queryByCl(uq));
     }
 }

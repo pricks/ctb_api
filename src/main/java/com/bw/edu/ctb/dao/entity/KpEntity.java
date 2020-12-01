@@ -10,12 +10,13 @@ public class KpEntity {
     private Date gc;
     private Date gm;
     private Long un;
-    private Long dl;
+    private Integer dl;
     private Long pid;
     private String point;
     private String penc;
     private Integer korder;
     private Integer level;
+    private Integer status;
 
     public Long getId() {
         return id;
@@ -49,11 +50,11 @@ public class KpEntity {
         this.un = un;
     }
 
-    public Long getDl() {
+    public Integer getDl() {
         return dl;
     }
 
-    public void setDl(Long dl) {
+    public void setDl(Integer dl) {
         this.dl = dl;
     }
 
@@ -92,5 +93,13 @@ public class KpEntity {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

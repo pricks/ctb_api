@@ -6,6 +6,7 @@ import com.bw.edu.ctb.common.qo.UnitQO;
 import com.bw.edu.ctb.dao.entity.CtbTitleEntity;
 import com.bw.edu.ctb.dao.entity.ExSttByclEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
+import com.bw.edu.ctb.domain.SttClDO;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.service.ExSttService;
 import com.bw.edu.ctb.service.UnitService;
@@ -36,15 +37,15 @@ public class MCController {
             logger.error("gu. r=" + request.getRemoteAddr() + ", uid="+session.getAttribute("uid"));
             Result rs = new Result();
 
-            Result<List<UnitEntity>> unitRs = unitService.query(unitQO);
+            Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
             Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl((Long) session.getAttribute("uid"), unitQO.getCl());
             if(null == exSttByclEntityResult.getData()){
-                return unitRs;
+                return Result.success(SttClDO.buildEmpty(unitRs.getData()));
             }else{
                 if(exSttByclEntityResult.isSuccess()){
-                    return exSttByclEntityResult;
+                    return Result.success(exSttByclEntityResult.getData().getStt());
                 }else{
-                    return unitRs;
+                    return Result.success(SttClDO.buildEmpty(unitRs.getData()));
                 }
             }
         }catch (CtbException e){

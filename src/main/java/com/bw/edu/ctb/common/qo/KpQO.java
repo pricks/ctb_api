@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class KpQO extends Paging implements Serializable {
     private Long id;
     private Long un;
-    private Long dl;
+    private Integer dl;
     private Long pid;
     private Integer korder;
     private Integer level;
@@ -27,11 +27,11 @@ public class KpQO extends Paging implements Serializable {
         this.un = un;
     }
 
-    public Long getDl() {
+    public Integer getDl() {
         return dl;
     }
 
-    public void setDl(Long dl) {
+    public void setDl(Integer dl) {
         this.dl = dl;
     }
 

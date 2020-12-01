@@ -34,7 +34,10 @@ public class ExSttService {
         exSttQO.setUid(uid);
         exSttQO.setCl(cl);
         List<ExSttByclEntity> exSttEntityList = exSttByclMapper.select(exSttQO);
-        if(exSttEntityList != null && exSttEntityList.size() > 1){
+        if(null==exSttEntityList || exSttEntityList.size()==0){
+            return Result.success();
+        }
+        if(exSttEntityList.size() > 1){
             throw new CtbException(CtbExceptionEnum.EX_STT_BYCL_TOO_MANY, "uid="+uid+", cl="+cl);
         }
         return Result.success(exSttEntityList.get(0));
