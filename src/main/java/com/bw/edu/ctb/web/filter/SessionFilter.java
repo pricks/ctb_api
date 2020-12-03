@@ -41,7 +41,7 @@ public class SessionFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } else { //需要过滤器
             // session中包含user对象,则是登录状态
-            if(session!=null&&session.getAttribute("user") != null){
+            if(session!=null&&session.getAttribute("uid") != null){
                 // System.out.println("user:"+session.getAttribute("user"));
                 filterChain.doFilter(request, response);
             }else{

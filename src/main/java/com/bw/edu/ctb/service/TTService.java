@@ -1,6 +1,9 @@
 package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.enums.StatusEnum;
+import com.bw.edu.ctb.common.qo.KpQO;
+import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.TkrQO;
 import com.bw.edu.ctb.dao.entity.KpEntity;
 import com.bw.edu.ctb.dao.entity.TTEntity;
@@ -8,6 +11,8 @@ import com.bw.edu.ctb.dao.entity.TkrEntity;
 import com.bw.edu.ctb.dao.mapper.KpMapper;
 import com.bw.edu.ctb.dao.mapper.TTMapper;
 import com.bw.edu.ctb.dao.mapper.TkrMapper;
+import com.bw.edu.ctb.exception.CtbException;
+import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.manager.KpManager;
 import com.bw.edu.ctb.manager.TkrManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +31,32 @@ public class TTService {
     @Autowired
     private TkrManager tkrManager;
 
-    public Result<List<TTEntity>> queryKpDetails(Long un, Integer dl, Integer eok, Long maxKpId, Long maxTid){
+    public Result<List<TTEntity>> queryKpDetails(TTBactchQO ttBactchQO){
+        Long maxKpId = ttBactchQO.getMaxKpId();
+        Long maxTid = ttBactchQO.getMaxTid();//maxTid可以为空
+        if(null == maxKpId){
+            Long un = ttBactchQO.getUn();
+            Integer dl = ttBactchQO.getDl();
+            if(null == un){
+                throw new CtbException(CtbExceptionEnum.UNIT_IS_NULL);
+            }
+            if(null == dl){
+                throw new CtbException(CtbExceptionEnum.DL_IS_NULL);
+            }
+
+            KpQO kpQO = new KpQO();
+            kpQO.setUn(un);
+            kpQO.setDl(dl);
+            kpQO.setStatus(StatusEnum.PULISHED.getCode());
+            kpQO.setNum(1);
+            List<KpEntity> kps = kpManager.queryByUn(kpQO);
+            if(null==kps || kps.size()==0){
+                return Result.success();
+            }
+            maxKpId = kps.get(0).getId();
+        }
+        Integer eok = ttBactchQO.getEok();
+
         //查询当前kp下的tt，注：这些tt的id必须大于 maxTid
         List<TkrEntity> tkrs = new ArrayList<>();
         KpEntity k = kpManager.getByIdNotNull(maxKpId);

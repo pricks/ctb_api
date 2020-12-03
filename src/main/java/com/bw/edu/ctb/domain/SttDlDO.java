@@ -6,6 +6,8 @@ public class SttDlDO implements Serializable {
     private Integer dl;
     private String dlname;
     private Boolean active;
+    private Long maxKpId;
+    private Long maxTid;
     private Integer tkp;//total kp
     private Integer rkp;//reviewd kp
     private Integer ekp;//wrong kp
@@ -27,6 +29,23 @@ public class SttDlDO implements Serializable {
         this.active = active;
         return this;
     }
+
+    public Long getMaxKpId() {
+        return maxKpId;
+    }
+
+    public void setMaxKpId(Long maxKpId) {
+        this.maxKpId = maxKpId;
+    }
+
+    public Long getMaxTid() {
+        return maxTid;
+    }
+
+    public void setMaxTid(Long maxTid) {
+        this.maxTid = maxTid;
+    }
+
     public SttDlDO tkp(Integer tkp){
         this.tkp = tkp;
         return this;

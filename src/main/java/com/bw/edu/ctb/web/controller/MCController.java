@@ -1,14 +1,17 @@
 package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
 import com.bw.edu.ctb.dao.entity.CtbTitleEntity;
 import com.bw.edu.ctb.dao.entity.ExSttByclEntity;
+import com.bw.edu.ctb.dao.entity.TTEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
 import com.bw.edu.ctb.domain.SttClDO;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.service.ExSttService;
+import com.bw.edu.ctb.service.TTService;
 import com.bw.edu.ctb.service.UnitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +32,14 @@ public class MCController {
     private UnitService unitService;
     @Autowired
     private ExSttService exSttService;
+    @Autowired
+    private TTService ttService;
 
     /** get user's unit ex_stt */
     @RequestMapping("gu")
     public Result gu(UnitQO unitQO, HttpServletRequest request, HttpSession session){
         try{
             logger.error("gu. r=" + request.getRemoteAddr() + ", uid="+session.getAttribute("uid"));
-            Result rs = new Result();
 
             Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
             Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl((Long) session.getAttribute("uid"), unitQO.getCl());
@@ -53,6 +57,22 @@ public class MCController {
             return Result.failure(e);
         }catch (Exception e){
             logger.error("gu sys-error. unitQO="+unitQO, e);
+            return Result.failure();
+        }
+    }
+
+    /** get user's tts batch */
+    @RequestMapping("gt")
+    public Result gt(TTBactchQO ttBactchQO, HttpServletRequest request, HttpSession session){
+        try{
+            logger.error("gt. r=" + request.getRemoteAddr() + ", uid="+session.getAttribute("uid"));
+            Result<List<TTEntity>> ttRs = ttService.queryKpDetails(ttBactchQO);
+            return ttRs;
+        }catch (CtbException e){
+            logger.error("gu biz-error", e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("gu sys-error. ttBactchQO="+ttBactchQO, e);
             return Result.failure();
         }
     }

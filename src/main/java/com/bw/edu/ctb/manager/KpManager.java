@@ -1,5 +1,6 @@
 package com.bw.edu.ctb.manager;
 
+import com.bw.edu.ctb.common.enums.SortEnum;
 import com.bw.edu.ctb.common.qo.KpQO;
 import com.bw.edu.ctb.dao.entity.KpEntity;
 import com.bw.edu.ctb.dao.mapper.KpMapper;
@@ -14,6 +15,12 @@ import java.util.List;
 public class KpManager {
     @Autowired
     private KpMapper kpMapper;
+
+    public List<KpEntity> queryByUn(KpQO kpQO){
+        kpQO.setLevel(1);
+        kpQO.setSortMode(SortEnum.ASC.getMode());
+        return kpMapper.select(kpQO);
+    }
 
     public KpEntity getByIdNotNull(Long kpid){
         KpEntity r = kpMapper.getById(kpid);

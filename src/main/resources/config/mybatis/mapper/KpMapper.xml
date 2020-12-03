@@ -27,6 +27,8 @@
             <if test="level != null">and level = #{level} </if>
             <if test="status != null">and status = #{status} </if>
             <if test="korder != null">and korder > #{korder} </if>
+            <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
+            <if test="begin != null">limit #{begin}, #{num}</if>
         </where>
     </sql>
 
