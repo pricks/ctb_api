@@ -15,7 +15,7 @@ public class TkrManager {
 
     public List<TkrEntity> queryTTs(Long kpid, Integer eok){
         TkrQO tkrQO = new TkrQO();
-        tkrQO.setKpId(kpid);
+        tkrQO.setKpid(kpid);
         tkrQO.setEok(eok);
         tkrQO.setSortMode("ASC");
         tkrQO.setSortProperty("tid");

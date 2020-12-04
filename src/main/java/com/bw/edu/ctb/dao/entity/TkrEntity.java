@@ -6,7 +6,8 @@ public class TkrEntity {
     private Long id;
     private Date gc;
     private Date gm;
-    private Long kpId;
+    private Integer eok;
+    private Long kpid;
     private Long tid;
 
     public Long getId() {
@@ -33,12 +34,20 @@ public class TkrEntity {
         this.gm = gm;
     }
 
-    public Long getKpId() {
-        return kpId;
+    public Integer getEok() {
+        return eok;
     }
 
-    public void setKpId(Long kpId) {
-        this.kpId = kpId;
+    public void setEok(Integer eok) {
+        this.eok = eok;
+    }
+
+    public Long getKpid() {
+        return kpid;
+    }
+
+    public void setKpid(Long kpid) {
+        this.kpid = kpid;
     }
 
     public Long getTid() {

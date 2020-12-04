@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.TkrEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,gm,kpid,tid
+        id,gc,gm,eok,kpid,tid
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),now(),#{kpid},#{tid}
+        #{id},now(),now(),#{eok},#{kpid},#{tid}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.TkrEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -20,9 +20,9 @@
     <!-- 查询项 -->
     <sql id="query">
         <where>
-            <if test="id != null">id = #{id} </if>
-            <if test="kpid != null">and kpid = #{kpid} </if>
+            <if test="kpid != null">kpid = #{kpid} </if>
             <if test="tid != null">and tid = #{tid} </if>
+            <if test="eok != null">and eok = #{eok} </if>
             <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
             <if test="begin != null">limit #{begin}, #{num}</if>
         </where>

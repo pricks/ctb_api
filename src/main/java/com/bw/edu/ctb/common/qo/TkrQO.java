@@ -3,16 +3,16 @@ package com.bw.edu.ctb.common.qo;
 import java.io.Serializable;
 
 public class TkrQO extends Paging implements Serializable {
-    private Long kpId;
+    private Long kpid;
     private Long tid;
     private Integer eok;
 
-    public Long getKpId() {
-        return kpId;
+    public Long getKpid() {
+        return kpid;
     }
 
-    public void setKpId(Long kpId) {
-        this.kpId = kpId;
+    public void setKpid(Long kpid) {
+        this.kpid = kpid;
     }
 
     public Long getTid() {

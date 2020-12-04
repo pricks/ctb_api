@@ -1,6 +1,7 @@
 package com.bw.edu.ctb.manager;
 
 import com.bw.edu.ctb.common.enums.SortEnum;
+import com.bw.edu.ctb.common.enums.StatusEnum;
 import com.bw.edu.ctb.common.qo.KpQO;
 import com.bw.edu.ctb.dao.entity.KpEntity;
 import com.bw.edu.ctb.dao.mapper.KpMapper;
@@ -15,9 +16,11 @@ import java.util.List;
 public class KpManager {
     @Autowired
     private KpMapper kpMapper;
+    private static final String ORDER_FIELD = "korder";
 
     public List<KpEntity> queryByUn(KpQO kpQO){
         kpQO.setLevel(1);
+        kpQO.setSortProperty(ORDER_FIELD);
         kpQO.setSortMode(SortEnum.ASC.getMode());
         return kpMapper.select(kpQO);
     }
@@ -42,7 +45,7 @@ public class KpManager {
         kpQO.setPid(k.getPid());
         kpQO.setLevel(k.getLevel());
         kpQO.setKorder(k.getKorder());
-        kpQO.setStatus(1);
+        kpQO.setStatus(StatusEnum.PULISHED.getCode());
         return kpMapper.select(kpQO);
     }
 
@@ -54,9 +57,9 @@ public class KpManager {
     public List<KpEntity> queryOrderdChildren(Long pid){
         KpQO kpQO = new KpQO();
         kpQO.setPid(pid);
-        kpQO.setStatus(1);
+        kpQO.setStatus(StatusEnum.PULISHED.getCode());
         kpQO.setSortMode("ASC");
-        kpQO.setSortProperty("korder");
+        kpQO.setSortProperty(ORDER_FIELD);
         List<KpEntity> kpEntityList = kpMapper.select(kpQO);
         return kpEntityList;
     }

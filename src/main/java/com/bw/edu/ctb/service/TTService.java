@@ -60,7 +60,7 @@ public class TTService {
         //查询当前kp下的tt，注：这些tt的id必须大于 maxTid
         List<TkrEntity> tkrs = new ArrayList<>();
         KpEntity k = kpManager.getByIdNotNull(maxKpId);
-        searchKpDetails(k, maxTid, eok, tkrs, true);
+        searchKpDetails(k, maxTid, eok, tkrs, true, true);
         if(tkrs.size() == 0){
             return Result.success();
         }
@@ -79,7 +79,10 @@ public class TTService {
         return Result.success(tkrs);
     }
 
-    private void searchKpDetails(KpEntity k, Long maxTid, Integer eok, List<TkrEntity> tkrs, boolean searchForward){
+    private void searchKpDetails(KpEntity k, Long maxTid, Integer eok, List<TkrEntity> tkrs, boolean searchParent, boolean searchForward){
+        if(null == eok){
+            throw new CtbException(CtbExceptionEnum.EOK_IS_NULL);
+        }
         int size = tkrs.size();
 
         //1.查询当前kp下的tt，如果超过10个，就返回前面10个；否则进入第2步
@@ -103,7 +106,7 @@ public class TTService {
         List<KpEntity> subKps = kpManager.queryOrderdChildren(k.getId());
         if(null != subKps && subKps.size() > 0){
             KpEntity subk = subKps.get(0);
-            searchKpDetails(subk, 0L, eok, tkrs, true);
+            searchKpDetails(subk, 0L, eok, tkrs, false, true);
             if(tkrs.size() >= 10){
                 return;
             }
@@ -115,7 +118,7 @@ public class TTService {
         List<KpEntity> sibkps = kpManager.querySiblings(k);
         if(null != sibkps && sibkps.size() > 0){
             for(KpEntity sibk : sibkps){
-                searchKpDetails(sibk, 0L, eok, tkrs, false);
+                searchKpDetails(sibk, 0L, eok, tkrs, false, false);
                 if(tkrs.size() >= 10){
                     return;
                 }
@@ -123,12 +126,13 @@ public class TTService {
         }
 
         //4.如果当前kp节点所在level的所有纵向节点下的tt数量还不够，就获取当前节点的父节点的后续第一个兄弟节点继续查询
+        if(!searchParent) return;
         if(null == k.getPid()) return;
         KpEntity pk = kpManager.getByIdNotNull(k.getPid());
         List<KpEntity> siblings = kpManager.querySiblings(pk);
         if(null == siblings || siblings.size() == 0){
             return;
         }
-        searchKpDetails(siblings.get(0), 0L, eok, tkrs,true);
+        searchKpDetails(siblings.get(0), 0L, eok, tkrs, true,true);
     }
 }
