@@ -1,27 +1,23 @@
 package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.constants.Keys;
 import com.bw.edu.ctb.common.enums.BatchStatusEnum;
 import com.bw.edu.ctb.common.enums.StatusEnum;
-import com.bw.edu.ctb.common.enums.Symbols;
+import com.bw.edu.ctb.common.constants.Symbols;
 import com.bw.edu.ctb.common.qo.KpQO;
 import com.bw.edu.ctb.common.qo.KptBatchQO;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
-import com.bw.edu.ctb.common.qo.TkrQO;
 import com.bw.edu.ctb.dao.entity.KpEntity;
 import com.bw.edu.ctb.dao.entity.KptBatchEntity;
 import com.bw.edu.ctb.dao.entity.TTEntity;
 import com.bw.edu.ctb.dao.entity.TkrEntity;
-import com.bw.edu.ctb.dao.mapper.KpMapper;
-import com.bw.edu.ctb.dao.mapper.TTMapper;
-import com.bw.edu.ctb.dao.mapper.TkrMapper;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.manager.KpManager;
 import com.bw.edu.ctb.manager.KptBatchManager;
 import com.bw.edu.ctb.manager.TTManager;
 import com.bw.edu.ctb.manager.TkrManager;
-import com.bw.edu.ctb.web.controller.MCController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -76,9 +71,10 @@ public class TTService {
         List<TTEntity> tts = ttManager.queryByIds(tids);
         if(null==tts || tts.size()==0){
             logger.error("[fatal error] tt=null");
+            return Result.success();
         }
 
-        return Result.success(tts);
+        return Result.success(tts).putAttr(Keys.KPT_BATCH_ID, kb.getId().toString());
     }
 
     /**

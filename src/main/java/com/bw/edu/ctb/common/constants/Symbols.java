@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.common.enums;
+package com.bw.edu.ctb.common.constants;
 
 public interface Symbols {
     String COMMA = ",";

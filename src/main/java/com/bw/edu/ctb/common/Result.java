@@ -3,12 +3,15 @@ package com.bw.edu.ctb.common;
 import com.bw.edu.ctb.exception.CtbException;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Result<T> implements Serializable {
     private String code;
     private String message;
     private T data;
     private Boolean success;
+    private Map<String, String> attrs;//正常业务数据通过data返回，因此这里仅支持临时的简单字段
 
     public Result(){}
 
@@ -23,6 +26,19 @@ public class Result<T> implements Serializable {
         result.setSuccess(true);
         result.setData(data);
         return result;
+    }
+    public Result putAttr(String k, String v){
+        if(null==attrs){
+            attrs = new HashMap<>();
+        }
+        attrs.put(k, v);
+        return this;
+    }
+    public String getAttr(String k){
+        if(null==attrs){
+            return null;
+        }
+        return attrs.get(k);
     }
 
     public static Result failure(String code, String message){
@@ -74,5 +90,13 @@ public class Result<T> implements Serializable {
 
     public void setSuccess(Boolean success) {
         this.success = success;
+    }
+
+    public Map<String, String> getAttrs() {
+        return attrs;
+    }
+
+    public void setAttrs(Map<String, String> attrs) {
+        this.attrs = attrs;
     }
 }

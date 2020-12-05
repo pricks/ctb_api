@@ -1,6 +1,7 @@
 package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.constants.Keys;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
@@ -8,6 +9,8 @@ import com.bw.edu.ctb.dao.entity.CtbTitleEntity;
 import com.bw.edu.ctb.dao.entity.ExSttByclEntity;
 import com.bw.edu.ctb.dao.entity.TTEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
+import com.bw.edu.ctb.domain.EBatch;
+import com.bw.edu.ctb.domain.EBatchTT;
 import com.bw.edu.ctb.domain.SttClDO;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.service.ExSttService;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -67,7 +71,12 @@ public class MCController {
         try{
             logger.error("gt. r=" + request.getRemoteAddr() + ", uid="+session.getAttribute("uid"));
             Result<List<TTEntity>> ttRs = ttService.queryKpDetails(ttBactchQO);
-            return ttRs;
+            List<TTEntity> tts = ttRs.getData();
+            if(null==tts || tts.size()==0){
+                return Result.success();
+            }
+            String kpidStr = ttRs.getAttr(Keys.KPT_BATCH_ID);
+            return Result.success(build(Long.valueOf(kpidStr), ttBactchQO.getDl(), tts));
         }catch (CtbException e){
             logger.error("gu biz-error", e);
             return Result.failure(e);
@@ -75,6 +84,33 @@ public class MCController {
             logger.error("gu sys-error. ttBactchQO="+ttBactchQO, e);
             return Result.failure();
         }
+    }
+
+    private EBatch build(Long kpId, Integer dl, List<TTEntity> tts){
+        EBatch eb = new EBatch();
+        eb.setEb_id(kpId);
+        eb.setKp_dl(dl);
+
+        List<EBatchTT> eBatchTTList = new ArrayList<>();
+        int size = tts.size();
+        eb.setTt_count(size);
+        eb.setTt_g_merge_count(size);//todo 这里后面要改成真正的值
+        for(int k=0; k<size; k++){
+            TTEntity tt = tts.get(k);
+            EBatchTT et = new EBatchTT();
+            et.setTt_g(false);//todo 这里要真正进行判断
+            et.setT_idx(k);
+            et.setTid(tt.getId());
+            et.setTt_ct(tt.getTc());
+            et.setTt_offline(tt.getOi());
+            et.setTt_type(tt.gettType());
+            et.setT_ops(null);//todo
+            et.setTt_answer(tt.getTca());
+            et.setT_g_count(0);//todo
+            eBatchTTList.add(et);
+        }
+        eb.setTt_list(eBatchTTList);
+        return eb;
     }
 
     /** get batch of titles */
