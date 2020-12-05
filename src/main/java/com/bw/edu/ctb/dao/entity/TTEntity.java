@@ -1,8 +1,6 @@
 package com.bw.edu.ctb.dao.entity;
 
 import com.bw.edu.ctb.util.MD5Utils;
-
-import java.security.MessageDigest;
 import java.util.Date;
 
 public class TTEntity {
@@ -10,19 +8,19 @@ public class TTEntity {
     private Date gc;
     private Date gm;
     private Long un;
-    private Integer dl;
+    private Integer dl;//dificault level
     private Integer eok;
-    private String tc;
-    private String tcEnc;
-    private Integer ts;
+    private String tc;//content
+    private String tcEnc;//encription
+    private Integer ts;//status
     private Integer tType;
-    private Integer oi;
-    private Long tgi;
-    private String ots;
-    private String tat;
-    private String tav;
-    private String tca;
-    private Long aid;
+    private Integer oi;//offline
+    private Long tgi;//group id
+    private String ots;//optional answers
+    private String tat;//analysis_text
+    private String tav;//analysis_video
+    private String tca;//correct answer
+    private Long aid;//author
 
     public Long getId() {
         return id;

@@ -3,9 +3,11 @@ package com.bw.edu.ctb.service;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.enums.StatusEnum;
 import com.bw.edu.ctb.common.qo.KpQO;
+import com.bw.edu.ctb.common.qo.KptBatchQO;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.TkrQO;
 import com.bw.edu.ctb.dao.entity.KpEntity;
+import com.bw.edu.ctb.dao.entity.KptBatchEntity;
 import com.bw.edu.ctb.dao.entity.TTEntity;
 import com.bw.edu.ctb.dao.entity.TkrEntity;
 import com.bw.edu.ctb.dao.mapper.KpMapper;
@@ -14,6 +16,7 @@ import com.bw.edu.ctb.dao.mapper.TkrMapper;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.manager.KpManager;
+import com.bw.edu.ctb.manager.KptBatchManager;
 import com.bw.edu.ctb.manager.TkrManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +33,17 @@ public class TTService {
     private KpManager kpManager;
     @Autowired
     private TkrManager tkrManager;
+    @Autowired
+    private KptBatchManager kptBatchManager;
 
     public Result<List<TTEntity>> queryKpDetails(TTBactchQO ttBactchQO){
+        //查询batch
+        KptBatchEntity kb = kptBatchManager.queryLastValid(buildKptBatchQO(ttBactchQO));
+        if(null == kb){
+
+        }
+
+        //如果batch查不到，实时生成batch
         Long maxKpId = ttBactchQO.getMaxKpId();
         Long maxTid = ttBactchQO.getMaxTid();//maxTid可以为空
         if(null == maxKpId){
@@ -77,6 +89,14 @@ public class TTService {
 
 
         return Result.success(tkrs);
+    }
+
+    private KptBatchQO buildKptBatchQO(TTBactchQO ttBactchQO) {
+        KptBatchQO kq = new KptBatchQO();
+        kq.setUid(ttBactchQO.getUid());
+        kq.setUn(ttBactchQO.getUn());
+        kq.setDl(ttBactchQO.getDl());
+        return kq;
     }
 
     private void searchKpDetails(KpEntity k, Long maxTid, Integer eok, List<TkrEntity> tkrs, boolean searchParent, boolean searchForward){
