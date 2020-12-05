@@ -8,6 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface KptBatchMapper {
-    void save(KptBatchEntity kptBatchEntity);
+    int save(KptBatchEntity kptBatchEntity);
     List<KptBatchEntity> select(KptBatchQO kptBatchQO);
 }

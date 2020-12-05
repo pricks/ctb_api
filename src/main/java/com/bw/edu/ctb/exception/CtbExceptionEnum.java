@@ -18,6 +18,7 @@ public enum CtbExceptionEnum {
     KP_IS_NULL(11003004, "KP_IS_NULL", "知识点分类不存在"),
     DL_IS_NULL(11003005, "DL_IS_NULL", "难度等级为空"),
     EOK_IS_NULL(11003006, "EOK_IS_NULL", "难度等级为空"),
+    KPT_BATCH_TIDS_IS_NULL(11003007, "KPT_BATCH_TIDS_IS_NULL", "没有题目"),
 
 
     /** ======================各模块通用错误码：999开头============================ */
@@ -25,6 +26,7 @@ public enum CtbExceptionEnum {
     Collection_SORT_ERROR(1999002, "Collection_SORT_ERROR", "排序异常"),
     DB_DUPLICATE_ENTRY(1999003, "DB_DUPLICATE_ENTRY", "DB唯一键冲突"),
     PARAM_NULL(1999004, "PARAM_NULL", "参数为空"),
+    DB_WRITE_ERROR(1999005, "DB_WRITE_ERROR", "DB写异常"),
 
     ;
 
