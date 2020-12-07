@@ -22,7 +22,7 @@ public class TTDAOTest extends CtbApplicationTests {
         ttEntity.setTs(1);
         ttEntity.settType(1);
         ttEntity.setEok(1);
-        ttEntity.setOi(1);
+        ttEntity.setOi(false);
         ttEntity.setTgi(3L);
         ttEntity.setAid(33L);
         int rs = ttMapper.save(ttEntity);
