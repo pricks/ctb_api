@@ -8,7 +8,7 @@ public class BUsr {
     private Date gm;
     private String token;
     private Long expire;//有效期，最近一次登录的时间的long值
-    private Integer retry;//重试登陆次数
+    private String avatar;//头像
 
     public Long getId() {
         return id;
@@ -50,11 +50,11 @@ public class BUsr {
         this.expire = expire;
     }
 
-    public Integer getRetry() {
-        return retry;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setRetry(Integer retry) {
-        this.retry = retry;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

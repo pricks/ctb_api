@@ -8,6 +8,7 @@ public class LUsr {
     private Date gc;
     private Date gm;
     private Long uid;
+    private String atk;//token，冗余存储
     private String name;
     private String pwd;
     private String mb;//mobile phone
@@ -43,6 +44,14 @@ public class LUsr {
 
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    public String getAtk() {
+        return atk;
+    }
+
+    public void setAtk(String atk) {
+        this.atk = atk;
     }
 
     public String getName() {

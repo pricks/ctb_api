@@ -16,7 +16,7 @@ public class KpDAOTest extends CtbApplicationTests {
     private KpMapper kpMapper;
 
     @Test
-    public void testQuery(){
+    public void testSelect(){
         KpQO kpQO = new KpQO();
         kpQO.setUn(1L);
         List<KpEntity> kpEntityList = kpMapper.select(kpQO);

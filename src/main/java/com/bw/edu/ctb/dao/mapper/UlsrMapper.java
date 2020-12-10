@@ -1,10 +1,10 @@
-package com.bw.edu.ctb.dao.mapper.usr;
+package com.bw.edu.ctb.dao.mapper;
 
 import com.bw.edu.ctb.dao.entity.usr.LUsr;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface LUsrMapper {
+public interface UlsrMapper {
     int save(LUsr lUsr);
     LUsr getByUid(Long uid);
 }

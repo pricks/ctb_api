@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.constants;
+package com.bw.edu.ctb.common.enums;
 
 public enum PPracticeBatchStatusEnum {
 

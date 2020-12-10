@@ -21,6 +21,13 @@ public enum CtbExceptionEnum {
     KPT_BATCH_TIDS_IS_NULL(11003007, "KPT_BATCH_TIDS_IS_NULL", "没有题目"),
 
 
+    /** ======================LOGIN错误码：1004开头============================ */
+    USER_INFO_NULL(11004001, "USER_INFO_NULL", "用户信息错误"),
+    USER_TYPE_NULL(11004002, "USER_TYPE_NULL", "用户信息错误"),
+    MULTIPLE_SAME_TUSR(11004003, "MULTIPLE_SAME_TUSR", "用户重复"),
+    UN_SUPPORTED_LOGIN_TYPE(11004004, "UN_SUPPORTED_LOGIN_TYPE", "不支持的登录方式"),
+
+
     /** ======================各模块通用错误码：999开头============================ */
     OBJECT_NULL(1999001, "OBJECT_IS_NULL", "对象为空"),
     Collection_SORT_ERROR(1999002, "Collection_SORT_ERROR", "排序异常"),

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.edu.ctb.dao.mapper.UarelMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.usr.AURel" autoMapping="true" />
+
+    <sql id="Base_Column_List" >
+        id,gc,gm,uid,aid,type
+    </sql>
+    <sql id="BaseProperties" >
+        #{id},now(),now(),#{uid},#{aid},#{type}
+    </sql>
+
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.usr.AURel" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into uarel
+        (<include refid="Base_Column_List"></include>)
+        values
+        (<include refid="BaseProperties"></include>)
+    </insert>
+
+    <!-- select -->
+    <select id="getByUid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select *
+        from uarel
+        where uid=#{uid}
+    </select>
+</mapper>

@@ -1,42 +1,15 @@
-package com.bw.edu.ctb.dao.entity.usr;
+package com.bw.edu.ctb.domain;
 
 import java.util.Date;
 
-//third user
-public class TUsr {
-    private Long id;
-    private Date gc;
-    private Date gm;
+public class UsrE {
     private Long uid;
     private String oid;//open id
     private String nick;
+    private String avatar;//url
     private Integer type;//wx/weibo/alipay
     private String atk;//access token
     private String ats;//attributes
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getGc() {
-        return gc;
-    }
-
-    public void setGc(Date gc) {
-        this.gc = gc;
-    }
-
-    public Date getGm() {
-        return gm;
-    }
-
-    public void setGm(Date gm) {
-        this.gm = gm;
-    }
 
     public Long getUid() {
         return uid;
@@ -60,6 +33,14 @@ public class TUsr {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Integer getType() {

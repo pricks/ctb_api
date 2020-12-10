@@ -13,7 +13,8 @@ import java.net.URL;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @SpringBootApplication
 @ServletComponentScan
-@MapperScan("com.bw.edu.ctb.dao.mapper")
+//@MapperScan({"com.bw.edu.ctb.dao.mapper","com.bw.edu.ctb.dao.mapper.usr"})
+@MapperScan({"com.bw.edu.ctb.dao.mapper"})
 public class CtbApplication {
 	/**
 	 * 系统变量中指定项目名称的变量key
