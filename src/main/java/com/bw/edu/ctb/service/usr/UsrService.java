@@ -8,7 +8,6 @@ import com.bw.edu.ctb.dao.entity.usr.AURel;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dao.entity.usr.Login;
 import com.bw.edu.ctb.dao.entity.usr.TUsr;
-import com.bw.edu.ctb.dao.mapper.UbsrMapper;
 import com.bw.edu.ctb.domain.UsrE;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
@@ -24,8 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
-import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
 @Service
 public class UsrService {
@@ -49,7 +46,7 @@ public class UsrService {
         }
     }
 
-    public Result<Void> updateToken(Long uid){
+    public Result<BUsr> updateToken(Long uid){
         try {
             if(null==uid){
                 return Result.failure();
@@ -59,7 +56,7 @@ public class UsrService {
             bUsr.setExpire(TimeUtil.addDay(new Date(), SystemConstants.EXPIRE_DAYS).getTime());
             bUsr.setToken(TokenGenUtil.genToken());
             usrManager.updateToken(bUsr);
-            return Result.success();
+            return Result.success(bUsr);
         } catch (CtbException e){
             logger.error("getById failed. uid="+uid);
             return Result.failure(e);
@@ -75,7 +72,7 @@ public class UsrService {
             return Result.failure(CtbExceptionEnum.USER_INFO_NULL.getCode(), CtbExceptionEnum.USER_INFO_NULL.getDesc());
         }
         List<TUsr> usrList = usrManager.queryTusrByNick(nick, type);
-        if(CollectionUtil.isEmpty(usrList)) return null;
+        if(CollectionUtil.isEmpty(usrList)) return Result.success();
         if(usrList.size() > 1){
             logger.error("[fatal error] many same tusrs. nick="+nick+", type="+type);
             return Result.failure(CtbExceptionEnum.MULTIPLE_SAME_TUSR.getCode(), CtbExceptionEnum.MULTIPLE_SAME_TUSR.getDesc());
@@ -107,7 +104,7 @@ public class UsrService {
             AURel auRel = new AURel();
             auRel.setUid(bUsr.getId());
             auRel.setAid(tUsr.getId());
-            auRel.setAtype(AuthTypeEnum.THIRD.getCode());
+            auRel.setType(AuthTypeEnum.THIRD.getCode());
             usrManager.createAurel(auRel);
         } catch (CtbException e){
             logger.error("create new third user failed. usr="+usrE);

@@ -36,33 +36,44 @@ public class LgController {
 
     /** 登录保持 */
     @PostMapping("/sl")
-    public Result stay_login(HttpServletRequest request, HttpSession session){
+    public Result<UsrDTO> stay_login(HttpServletRequest request, HttpSession session){
         try{
-            String uid = request.getParameter("id");
+            String uidStr = request.getParameter("id");
             String token = request.getParameter("atk");
-            if(StringUtil.isEmpty(uid) || StringUtil.isEmpty(token)){
-                return Result.success(false);//false表示登录失败
+            if(StringUtil.isEmpty(uidStr) || StringUtil.isEmpty(token)){
+                return Result.failure();//
             }
-            Result<BUsr> bUsrRS = usrService.getById(Long.valueOf(uid)+SystemConstants.ID_DIFF);
+            Long uid = Long.valueOf(uidStr);
+            Result<BUsr> bUsrRS = usrService.getById(uid+SystemConstants.ID_DIFF);
             BUsr bUsr = bUsrRS.getData();
             if(null==bUsr){
                 logger.error("[hacker attach!] not existed usr");
-                return Result.success(false);//false表示登录失败
+                return Result.failure();//表示登录失败
             }
             if(!token.equals(bUsr.getToken())){
                 logger.error("[hacker attach!] token error");
-                return Result.success(false);
+                return Result.failure();
             }
             if(System.currentTimeMillis() >= bUsr.getExpire()){
                 logger.error("login expired");
-                return Result.success(false);
+                return Result.failure();
             }
             Result<Void> lrs = usrService.login(new Login(bUsr.getId(), request.getRemoteAddr()));
             if(!lrs.isSuccess()){
                 logger.error("write login record failed. remote ip="+request.getRemoteAddr());
                 return Result.failure();
             }
-            return Result.success();
+
+            //延长token
+            Result<BUsr> urs = usrService.updateToken(bUsr.getId());
+            if(!urs.isSuccess()){
+                logger.error("token update failed. uid="+uid+", remote ip="+request.getRemoteAddr());
+                return Result.failure();
+            }
+            UsrDTO usrDTO = new UsrDTO();
+            usrDTO.setId(uid);
+            usrDTO.setAtk(urs.getData().getToken());
+            return Result.success(usrDTO);
         }catch (CtbException e){
             logger.error("sl biz-error", e);
             return Result.failure(e);
@@ -74,7 +85,7 @@ public class LgController {
 
     /** third login, such as weixin/alipay/toutiao... */
     @PostMapping("/tg")
-    public Result thid_lg(UserVO user, HttpServletRequest request, HttpSession session){
+    public Result<UsrDTO> thid_lg(UserVO user, HttpServletRequest request, HttpSession session){
         try{
             logger.error("g. r=" + request.getRemoteAddr() + ", model="+user);
             if(null==user || StringUtil.isEmpty(user.getNick())){
@@ -85,6 +96,9 @@ public class LgController {
             }
             if(ThirdTypeEnum.WEIXIN.getCode().equals(user.getType())){
                 Result<TUsr> rs = usrService.queryTusrByNick(user.getNick(), user.getType());
+                if(!rs.isSuccess()){
+                    promoteException(rs.getCode(),rs.getMessage());
+                }
                 TUsr tUsr = rs.getData();
                 if(null == tUsr){
                     Result<BUsr> createRS = usrService.createNewTUsr(build(user));
@@ -95,28 +109,27 @@ public class LgController {
 
                     Result<Void> lrs = usrService.login(new Login(bUsr.getId(), request.getRemoteAddr()));
                     if(!lrs.isSuccess()){
-                        logger.error("write login record failed. new nick="+user.getNick()+"remote ip="+request.getRemoteAddr());
+                        logger.error("write login record failed. new nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
                         return Result.failure();
                     }
                     return Result.success(usrDTO);
                 }else{
-                    UsrDTO usrDTO = new UsrDTO();
-                    usrDTO.setId(tUsr.getUid()- SystemConstants.ID_DIFF);
-                    usrDTO.setAtk(tUsr.getAtk());
-
-                    //延长token
-                    Result<Void> urs = usrService.updateToken(tUsr.getUid());
-                    if(!urs.isSuccess()){
-                        logger.error("token update failed. nick="+user.getNick()+"remote ip="+request.getRemoteAddr());
-                        return Result.failure();
-                    }
-
                     //写登录记录
                     Result<Void> lrs = usrService.login(new Login(tUsr.getUid(), request.getRemoteAddr()));
                     if(!lrs.isSuccess()){
                         logger.error("write login record failed. old nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
                         return Result.failure();
                     }
+
+                    //延长token
+                    Result<BUsr> urs = usrService.updateToken(tUsr.getUid());
+                    if(!urs.isSuccess()){
+                        logger.error("token update failed. nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
+                        return Result.failure();
+                    }
+                    UsrDTO usrDTO = new UsrDTO();
+                    usrDTO.setId(tUsr.getUid()- SystemConstants.ID_DIFF);
+                    usrDTO.setAtk(urs.getData().getToken());
                     return Result.success(usrDTO);
                 }
             }

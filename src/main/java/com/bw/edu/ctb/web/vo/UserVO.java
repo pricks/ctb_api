@@ -1,5 +1,7 @@
 package com.bw.edu.ctb.web.vo;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 
 public class UserVO implements Serializable {
@@ -12,6 +14,11 @@ public class UserVO implements Serializable {
     private String openId;
     private String unionId;
     private String props;
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
     public Integer getAtype() {
         return atype;

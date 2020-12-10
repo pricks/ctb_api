@@ -18,15 +18,15 @@
     </insert>
 
     <!-- select -->
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getByUid" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select *
         from ubsr
         where id=#{uid}
     </select>
 
-    <select id="updateToken" parameterType="java.util.Map" resultMap="BaseResultMap">
+    <select id="updateToken" parameterType="com.bw.edu.ctb.dao.entity.usr.BUsr">
         update ubsr
-        set token=#{token}, expire=#{expire}
-        where id=#{uid}
+        set gm=now(), token=#{token}, expire=#{expire}
+        where id=#{id}
     </select>
 </mapper>

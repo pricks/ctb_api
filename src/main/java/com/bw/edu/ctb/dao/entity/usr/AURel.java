@@ -8,7 +8,7 @@ public class AURel {
     private Date gm;
     private Long uid;
     private Long aid;
-    private Integer atype;//local || third
+    private Integer type;//local || third
 
     public Long getId() {
         return id;
@@ -50,11 +50,11 @@ public class AURel {
         this.aid = aid;
     }
 
-    public Integer getAtype() {
-        return atype;
+    public Integer getType() {
+        return type;
     }
 
-    public void setAtype(Integer atype) {
-        this.atype = atype;
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

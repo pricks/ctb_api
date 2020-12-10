@@ -36,10 +36,7 @@ public class UsrManager {
     }
 
     public void updateToken(BUsr bUsr){
-        int rs = ubsrMapper.updateToken(bUsr.getId(), bUsr.getToken(), bUsr.getExpire());
-        if(rs<1){
-            promoteException(CtbExceptionEnum.DB_WRITE_ERROR);
-        }
+        ubsrMapper.updateToken(bUsr);
     }
 
     public void createBusr(BUsr bUsr){

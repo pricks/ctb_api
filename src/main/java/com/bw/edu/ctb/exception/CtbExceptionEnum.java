@@ -51,6 +51,9 @@ public enum CtbExceptionEnum {
     public static void promoteException(CtbExceptionEnum ctbExceptionEnum){
         throw new CtbException(ctbExceptionEnum.getCode(), ctbExceptionEnum.getDesc());
     }
+    public static void promoteException(String code, String msg){
+        throw new CtbException(code, msg);
+    }
 
     private int num;
     private String code;
