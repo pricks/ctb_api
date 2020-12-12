@@ -46,6 +46,22 @@ public class UsrService {
         }
     }
 
+    public Result<BUsr> getByAtk(String token){
+        try {
+            if(StringUtil.isEmpty(token)){
+                return Result.success();
+            }
+            BUsr bUsr = usrManager.getByAtk(token);
+            return Result.success(bUsr);
+        } catch (CtbException e){
+            logger.error("getById failed. atk="+token);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("getById failed because system. atk="+token, e);
+            return Result.failure();
+        }
+    }
+
     public Result<BUsr> updateToken(Long uid){
         try {
             if(null==uid){
@@ -54,7 +70,7 @@ public class UsrService {
             BUsr bUsr = new BUsr();
             bUsr.setId(uid);
             bUsr.setExpire(TimeUtil.addDay(new Date(), SystemConstants.EXPIRE_DAYS).getTime());
-            bUsr.setToken(TokenGenUtil.genToken());
+            bUsr.setToken(TokenGenUtil.genToken(uid));
             usrManager.updateToken(bUsr);
             return Result.success(bUsr);
         } catch (CtbException e){

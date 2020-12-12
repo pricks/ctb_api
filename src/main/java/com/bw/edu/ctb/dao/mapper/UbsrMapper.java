@@ -7,5 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UbsrMapper {
     int save(BUsr bUsr);
     BUsr getByUid(Long uid);
+    BUsr getByAtk(String atk);
     void updateToken(BUsr bUsr);
 }

@@ -39,6 +39,10 @@ public class UsrManager {
         ubsrMapper.updateToken(bUsr);
     }
 
+    public BUsr getByAtk(String token){
+        return ubsrMapper.getByAtk(token);
+    }
+
     public void createBusr(BUsr bUsr){
         int rs = ubsrMapper.save(bUsr);
         if(rs < 1){

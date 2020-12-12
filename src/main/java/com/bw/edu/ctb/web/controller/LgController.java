@@ -38,21 +38,12 @@ public class LgController {
     @PostMapping("/sl")
     public Result<UsrDTO> stay_login(HttpServletRequest request, HttpSession session){
         try{
-            String uidStr = request.getParameter("id");
             String token = request.getParameter("atk");
-            if(StringUtil.isEmpty(uidStr) || StringUtil.isEmpty(token)){
-                return Result.failure();//
-            }
-            Long uid = Long.valueOf(uidStr);
-            Result<BUsr> bUsrRS = usrService.getById(uid+SystemConstants.ID_DIFF);
+            Result<BUsr> bUsrRS = usrService.getByAtk(token);
             BUsr bUsr = bUsrRS.getData();
             if(null==bUsr){
                 logger.error("[hacker attach!] not existed usr");
                 return Result.failure();//表示登录失败
-            }
-            if(!token.equals(bUsr.getToken())){
-                logger.error("[hacker attach!] token error");
-                return Result.failure();
             }
             if(System.currentTimeMillis() >= bUsr.getExpire()){
                 logger.error("login expired");
@@ -64,14 +55,23 @@ public class LgController {
                 return Result.failure();
             }
 
-            //延长token
+            /**
+             * 延长token
+             *
+             * 注意：这里可能会有数据不一致的情况：
+             * 当DB里的token已经被更新后，但是服务
+             * 器突然宕机了，导致没有来得及发送给客户端
+             * ，于是app内还是老的token。下次app来
+             * 请求时就会token校验不通过。
+             * 不过这种情况并不是很常见，因此即使出现了，
+             * 就让用户重新登录一次即可
+             */
             Result<BUsr> urs = usrService.updateToken(bUsr.getId());
             if(!urs.isSuccess()){
-                logger.error("token update failed. uid="+uid+", remote ip="+request.getRemoteAddr());
+                logger.error("token update failed. atk="+token+", remote ip="+request.getRemoteAddr());
                 return Result.failure();
             }
             UsrDTO usrDTO = new UsrDTO();
-            usrDTO.setId(uid);
             usrDTO.setAtk(urs.getData().getToken());
             return Result.success(usrDTO);
         }catch (CtbException e){
@@ -104,7 +104,6 @@ public class LgController {
                     Result<BUsr> createRS = usrService.createNewTUsr(build(user));
                     BUsr bUsr = createRS.getData();
                     UsrDTO usrDTO = new UsrDTO();
-                    usrDTO.setId(bUsr.getId()- SystemConstants.ID_DIFF);
                     usrDTO.setAtk(bUsr.getToken());
 
                     Result<Void> lrs = usrService.login(new Login(bUsr.getId(), request.getRemoteAddr()));
@@ -128,7 +127,6 @@ public class LgController {
                         return Result.failure();
                     }
                     UsrDTO usrDTO = new UsrDTO();
-                    usrDTO.setId(tUsr.getUid()- SystemConstants.ID_DIFF);
                     usrDTO.setAtk(urs.getData().getToken());
                     return Result.success(usrDTO);
                 }

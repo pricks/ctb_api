@@ -5,8 +5,14 @@ import java.util.UUID;
 
 public class TokenGenUtil {
     public static String genToken(){
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");//32位长度
-        String timestamp = String.valueOf(System.currentTimeMillis());//加上时间戳，防止uuid碰撞
-        return StringUtil.subString(uuid+timestamp, 64);
+        String uuid = UUID.randomUUID().toString().replaceAll("l", "");//32位长度
+        String md5 = MD5Utils.stringToMD5(String.valueOf(System.currentTimeMillis()));
+        return StringUtil.subString(uuid+md5, 64);
+    }
+
+    public static String genToken(Long uid){
+        String uuid = UUID.randomUUID().toString().replaceAll("l", "");//32位长度
+        String md5 = MD5Utils.stringToMD5(uid.toString());
+        return StringUtil.subString(uuid+md5, 64);
     }
 }

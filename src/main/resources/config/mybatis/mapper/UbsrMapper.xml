@@ -24,6 +24,12 @@
         where id=#{uid}
     </select>
 
+    <select id="getByAtk" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select *
+        from ubsr
+        where token=#{atk}
+    </select>
+
     <select id="updateToken" parameterType="com.bw.edu.ctb.dao.entity.usr.BUsr">
         update ubsr
         set gm=now(), token=#{token}, expire=#{expire}
