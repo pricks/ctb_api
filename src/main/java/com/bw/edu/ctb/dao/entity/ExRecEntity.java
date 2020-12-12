@@ -1,26 +1,28 @@
 package com.bw.edu.ctb.dao.entity;
 
-import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Date;
 
 public class ExRecEntity {
     private Long id;
     private Date gc;
-    private Date gm;
     private Long uid;
-    private Long dg;
-    private Long gd;
-    private Long cl;
     private Long un;
-    private Long dl;
     private Integer rd;
-    private Long batchId;
+    private Long dl;
+    private Long batchId;//kptBatch or pracBatch
     private String tts;
     private String kns;
-    private String wkns;
-    private String wtts;
-    private Long cmkn;
+    private String wKns;//wrong-answered kn id set
+    private String wTts;//wrong-answered tt id set
+    private Long cmt;//correct_max_tid
+    private Long cmkn;//correct_max_kn
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
     public Long getId() {
         return id;
@@ -38,44 +40,12 @@ public class ExRecEntity {
         this.gc = gc;
     }
 
-    public Date getGm() {
-        return gm;
-    }
-
-    public void setGm(Date gm) {
-        this.gm = gm;
-    }
-
     public Long getUid() {
         return uid;
     }
 
     public void setUid(Long uid) {
         this.uid = uid;
-    }
-
-    public Long getDg() {
-        return dg;
-    }
-
-    public void setDg(Long dg) {
-        this.dg = dg;
-    }
-
-    public Long getGd() {
-        return gd;
-    }
-
-    public void setGd(Long gd) {
-        this.gd = gd;
-    }
-
-    public Long getCl() {
-        return cl;
-    }
-
-    public void setCl(Long cl) {
-        this.cl = cl;
     }
 
     public Long getUn() {
@@ -86,20 +56,20 @@ public class ExRecEntity {
         this.un = un;
     }
 
-    public Long getDl() {
-        return dl;
-    }
-
-    public void setDl(Long dl) {
-        this.dl = dl;
-    }
-
     public Integer getRd() {
         return rd;
     }
 
     public void setRd(Integer rd) {
         this.rd = rd;
+    }
+
+    public Long getDl() {
+        return dl;
+    }
+
+    public void setDl(Long dl) {
+        this.dl = dl;
     }
 
     public Long getBatchId() {
@@ -126,20 +96,28 @@ public class ExRecEntity {
         this.kns = kns;
     }
 
-    public String getWkns() {
-        return wkns;
+    public String getwKns() {
+        return wKns;
     }
 
-    public void setWkns(String wkns) {
-        this.wkns = wkns;
+    public void setwKns(String wKns) {
+        this.wKns = wKns;
     }
 
-    public String getWtts() {
-        return wtts;
+    public String getwTts() {
+        return wTts;
     }
 
-    public void setWtts(String wtts) {
-        this.wtts = wtts;
+    public void setwTts(String wTts) {
+        this.wTts = wTts;
+    }
+
+    public Long getCmt() {
+        return cmt;
+    }
+
+    public void setCmt(Long cmt) {
+        this.cmt = cmt;
     }
 
     public Long getCmkn() {

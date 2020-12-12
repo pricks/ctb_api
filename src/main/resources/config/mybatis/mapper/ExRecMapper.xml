@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.edu.ctb.dao.mapper.ExRecMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.ExRecEntity" autoMapping="true" />
+
+    <sql id="Base_Column_List" >
+        id,gc,uid,un,rd,dl,batch_id,tts,kns,w_kns,w_tts,cmt,cmkn
+    </sql>
+    <sql id="BaseProperties" >
+        #{id},now(),#{uid},#{un},#{rd},#{dl},#{batchId},#{tts},#{kns},#{wKns},#{wTts},#{cmt},#{cmkn}
+    </sql>
+
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.ExRecEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into ex_rec
+        (<include refid="Base_Column_List"></include>)
+        values
+        (<include refid="BaseProperties"></include>)
+    </insert>
+
+    <!-- 查询项 -->
+    <sql id="query">
+        <where>
+            <if test="id != null">id = #{id} </if>
+            <if test="un != null">and un = #{un} </if>
+            <if test="dl != null">and dl = #{dl} </if>
+            <if test="pid != null">and pid = #{pid} </if>
+            <if test="level != null">and level = #{level} </if>
+            <if test="status != null">and status = #{status} </if>
+            <if test="korder != null">and korder > #{korder} </if>
+            <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
+            <if test="begin != null">limit #{begin}, #{num}</if>
+        </where>
+    </sql>
+
+    <!-- select -->
+    <select id="selectLatestExr" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select un
+        from ex_rec
+        where uid=#{uid}
+        order by gc desc
+    </select>
+
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select *
+        from t_kp
+        where id=#{id}
+    </select>
+</mapper>

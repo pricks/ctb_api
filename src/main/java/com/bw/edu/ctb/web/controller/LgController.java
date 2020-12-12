@@ -3,13 +3,20 @@ package com.bw.edu.ctb.web.controller;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.SystemConstants;
 import com.bw.edu.ctb.common.enums.ThirdTypeEnum;
+import com.bw.edu.ctb.common.enums.subjects.DGRel;
+import com.bw.edu.ctb.common.enums.subjects.DagangEnum;
+import com.bw.edu.ctb.common.enums.subjects.GradeEnum;
+import com.bw.edu.ctb.dao.entity.UnitEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dao.entity.usr.Login;
 import com.bw.edu.ctb.dao.entity.usr.TUsr;
 import com.bw.edu.ctb.domain.UsrE;
+import com.bw.edu.ctb.dto.GCDTO;
 import com.bw.edu.ctb.dto.UsrDTO;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
+import com.bw.edu.ctb.service.ExRecService;
+import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.service.usr.UsrService;
 import com.bw.edu.ctb.util.StringUtil;
 import com.bw.edu.ctb.web.vo.UserVO;
@@ -33,6 +40,56 @@ public class LgController {
     private final static Logger logger = LoggerFactory.getLogger(LgController.class);
     @Autowired
     private UsrService usrService;
+    @Autowired
+    private ExRecService exRecService;
+    @Autowired
+    private UnitService unitService;
+
+    /** get the grade & class */
+    @PostMapping("/fgc")
+    public Result<GCDTO> fetch_gc(HttpServletRequest request, HttpSession session){
+        try{
+            String token = request.getParameter("atk");
+            Result<BUsr> bUsrRS = usrService.getByAtk(token);
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
+
+            Result<Long> unRS = exRecService.selectLatestExr(bUsr.getId());
+            if(!unRS.isSuccess() || null==unRS.getData()){
+                //获取默认的gd & class
+                GCDTO gcdto = new GCDTO();
+                gcdto.setDg(DagangEnum.RENJIAOBAN.getCode());
+                gcdto.setGd(DGRel.D1_X1.getGe().getCode());
+                gcdto.setGdn(DGRel.D1_X1.getGe().getName());
+                return Result.success(gcdto);
+            }
+
+            Long un = unRS.getData();
+            Result<UnitEntity> unitRs = unitService.getByCode(un);
+            if(!unitRs.isSuccess()){
+                return Result.failure(unRS.getCode(), unRS.getMessage());
+            }
+            UnitEntity ue = unitRs.getData();
+            if(null==ue){
+                logger.error("query no un. un="+un);
+                return Result.failure();
+            }
+            GCDTO gcdto = new GCDTO();
+            gcdto.setDg(ue.getDg());
+            gcdto.setGd(ue.getGd());
+            gcdto.setGdn(GradeEnum.getName(ue.getGd()));
+            return Result.success(gcdto);
+        }catch (CtbException e){
+            logger.error("sl biz-error", e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("sl sys-error", e);
+            return Result.failure();
+        }
+    }
 
     /** 登录保持 */
     @PostMapping("/sl")

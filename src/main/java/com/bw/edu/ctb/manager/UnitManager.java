@@ -16,6 +16,10 @@ public class UnitManager {
     @Autowired
     private UnitMapper unitMapper;
 
+    public UnitEntity getByCode(Long un){
+        return unitMapper.getByCode(un);
+    }
+
     public List<UnitEntity> queryByCl(UnitQO uq){
         if(null==uq.getCl() || uq.getCl()<=0){
             throw new CtbException(CtbExceptionEnum.PARAM_NULL, uq.toString());

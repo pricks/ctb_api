@@ -46,6 +46,11 @@ public class UsrService {
         }
     }
 
+    /**
+     * todo add cache logic
+     * @param token
+     * @return
+     */
     public Result<BUsr> getByAtk(String token){
         try {
             if(StringUtil.isEmpty(token)){

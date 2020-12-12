@@ -34,6 +34,7 @@ public enum CtbExceptionEnum {
     DB_DUPLICATE_ENTRY(1999003, "DB_DUPLICATE_ENTRY", "DB唯一键冲突"),
     PARAM_NULL(1999004, "PARAM_NULL", "参数为空"),
     DB_WRITE_ERROR(1999005, "DB_WRITE_ERROR", "DB写异常"),
+    PARAM_NOT_RULED(1999006, "PARAM_NOT_RULED", "非法参数"),
 
     ;
 
