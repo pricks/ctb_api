@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.edu.ctb.dao.mapper.SGMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.SGEntity" autoMapping="true" />
+
+    <sql id="Base_Column_List" >
+        id,gc,gm,dg,gd,sc,sn
+    </sql>
+    <sql id="BaseProperties" >
+        #{id},now(),now(),#{dg},#{gd},#{sc},#{sn}
+    </sql>
+
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.SGEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into subj_gd
+        (<include refid="Base_Column_List"></include>)
+        values
+        (<include refid="BaseProperties"></include>)
+    </insert>
+
+    <!-- 根据dg和gd查询class，最大20条 -->
+    <select id="select" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select *
+        from subj_gd
+        where dg=#{dg} and gd=#{gd}
+        order by sc asc
+        limit 0,20
+    </select>
+</mapper>

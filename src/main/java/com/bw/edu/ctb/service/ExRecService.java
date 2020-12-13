@@ -1,10 +1,8 @@
 package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.common.Result;
-import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.manager.ExRecManager;
-import com.bw.edu.ctb.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

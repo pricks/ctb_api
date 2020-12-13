@@ -16,8 +16,10 @@ public class ExRecEntity {
     private String kns;
     private String wKns;//wrong-answered kn id set
     private String wTts;//wrong-answered tt id set
-    private Long cmt;//correct_max_tid
-    private Long cmkn;//correct_max_kn
+    private Integer score;
+    private Integer ckc;//correct kp count
+    private Long maxk;//max id of kp
+    private Long maxt;//max id of tt
 
     @Override
     public String toString() {
@@ -112,19 +114,35 @@ public class ExRecEntity {
         this.wTts = wTts;
     }
 
-    public Long getCmt() {
-        return cmt;
+    public Integer getScore() {
+        return score;
     }
 
-    public void setCmt(Long cmt) {
-        this.cmt = cmt;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
-    public Long getCmkn() {
-        return cmkn;
+    public Integer getCkc() {
+        return ckc;
     }
 
-    public void setCmkn(Long cmkn) {
-        this.cmkn = cmkn;
+    public void setCkc(Integer ckc) {
+        this.ckc = ckc;
+    }
+
+    public Long getMaxk() {
+        return maxk;
+    }
+
+    public void setMaxk(Long maxk) {
+        this.maxk = maxk;
+    }
+
+    public Long getMaxt() {
+        return maxt;
+    }
+
+    public void setMaxt(Long maxt) {
+        this.maxt = maxt;
     }
 }

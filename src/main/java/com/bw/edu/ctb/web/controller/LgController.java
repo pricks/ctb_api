@@ -6,18 +6,22 @@ import com.bw.edu.ctb.common.enums.ThirdTypeEnum;
 import com.bw.edu.ctb.common.enums.subjects.DGRel;
 import com.bw.edu.ctb.common.enums.subjects.DagangEnum;
 import com.bw.edu.ctb.common.enums.subjects.GradeEnum;
+import com.bw.edu.ctb.dao.entity.SGEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dao.entity.usr.Login;
 import com.bw.edu.ctb.dao.entity.usr.TUsr;
 import com.bw.edu.ctb.domain.UsrE;
 import com.bw.edu.ctb.dto.GCDTO;
+import com.bw.edu.ctb.dto.SsDTO;
 import com.bw.edu.ctb.dto.UsrDTO;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.service.ExRecService;
+import com.bw.edu.ctb.service.SGService;
 import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.service.usr.UsrService;
+import com.bw.edu.ctb.util.CollectionUtil;
 import com.bw.edu.ctb.util.StringUtil;
 import com.bw.edu.ctb.web.vo.UserVO;
 import org.slf4j.Logger;
@@ -30,7 +34,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
@@ -44,10 +50,49 @@ public class LgController {
     private ExRecService exRecService;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private SGService sgService;
+
+    /** get the class list */
+    @PostMapping("/fs")
+    public Result<List<SsDTO>> fetch_subj(HttpServletRequest request){
+        try{
+            String token = request.getParameter("atk");
+            Result<BUsr> bUsrRS = usrService.getByAtk(token);
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
+
+            Integer dg = Integer.valueOf(request.getParameter("dg"));
+            Integer gd = Integer.valueOf(request.getParameter("gd"));
+            Result<List<SGEntity>> sgRS = sgService.select(dg, gd);
+            if(!sgRS.isSuccess() || CollectionUtil.isEmpty(sgRS.getData())){
+                //获取默认的gd & class
+                logger.error("[fatal error] query no subjects. dg="+dg+", gd="+gd);
+                return Result.failure();
+            }
+            List<SsDTO> ssDTOList = new ArrayList<>(sgRS.getData().size());
+            for(SGEntity sg : sgRS.getData()){
+                SsDTO ss = new SsDTO();
+                ss.setSc(sg.getSc());
+                ss.setSn(ss.getSn());
+                ssDTOList.add(ss);
+            }
+            return Result.success(ssDTOList);
+        }catch (CtbException e){
+            logger.error("fs biz-error", e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("fs sys-error", e);
+            return Result.failure();
+        }
+    }
 
     /** get the grade & class */
     @PostMapping("/fgc")
-    public Result<GCDTO> fetch_gc(HttpServletRequest request, HttpSession session){
+    public Result<GCDTO> fetch_gc(HttpServletRequest request){
         try{
             String token = request.getParameter("atk");
             Result<BUsr> bUsrRS = usrService.getByAtk(token);
@@ -93,7 +138,7 @@ public class LgController {
 
     /** 登录保持 */
     @PostMapping("/sl")
-    public Result<UsrDTO> stay_login(HttpServletRequest request, HttpSession session){
+    public Result<UsrDTO> stay_login(HttpServletRequest request){
         try{
             String token = request.getParameter("atk");
             Result<BUsr> bUsrRS = usrService.getByAtk(token);
@@ -142,7 +187,7 @@ public class LgController {
 
     /** third login, such as weixin/alipay/toutiao... */
     @PostMapping("/tg")
-    public Result<UsrDTO> thid_lg(UserVO user, HttpServletRequest request, HttpSession session){
+    public Result<UsrDTO> thid_lg(UserVO user, HttpServletRequest request){
         try{
             logger.error("g. r=" + request.getRemoteAddr() + ", model="+user);
             if(null==user || StringUtil.isEmpty(user.getNick())){
