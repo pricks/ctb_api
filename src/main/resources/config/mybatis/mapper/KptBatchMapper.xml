@@ -36,4 +36,10 @@
         from kpt_batch
         <include refid="query"/>
     </select>
+
+    <select id="updateStatus" parameterType="java.util.Map">
+        update kpt_batch
+        set status=#{tarStatus}
+        where id=#{id} and status=#{oriStatus}
+    </select>
 </mapper>

@@ -1,14 +1,15 @@
 package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.dao.entity.ExRecEntity;
 import com.bw.edu.ctb.dao.entity.SGEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dto.SsDTO;
 import com.bw.edu.ctb.exception.CtbException;
-import com.bw.edu.ctb.service.ExSttService;
-import com.bw.edu.ctb.service.TTService;
-import com.bw.edu.ctb.service.UnitService;
+import com.bw.edu.ctb.service.ExRecService;
+import com.bw.edu.ctb.service.usr.UsrService;
 import com.bw.edu.ctb.util.CollectionUtil;
+import com.bw.edu.ctb.util.StringUtil;
 import com.bw.edu.ctb.web.vo.ExRecVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -25,25 +27,31 @@ import java.util.List;
 @RequestMapping("/mr")
 public class MRCController {
     private final static Logger logger = LoggerFactory.getLogger(MRCController.class);
-
     @Autowired
-    private UnitService unitService;
+    private UsrService usrService;
     @Autowired
-    private ExSttService exSttService;
-    @Autowired
-    private TTService ttService;
+    private ExRecService exRecService;
 
     /** commit rv_rec */
     @PostMapping("/c")
-    public Result<List<SsDTO>> tijiao_rv_record(ExRecVO exRec, HttpServletRequest request){
+    public Result<List<SsDTO>> tijiao_rv_record(ExRecVO exRecVO, HttpServletRequest request){
         try{
-            String token = request.getParameter("atk");
-            Result<BUsr> bUsrRS = usrService.getByAtk(token);
+            //verify
+            if(null==exRecVO || StringUtil.isEmpty(exRecVO.getAtk()) || StringUtil.isEmpty(exRecVO.getTts())){
+                return Result.failure();
+            }
+            Result<BUsr> bUsrRS = usrService.getByAtk(exRecVO.getAtk());
             BUsr bUsr = bUsrRS.getData();
             if(null==bUsr){
                 logger.error("[hacker attach!] not existed usr");
                 return Result.failure();//表示登录失败
             }
+
+            //create ex_rec
+            Long eid = createExRec(exRecVO, bUsr.getId());
+
+            //produce
+
 
             Integer dg = Integer.valueOf(request.getParameter("dg"));
             Integer gd = Integer.valueOf(request.getParameter("gd"));
@@ -68,5 +76,27 @@ public class MRCController {
             logger.error("fs sys-error", e);
             return Result.failure();
         }
+    }
+
+    private Long createExRec(ExRecVO exRecVO, Long uid){
+        ExRecEntity ee = new ExRecEntity();
+        ee.setUn(exRecVO.getUn());
+        ee.setDl(exRecVO.getDl());
+        ee.setUid(uid);
+        ee.setRd(exRecVO.getRd());
+        ee.setBatchId(exRecVO.getKptBatch());
+        ee.setTts(exRecVO.getTts());
+        ee.setKns(exRecVO.getKns());
+        ee.setwKns(exRecVO.getWkns());
+        ee.setwTts(exRecVO.getWtts());
+        ee.setScore(exRecVO.getScore());
+        ee.setCkc(exRecVO.getCkc());
+        ee.setMaxk(exRecVO.getMaxk());//发给客户端的tt batch就是按照kn排序的
+        ee.setMaxt(exRecVO.getMaxt());
+        Result<Long> saveRS = exRecService.create(ee);
+        if(!saveRS.isSuccess() || null==saveRS.getData()){
+            promoteException(saveRS.getCode(), saveRS.getMessage());
+        }
+        return saveRS.getData();
     }
 }

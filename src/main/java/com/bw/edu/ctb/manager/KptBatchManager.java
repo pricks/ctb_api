@@ -23,6 +23,10 @@ public class KptBatchManager {
         }
     }
 
+    public void updateStatus(Long id, Integer oriStatus, Integer tarStatus){
+        kptBatchMapper.updateStatus(id, oriStatus, tarStatus);
+    }
+
     /**
      * 查询最后一条有效的批次
      * @param kptBatchQO

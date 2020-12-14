@@ -10,7 +10,7 @@ public class ExRecEntity {
     private Long uid;
     private Long un;
     private Integer rd;
-    private Long dl;
+    private Integer dl;
     private Long batchId;//kptBatch or pracBatch
     private String tts;
     private String kns;
@@ -66,11 +66,11 @@ public class ExRecEntity {
         this.rd = rd;
     }
 
-    public Long getDl() {
+    public Integer getDl() {
         return dl;
     }
 
-    public void setDl(Long dl) {
+    public void setDl(Integer dl) {
         this.dl = dl;
     }
 

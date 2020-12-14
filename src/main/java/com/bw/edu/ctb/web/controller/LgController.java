@@ -1,7 +1,6 @@
 package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
-import com.bw.edu.ctb.common.constants.SystemConstants;
 import com.bw.edu.ctb.common.enums.ThirdTypeEnum;
 import com.bw.edu.ctb.common.enums.subjects.DGRel;
 import com.bw.edu.ctb.common.enums.subjects.DagangEnum;
@@ -32,10 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
