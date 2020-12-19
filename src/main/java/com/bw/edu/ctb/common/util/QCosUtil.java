@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.util;
+package com.bw.edu.ctb.common.util;
 
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
@@ -6,7 +6,6 @@ import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.model.*;
 import com.qcloud.cos.region.Region;
-import com.qcloud.cos.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

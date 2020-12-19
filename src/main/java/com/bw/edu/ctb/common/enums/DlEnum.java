@@ -9,7 +9,21 @@ public enum DlEnum {
 
     ;
 
-    public String getName(Integer code){
+    public static EokEnum getEokType(Integer code){
+        if(null==code){
+            return null;
+        }
+        if(DlEnum.BASIC.getCode().equals(code)
+            || DlEnum.DIFICAULT.getCode().equals(code)
+            || DlEnum.MOST_WRONG.getCode().equals(code)){
+            return EokEnum.KP_DETAIL;
+        }
+        else{
+            return EokEnum.EXERCISE;
+        }
+    }
+
+    public static String getName(Integer code){
         for(DlEnum e : DlEnum.values()){
             if(e.getCode().equals(code)){
                 return e.getName();

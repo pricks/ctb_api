@@ -1,7 +1,7 @@
 package com.bw.edu.ctb.web.controller.ctb;
 
 
-import com.bw.edu.ctb.util.QCosUtil;
+import com.bw.edu.ctb.common.util.QCosUtil;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;

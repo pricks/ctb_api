@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.util;
+package com.bw.edu.ctb.common.util;
 
 public class PropertiesOnStartup {
     public static void parse(){

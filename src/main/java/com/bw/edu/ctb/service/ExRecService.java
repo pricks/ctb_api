@@ -36,7 +36,7 @@ public class ExRecService {
             kptBatchManager.updateStatus(exRecEntity.getBatchId(), KptBatchStatusEnum.CREATED.getCode(), KptBatchStatusEnum.COMMITED.getCode());
             exRecManager.save(exRecEntity);
 
-            pac
+            pac.produce(exRecEntity.getId());
             return Result.success(exRecEntity.getId());
         } catch (CtbException e){
             logger.error("createExrec failed. exRecEntity="+exRecEntity);

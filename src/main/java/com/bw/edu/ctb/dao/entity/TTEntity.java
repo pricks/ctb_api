@@ -1,6 +1,6 @@
 package com.bw.edu.ctb.dao.entity;
 
-import com.bw.edu.ctb.util.MD5Utils;
+import com.bw.edu.ctb.common.util.MD5Utils;
 import java.util.Date;
 
 public class TTEntity {

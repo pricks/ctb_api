@@ -1,6 +1,6 @@
 package com.bw.edu.ctb;
 
-import com.bw.edu.ctb.util.PropertiesOnStartup;
+import com.bw.edu.ctb.common.util.PropertiesOnStartup;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

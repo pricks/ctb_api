@@ -7,9 +7,10 @@ import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dto.SsDTO;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.service.ExRecService;
+import com.bw.edu.ctb.service.SGService;
 import com.bw.edu.ctb.service.usr.UsrService;
-import com.bw.edu.ctb.util.CollectionUtil;
-import com.bw.edu.ctb.util.StringUtil;
+import com.bw.edu.ctb.common.util.CollectionUtil;
+import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.web.vo.ExRecVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ public class MRCController {
     private UsrService usrService;
     @Autowired
     private ExRecService exRecService;
+    @Autowired
+    private SGService sgService;
 
     /** commit rv_rec */
     @PostMapping("/c")

@@ -1,4 +1,4 @@
-package com.bw.edu.ctb.util;
+package com.bw.edu.ctb.common.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

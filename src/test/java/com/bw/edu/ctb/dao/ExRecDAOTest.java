@@ -16,12 +16,12 @@ public class ExRecDAOTest extends CtbApplicationTests {
         e.setUid(1L);
         e.setUn(1L);
         e.setRd(1);
-        e.setDl(2L);
+        e.setDl(2);
         e.setBatchId(1L);
         e.setTts("1,2,3,5");
         e.setKns("3,6,6,7");
-        e.setCmkn(3L);
-        e.setCmt(36L);
+        e.setScore(8);
+        e.setCkc(8);
         int rs = exRecMapper.save(e);
         System.out.println("=====rs="+rs+", id="+e.getId());
     }

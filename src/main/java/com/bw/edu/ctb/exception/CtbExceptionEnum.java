@@ -19,6 +19,7 @@ public enum CtbExceptionEnum {
     DL_IS_NULL(11003005, "DL_IS_NULL", "难度等级为空"),
     EOK_IS_NULL(11003006, "EOK_IS_NULL", "难度等级为空"),
     KPT_BATCH_TIDS_IS_NULL(11003007, "KPT_BATCH_TIDS_IS_NULL", "没有题目"),
+    EX_STT_BYCL_IS_NULL(11003008, "EX_STT_BYCL_IS_NULL", "没有ex_stt_bycl"),
 
 
     /** ======================LOGIN错误码：1004开头============================ */
@@ -35,6 +36,7 @@ public enum CtbExceptionEnum {
     PARAM_NULL(1999004, "PARAM_NULL", "参数为空"),
     DB_WRITE_ERROR(1999005, "DB_WRITE_ERROR", "DB写异常"),
     PARAM_NOT_RULED(1999006, "PARAM_NOT_RULED", "非法参数"),
+    PAC_INTERRUPTED(1999007, "PAC_INTERRUPTED", "线程中断异常"),
 
     ;
 

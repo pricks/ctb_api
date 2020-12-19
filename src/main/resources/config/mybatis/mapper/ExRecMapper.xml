@@ -27,7 +27,7 @@
 
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select *
-        from t_kp
+        from ex_rec
         where id=#{id}
     </select>
 </mapper>

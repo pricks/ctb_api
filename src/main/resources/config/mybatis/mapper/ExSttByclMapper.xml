@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.ExSttByclEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,gm,uid,cl,stt
+        id,gc,gm,uid,dg,gd,cl,stt
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),now(),#{uid},#{cl},#{stt}
+        #{id},now(),now(),#{uid},#{dg},#{gd},#{cl},#{stt}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.ExSttByclEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -27,9 +27,18 @@
     <sql id="query">
         <where>
             <if test="uid != null">uid = #{uid} </if>
+            <if test="dg != null">and dg = #{dg} </if>
+            <if test="gd != null">and gd = #{gd} </if>
             <if test="cl != null">and cl = #{cl} </if>
         </where>
     </sql>
+
+    <!-- 仅查询简单的信息 -->
+    <select id="selectLatestValidated" parameterType="com.bw.edu.ctb.common.qo.ExSttByclQO" resultMap="BaseResultMap">
+        select *
+        from ex_stt_bycl
+        <include refid="query"/>
+    </select>
 
     <!-- 仅查询简单的信息 -->
     <select id="select" parameterType="com.bw.edu.ctb.common.qo.ExSttByclQO" resultMap="BaseResultMap">

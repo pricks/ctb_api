@@ -45,6 +45,7 @@ public class MCController {
             Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
             Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl((Long) session.getAttribute("uid"), unitQO.getCl());
             if(null == exSttByclEntityResult.getData()){
+                //todo 写表，写入一条空记录
                 return Result.success(SttClDO.buildEmpty(unitRs.getData()));
             }else{
                 if(exSttByclEntityResult.isSuccess()){

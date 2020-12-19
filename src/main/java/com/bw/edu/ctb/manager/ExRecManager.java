@@ -19,6 +19,10 @@ public class ExRecManager {
         }
     }
 
+    public ExRecEntity getById(Long id){
+        return exRecMapper.getById(id);
+    }
+
     /**
      * 查询用户的最后一次练习记录
      * @param uid

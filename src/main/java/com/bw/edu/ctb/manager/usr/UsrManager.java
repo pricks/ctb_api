@@ -10,9 +10,7 @@ import com.bw.edu.ctb.dao.mapper.UbsrMapper;
 import com.bw.edu.ctb.dao.mapper.UlgMapper;
 import com.bw.edu.ctb.dao.mapper.UtsrMapper;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
-import com.bw.edu.ctb.util.CollectionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.bw.edu.ctb.common.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

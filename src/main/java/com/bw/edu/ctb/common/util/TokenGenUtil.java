@@ -1,6 +1,5 @@
-package com.bw.edu.ctb.util;
+package com.bw.edu.ctb.common.util;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class TokenGenUtil {

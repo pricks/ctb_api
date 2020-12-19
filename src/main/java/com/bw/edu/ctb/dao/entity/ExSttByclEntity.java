@@ -7,6 +7,8 @@ public class ExSttByclEntity {
     private Date gc;
     private Date gm;
     private Long uid;
+    private Integer dg;
+    private Integer gd;
     private Integer cl;
     private String stt;
 
@@ -40,6 +42,22 @@ public class ExSttByclEntity {
 
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    public Integer getDg() {
+        return dg;
+    }
+
+    public void setDg(Integer dg) {
+        this.dg = dg;
+    }
+
+    public Integer getGd() {
+        return gd;
+    }
+
+    public void setGd(Integer gd) {
+        this.gd = gd;
     }
 
     public Integer getCl() {

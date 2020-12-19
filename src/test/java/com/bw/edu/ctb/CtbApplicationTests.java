@@ -1,15 +1,9 @@
 package com.bw.edu.ctb;
 
-import com.bw.edu.ctb.dao.entity.CtbTitleEntity;
-import com.bw.edu.ctb.dao.mapper.CtbTitleMapper;
-import com.bw.edu.ctb.util.PropertiesOnStartup;
-import org.junit.jupiter.api.Test;
+import com.bw.edu.ctb.common.util.PropertiesOnStartup;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CtbApplication.class)

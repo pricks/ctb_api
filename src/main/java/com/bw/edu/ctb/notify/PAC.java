@@ -1,36 +1,61 @@
 package com.bw.edu.ctb.notify;
 
+import com.bw.edu.ctb.exception.CtbExceptionEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
-/** local producer and consumer */
+/**
+ * local producer and consumer
+ *
+ * 探活：
+ *  访问 /t/ps，获取容量
+ *
+ * 测试方法：
+ *  本地启动项目，访问/t/per?eid=3
+ *  consumer中打断点
+ */
 @Service
 public class PAC {
-    private BlockingQueue<Integer> queue = new LinkedBlockingQueue<Integer>(10);
-    class Producer extends Thread {
-        @Override
-        public void run() {
-            producer();
-        }
-        private void producer() {
-            while(true) {
-                try {
-                    queue.put(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("生产者生产一条任务，当前队列长度为" + queue.size());
-                try {
-                    Thread.sleep(new Random().nextInt(1000)+500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+    private final static Logger logger = LoggerFactory.getLogger(PAC.class);
+    static final Integer MAX_CAPACITY=1000000;
+    //1个long占8byte，百万个占内存8M
+    private BlockingQueue<Long> queue = new LinkedBlockingQueue<Long>(MAX_CAPACITY);
+    @Autowired
+    private ExRecConsumer exRecConsumer;
+
+    /** 探活 */
+    public Integer getCapacity(){
+        return queue.size();
+    }
+
+    public void produce(Long erid){
+        if(queue.size()>MAX_CAPACITY){
+            return;
+        }//超过最大容量，直接走补偿链路
+        try {
+            queue.put(erid);
+        } catch (InterruptedException e) {
+            logger.error("[fatal error] PAC produce interrupted", e);
+            promoteException(CtbExceptionEnum.PAC_INTERRUPTED);
         }
     }
+
+    @PostConstruct
+    public void init(){
+        logger.error("[PAC] consumer initialing...");
+
+        //todo 这里改造成线程池，加快消费
+        this.new Consumer().start();
+    }
+
     class Consumer extends Thread {
         @Override
         public void run() {
@@ -39,24 +64,17 @@ public class PAC {
         private void consumer() {
             while (true) {
                 try {
-                    queue.take();
+                    Long erid = queue.take();
+                    exRecConsumer.consume(erid);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("消费者消费一条任务，当前队列长度为" + queue.size());
+                    logger.error("[fatal error] PAC consumer interrupted", e);
+                }//这里不能抛异常，否则会退出while循环
                 try {
-                    Thread.sleep(new Random().nextInt(1000)+500);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error("[fatal error] thread sleep", e);
                 }
             }
         }
-    }
-    public static void main(String[] args) {
-        PAC pc = new PAC();
-        Producer producer = pc.new Producer();
-        Consumer consumer = pc.new Consumer();
-        producer.start();
-        consumer.start();
     }
 }
