@@ -1,5 +1,6 @@
 package com.bw.edu.ctb.manager;
 
+import com.bw.edu.ctb.common.constants.SystemConstants;
 import com.bw.edu.ctb.dao.entity.KpEntity;
 import com.bw.edu.ctb.dao.entity.TkrEntity;
 import com.bw.edu.ctb.exception.CtbException;
@@ -24,9 +25,16 @@ public class TsearchMnager {
      * @param tkrs 外部调用时，传入被实例化的空队列，该队列用于记录最终搜索出来的结果
      * @return 最后的kp节点ID
      */
-    public Long searchKpDetails(Long kpid, Long maxTid, Integer eok, List<TkrEntity> tkrs){
+    public Long searchKpDetails(Long kpid, Long maxTid, Integer eok, int maxNum, List<TkrEntity> tkrs){
+        if(maxNum> SystemConstants.MAX_PAGE_DATA_NUM){
+            maxNum = SystemConstants.MAX_PAGE_DATA_NUM;
+        }
         KpEntity k = kpManager.getByIdNotNull(kpid);
-        return searchKpDetails(k, maxTid, eok, tkrs, true, true);
+        Long maxKpId = searchKpDetails(k, maxTid, eok, maxNum, tkrs, true, true);
+        if(tkrs.size()>maxNum){
+            tkrs = tkrs.subList(0, maxNum-1);
+        }
+        return maxKpId;
     }
 
     /**
@@ -39,15 +47,15 @@ public class TsearchMnager {
      * @param searchForward 第一次调用时传入true
      * @return 最后的kp节点ID
      */
-    private Long searchKpDetails(KpEntity k, Long maxTid, Integer eok, List<TkrEntity> tkrs, boolean searchParent, boolean searchForward){
+    private Long searchKpDetails(KpEntity k, Long maxTid, Integer eok, int maxNum, List<TkrEntity> tkrs, boolean searchParent, boolean searchForward){
         if(null == eok){
             throw new CtbException(CtbExceptionEnum.EOK_IS_NULL);
         }
         Long kpid = k.getId();
         int size = tkrs.size();
 
-        //1.查询当前kp下的tt，如果超过10个，就返回前面10个；否则进入第2步
-        List<TkrEntity> kpDetails = tkrManager.queryTTs(k.getId(), eok);
+        //1.查询当前kp下的tt，如果超过 maxNum 个，就返回前面 maxNum 个；否则进入第2步
+        List<TkrEntity> kpDetails = tkrManager.queryTTs(k.getId(), eok, maxNum);
         if(null != kpDetails && kpDetails.size() > 0){
             if(maxTid > 0){
                 for(TkrEntity te : kpDetails){
@@ -59,7 +67,7 @@ public class TsearchMnager {
                 tkrs.addAll(kpDetails);
             }
         }
-        if(tkrs.size() >= 10){
+        if(tkrs.size() >= maxNum){
             return kpid;
         }
 
@@ -68,8 +76,8 @@ public class TsearchMnager {
         List<KpEntity> subKps = kpManager.queryOrderdChildren(k.getId());
         if(null != subKps && subKps.size() > 0){
             KpEntity subk = subKps.get(0);
-            kpid = searchKpDetails(subk, 0L, eok, tkrs, false, true);
-            if(tkrs.size() >= 10){
+            kpid = searchKpDetails(subk, 0L, eok, maxNum, tkrs, false, true);
+            if(tkrs.size() >= maxNum){
                 return kpid;
             }
         }
@@ -80,8 +88,8 @@ public class TsearchMnager {
         List<KpEntity> sibkps = kpManager.querySiblings(k);
         if(null != sibkps && sibkps.size() > 0){
             for(KpEntity sibk : sibkps){
-                kpid = searchKpDetails(sibk, 0L, eok, tkrs, false, false);
-                if(tkrs.size() >= 10){
+                kpid = searchKpDetails(sibk, 0L, eok, maxNum, tkrs, false, false);
+                if(tkrs.size() >= maxNum){
                     return kpid;
                 }
             }
@@ -95,6 +103,6 @@ public class TsearchMnager {
         if(null == siblings || siblings.size() == 0){
             return kpid;
         }
-        return searchKpDetails(siblings.get(0), 0L, eok, tkrs, true,true);
+        return searchKpDetails(siblings.get(0), 0L, eok, maxNum, tkrs, true,true);
     }
 }

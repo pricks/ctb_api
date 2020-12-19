@@ -1,6 +1,8 @@
 package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.bizutils.KptBatchUtil;
+import com.bw.edu.ctb.common.constants.SystemConstants;
+import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.Keys;
 import com.bw.edu.ctb.common.enums.BatchStatusEnum;
@@ -41,33 +43,21 @@ public class TTService {
 
     public Result<List<TTEntity>> queryKpDetails(TTBactchQO ttBactchQO){
         List<TTEntity> ttEntityList = null;
-        List<Long> tids = null;
 
         //查询batch
         KptBatchEntity kb = kptBatchManager.queryLastValid(buildKptBatchQO(ttBactchQO));
 
         //如果batch查不到，实时生成batch
         if(null == kb){
-            kb = new KptBatchEntity();
-            tids = queryTTSAndGenBatch(ttBactchQO, kb);
-            if(null == tids || tids.size() == 0){
+            kb = queryTTSAndGenBatch(ttBactchQO);
+            if(null==kb){
                 logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
                 return Result.success();//用户友好
             }
         }
 
-
         //查询titles
-        if(null == kb.getTids() || "".equals(kb.getTids())){
-            logger.error("[fatal error] kpt_batch.tids=null");//todo monitor
-            return Result.success();
-        }
-        List<String> tidStrs = Arrays.asList(kb.getTids().split(Symbols.COMMA));
-        tids = new ArrayList<>(tidStrs.size());
-        for(String str : tidStrs){
-            tids.add(Long.valueOf(str));
-        }
-        List<TTEntity> tts = ttManager.queryByIds(tids);
+        List<TTEntity> tts = ttManager.queryByIds(CollectionUtil.transfer(Arrays.asList(kb.getTids().split(Symbols.COMMA))));
         if(null==tts || tts.size()==0){
             logger.error("[fatal error] tt=null");
             return Result.success();
@@ -76,10 +66,10 @@ public class TTService {
         return Result.success(tts).putAttr(Keys.KPT_BATCH_ID, kb.getId().toString());
     }
 
-    public Result<List<TkrEntity>> searchTTs(Long kpid, Long maxTid, Integer eok){
+    public Result<List<TkrEntity>> searchTTs(Long kpid, Long maxTid, Integer eok, Integer maxNum){
         try {
             List<TkrEntity> tkrs = new ArrayList<>();
-            Long maxKpid = tsearchMnager.searchKpDetails(kpid, maxTid, eok, tkrs);
+            Long maxKpid = tsearchMnager.searchKpDetails(kpid, maxTid, eok, maxNum, tkrs);
             return Result.success(tkrs).putAttr("maxKpid", maxKpid.toString());
         }catch (CtbException e){
             logger.error("searchTTs failed. kpid="+kpid+", maxTid="+maxTid+", eok="+eok);
@@ -90,28 +80,31 @@ public class TTService {
         }
     }
 
+    public Result<List<TkrEntity>> searchTTs(Long kpid, Long maxTid, Integer eok){
+        return searchTTs(kpid, maxTid, eok, 10);
+    }
+
     /**
      * 根据批次搜索titles todo 要生成batch
      * @param ttBactchQO
      * @return
      */
-    private List<Long> queryTTSAndGenBatch(TTBactchQO ttBactchQO, KptBatchEntity kb){
+    private KptBatchEntity queryTTSAndGenBatch(TTBactchQO ttBactchQO){
         Long maxKpId = getMaxKpid(ttBactchQO);
         Long maxTid = ttBactchQO.getMaxTid();//maxTid可以为空
         Integer eok = ttBactchQO.getEok();
 
         //查询当前kp下的tt，注：这些tt的id必须大于 maxTid
         List<TkrEntity> tkrs = new ArrayList<>();
-        Long maxKpid = tsearchMnager.searchKpDetails(maxKpId, maxTid, eok, tkrs);
+        Long maxKpid = tsearchMnager.searchKpDetails(maxKpId, maxTid, eok, SystemConstants.MAX_TTS_NUM, tkrs);
         if(tkrs.size() == 0){
             return null;//说明当前单元下还没有titles
         }
-        kb = KptBatchUtil.genKptBatch(ttBactchQO.getUid(), ttBactchQO.getUn(), ttBactchQO.getDl(), maxKpid, tkrs);
+        KptBatchEntity kb = KptBatchUtil.genKptBatch(ttBactchQO.getUid(), ttBactchQO.getUn(), ttBactchQO.getDl(), maxKpid, tkrs, null);
 
         //生成kptBatch
         kptBatchManager.create(kb);
-
-        return tids;
+        return kb;
     }
 
     private void genKptBatch(TTBactchQO ttBactchQO, KptBatchEntity kb, Long maxKpid, List<Long> tids) {

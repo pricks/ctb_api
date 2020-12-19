@@ -1,6 +1,6 @@
 package com.bw.edu.ctb.dao.entity;
 
-import com.bw.edu.ctb.common.util.MD5Utils;
+import com.bw.edu.ctb.common.util.MD5Util;
 
 import java.util.Date;
 
@@ -71,7 +71,7 @@ public class KpEntity {
 
     public void setPoint(String point) {
         this.point = point;
-        this.setPenc(MD5Utils.stringToMD5(point));
+        this.setPenc(MD5Util.stringToMD5(point));
     }
 
     public void setPenc(String penc) {

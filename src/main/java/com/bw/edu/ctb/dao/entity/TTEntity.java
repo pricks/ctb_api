@@ -1,6 +1,6 @@
 package com.bw.edu.ctb.dao.entity;
 
-import com.bw.edu.ctb.common.util.MD5Utils;
+import com.bw.edu.ctb.common.util.MD5Util;
 import java.util.Date;
 
 public class TTEntity {
@@ -76,7 +76,7 @@ public class TTEntity {
 
     public void setTc(String tc) {
         this.tc = tc;
-        this.setTcEnc(MD5Utils.stringToMD5(tc));
+        this.setTcEnc(MD5Util.stringToMD5(tc));
     }
 
     public void setTcEnc(String tcEnc) {

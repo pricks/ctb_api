@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 public class SttDlDO implements Serializable {
     private Integer dl;
+    private String gc;//最早练习时间
+    private Integer ec;//exercise count，练习次数
+    private Boolean over;//是否结束全部练习
     private String dlname;
     private Boolean active;
     private Long maxKpId;
@@ -11,7 +14,8 @@ public class SttDlDO implements Serializable {
     private Integer tkp;//total kp
     private Integer rkp;//reviewd kp
     private Integer ekp;//wrong kp
-    private Integer ascore;//avg score
+    private Integer ascore;//total score，每一次提交都累加
+    private Integer lscore;//the latest score, ascore/ec
     private Integer dr;//done round
 
     public static SttDlDO newInstance(){
@@ -75,6 +79,14 @@ public class SttDlDO implements Serializable {
         this.dl = dl;
     }
 
+    public String getGc() {
+        return gc;
+    }
+
+    public void setGc(String gc) {
+        this.gc = gc;
+    }
+
     public String getDlname() {
         return dlname;
     }
@@ -123,11 +135,35 @@ public class SttDlDO implements Serializable {
         this.ascore = ascore;
     }
 
+    public Integer getLscore() {
+        return lscore;
+    }
+
+    public void setLscore(Integer lscore) {
+        this.lscore = lscore;
+    }
+
     public Integer getDr() {
         return dr;
     }
 
     public void setDr(Integer dr) {
         this.dr = dr;
+    }
+
+    public Integer getEc() {
+        return ec;
+    }
+
+    public void setEc(Integer ec) {
+        this.ec = ec;
+    }
+
+    public Boolean getOver() {
+        return over;
+    }
+
+    public void setOver(Boolean over) {
+        this.over = over;
     }
 }

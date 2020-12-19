@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 public class UnitQO extends Paging implements Serializable {
     private Long code;
+    private Integer dg;
     private Integer gd;
     private Integer cl;
+    private String atk;
     private Integer status;
 
     public Long getCode() {
@@ -14,6 +16,14 @@ public class UnitQO extends Paging implements Serializable {
 
     public void setCode(Long code) {
         this.code = code;
+    }
+
+    public Integer getDg() {
+        return dg;
+    }
+
+    public void setDg(Integer dg) {
+        this.dg = dg;
     }
 
     public Integer getGd() {
@@ -30,6 +40,14 @@ public class UnitQO extends Paging implements Serializable {
 
     public void setCl(Integer cl) {
         this.cl = cl;
+    }
+
+    public String getAtk() {
+        return atk;
+    }
+
+    public void setAtk(String atk) {
+        this.atk = atk;
     }
 
     public Integer getStatus() {

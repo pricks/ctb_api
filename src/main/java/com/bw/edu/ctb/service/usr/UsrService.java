@@ -14,7 +14,7 @@ import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.manager.usr.UsrManager;
 import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.common.util.StringUtil;
-import com.bw.edu.ctb.common.util.TimeUtil;
+import com.bw.edu.ctb.common.util.DateUtil;
 import com.bw.edu.ctb.common.util.TokenGenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class UsrService {
             }
             BUsr bUsr = new BUsr();
             bUsr.setId(uid);
-            bUsr.setExpire(TimeUtil.addDay(new Date(), SystemConstants.EXPIRE_DAYS).getTime());
+            bUsr.setExpire(DateUtil.addDay(new Date(), SystemConstants.EXPIRE_DAYS).getTime());
             bUsr.setToken(TokenGenUtil.genToken(uid));
             usrManager.updateToken(bUsr);
             return Result.success(bUsr);
@@ -108,7 +108,7 @@ public class UsrService {
     public Result<BUsr> createNewTUsr(UsrE usrE){
         BUsr bUsr = new BUsr();
         try{
-            bUsr.setExpire(TimeUtil.addDay(new Date(), SystemConstants.EXPIRE_DAYS).getTime());
+            bUsr.setExpire(DateUtil.addDay(new Date(), SystemConstants.EXPIRE_DAYS).getTime());
             bUsr.setToken(TokenGenUtil.genToken());
             bUsr.setAvatar(usrE.getAvatar());
             usrManager.createBusr(bUsr);

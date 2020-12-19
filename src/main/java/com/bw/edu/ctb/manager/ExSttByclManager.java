@@ -13,6 +13,10 @@ public class ExSttByclManager {
     @Autowired
     private ExSttByclMapper exSttByclMapper;
 
+    public void update(ExSttByclEntity ee){
+        exSttByclMapper.update(ee);
+    }
+
     public ExSttByclEntity selectLatestValidated(ExSttByclQO exSttByclQO){
         return exSttByclMapper.selectLatestValidated(exSttByclQO);
     }

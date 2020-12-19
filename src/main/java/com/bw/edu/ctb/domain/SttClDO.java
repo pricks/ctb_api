@@ -1,18 +1,72 @@
 package com.bw.edu.ctb.domain;
 
 import com.bw.edu.ctb.common.enums.DlEnum;
+import com.bw.edu.ctb.common.util.DateUtil;
+import com.bw.edu.ctb.dao.entity.ExRecEntity;
+import com.bw.edu.ctb.dao.entity.KptBatchEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SttClDO implements Serializable {
+    private Integer dg;
+    private Integer gd;
     private Integer cl;
     private List<SttUnDO> tops;
     private List<SttUnDO> uns;
+
+    public void update(ExRecEntity ee, KptBatchEntity kb){
+        Long un = ee.getUn();
+        Integer dl = ee.getDl();
+        for(SttUnDO su : uns){
+            if(su.getUn().equals(un)){
+                List<SttDlDO> dls = su.getDls();
+                for(SttDlDO sd : dls){
+                    if(sd.getDl().equals(dl)){
+                        sd.setActive(true);
+
+                        //练习次数和最早练习时间
+                        Integer ec = sd.getEc();
+                        if(null==ec || ec.equals(0)){
+                            ec=0;
+                            sd.setGc(DateUtil.format(new Date()));
+                        }
+                        sd.setEc(++ec);
+
+                        sd.setMaxKpId(ee.getMaxk());
+                        sd.setMaxTid(ee.getMaxt());
+                        sd.setLscore(ee.getScore());//最后一次得分
+
+                        //计算总分
+                        if(ec.equals(0)){
+                            sd.setAscore(ee.getScore());
+                        }else{
+                            sd.setAscore(sd.getAscore()+ee.getScore());
+                        }
+
+                        //是否已结束全部review
+                        if(null==kb){
+                            sd.setOver(true);
+                        }else{
+                            sd.setOver(false);
+                        }
+
+
+                        //计算总体进度 todo 本次不做
+
+                        //计算已review的kps todo 本次不做
+
+                        //计算错误次数top3的kp detail todo 本次不做
+                    }
+                }
+            }
+        }
+    }
 
     public static void main(String[] args){
         String ss = buildSST();
@@ -127,10 +181,12 @@ public class SttClDO implements Serializable {
         return ss;
     }
 
-    public static SttClDO buildEmpty(List<UnitEntity> ues){
+    public static SttClDO buildEmpty(List<UnitEntity> ues, UnitDO unitDO){
         if(null==ues || ues.size()==0) return null;
         SttClDO cl = new SttClDO();
-        cl.setCl(ues.get(0).getCl());
+        cl.setDg(unitDO.getDg());
+        cl.setGd(unitDO.getGd());
+        cl.setCl(unitDO.getCl());
 
         List<SttUnDO> uns = new ArrayList<>(ues.size());
         for(UnitEntity ue: ues){
@@ -159,6 +215,22 @@ public class SttClDO implements Serializable {
 
         cl.setUns(uns);
         return cl;
+    }
+
+    public Integer getDg() {
+        return dg;
+    }
+
+    public void setDg(Integer dg) {
+        this.dg = dg;
+    }
+
+    public Integer getGd() {
+        return gd;
+    }
+
+    public void setGd(Integer gd) {
+        this.gd = gd;
     }
 
     public Integer getCl() {

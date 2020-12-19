@@ -1,8 +1,14 @@
 package com.bw.edu.ctb.common.util;
 
+import java.util.List;
+
 public class StringUtil {
     public static boolean isEmpty(String s){
         return null==s || "".equals(s.trim());
+    }
+
+    public static boolean isNotEmpty(String s){
+        return null!=s && !"".equals(s.trim());
     }
 
     /** 从0位开始截取长度为n的子字符串 */

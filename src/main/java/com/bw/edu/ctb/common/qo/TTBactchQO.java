@@ -3,12 +3,21 @@ package com.bw.edu.ctb.common.qo;
 import java.io.Serializable;
 
 public class TTBactchQO implements Serializable {
+    private String atk;
     private Long uid;
     private Long un;
     private Integer dl;
     private Integer eok;
     private Long maxKpId;
     private Long maxTid;
+
+    public String getAtk() {
+        return atk;
+    }
+
+    public void setAtk(String atk) {
+        this.atk = atk;
+    }
 
     public Long getUid() {
         return uid;

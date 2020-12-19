@@ -12,6 +12,11 @@ public class ExSttByclEntity {
     private Integer cl;
     private String stt;
 
+    @Override
+    public String toString(){
+        return String.format("id=%s, stt=%s", id, stt);
+    }
+
     public Long getId() {
         return id;
     }

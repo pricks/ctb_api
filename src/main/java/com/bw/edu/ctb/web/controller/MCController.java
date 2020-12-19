@@ -5,14 +5,16 @@ import com.bw.edu.ctb.common.constants.Keys;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
+import com.bw.edu.ctb.common.util.JacksonUtil;
+import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.dao.entity.*;
-import com.bw.edu.ctb.domain.EBatch;
-import com.bw.edu.ctb.domain.EBatchTT;
-import com.bw.edu.ctb.domain.SttClDO;
+import com.bw.edu.ctb.dao.entity.usr.BUsr;
+import com.bw.edu.ctb.domain.*;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.service.ExSttService;
 import com.bw.edu.ctb.service.TTService;
 import com.bw.edu.ctb.service.UnitService;
+import com.bw.edu.ctb.service.usr.UsrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +37,50 @@ public class MCController {
     private ExSttService exSttService;
     @Autowired
     private TTService ttService;
+    @Autowired
+    private UsrService usrService;
 
     /** get user's unit ex_stt */
     @RequestMapping("gu")
-    public Result gu(UnitQO unitQO, HttpServletRequest request, HttpSession session){
+    public Result gu(UnitQO unitQO, HttpServletRequest request){
         try{
-            logger.error("gu. r=" + request.getRemoteAddr() + ", uid="+session.getAttribute("uid"));
+            logger.error("gu. r=" + request.getRemoteAddr());
+
+            //verify
+            if(null==unitQO || StringUtil.isEmpty(unitQO.getAtk())
+                    || null==unitQO.getGd() || null==unitQO.getDg()
+                    || null==unitQO.getCl()){
+                return Result.failure();
+            }
+            Result<BUsr> bUsrRS = usrService.getByAtk(unitQO.getAtk());
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
 
             Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
-            Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl((Long) session.getAttribute("uid"), unitQO.getCl());
+            Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl(bUsr.getId(), unitQO.getCl());
             if(null == exSttByclEntityResult.getData()){
-                //todo 写表，写入一条空记录
-                return Result.success(SttClDO.buildEmpty(unitRs.getData()));
+                //写表，写入一条空记录
+                SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
+                String sttStr = JacksonUtil.serialize(stt);
+                ExSttByclEntity ebe = new ExSttByclEntity();
+                ebe.setUid(1L);
+                ebe.setDg(unitQO.getDg());
+                ebe.setGd(unitQO.getGd());
+                ebe.setCl(unitQO.getCl());
+                ebe.setStt(sttStr);
+                exSttService.updateStt(ebe);
+
+                return Result.success(sttStr);
             }else{
                 if(exSttByclEntityResult.isSuccess()){
                     return Result.success(exSttByclEntityResult.getData().getStt());
                 }else{
-                    return Result.success(SttClDO.buildEmpty(unitRs.getData()));
+                    SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
+                    String sttStr = JacksonUtil.serialize(stt);
+                    return Result.success(sttStr);
                 }
             }
         }catch (CtbException e){
@@ -65,9 +94,24 @@ public class MCController {
 
     /** get user's tts batch */
     @RequestMapping("gt")
-    public Result gt(TTBactchQO ttBactchQO, HttpServletRequest request, HttpSession session){
+    public Result gt(TTBactchQO ttBactchQO, HttpServletRequest request){
         try{
-            logger.error("gt. r=" + request.getRemoteAddr() + ", uid="+session.getAttribute("uid"));
+            logger.error("gt. r=" + request.getRemoteAddr());
+
+            //verify
+            if(null==ttBactchQO || StringUtil.isEmpty(ttBactchQO.getAtk())
+                    || null==ttBactchQO.getUn() || null==ttBactchQO.getDl()
+                    || null==ttBactchQO.getEok()){
+                return Result.failure();
+            }
+            Result<BUsr> bUsrRS = usrService.getByAtk(ttBactchQO.getAtk());
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
+            ttBactchQO.setUid(bUsr.getId());
+
             Result<List<TTEntity>> ttRs = ttService.queryKpDetails(ttBactchQO);
             List<TTEntity> tts = ttRs.getData();
             if(null==tts || tts.size()==0){

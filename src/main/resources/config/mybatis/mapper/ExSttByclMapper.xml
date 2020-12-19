@@ -17,11 +17,11 @@
         (<include refid="BaseProperties"></include>)
     </insert>
 
-    <insert id="update" parameterType="com.bw.edu.ctb.dao.entity.ExSttByclEntity" >
+    <update id="update" parameterType="com.bw.edu.ctb.dao.entity.ExSttByclEntity" >
         update ex_stt_bycl
         set gm=#{gm},stt=#{stt}
-        where uid=#{uid} and cl=#{cl}
-    </insert>
+        where id=#{id}
+    </update>
 
     <!-- 查询项 -->
     <sql id="query">
