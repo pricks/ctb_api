@@ -25,8 +25,8 @@
             <if test="dl != null">and dl = #{dl} </if>
             <if test="eok != null">and eok = #{eok} </if>
             <if test="ids != null">and id in
-                <foreach  item="ids" collection="list" index="index"  open="(" separator="," close=")">
-                    #{ids}
+                <foreach  item="item" collection="ids" index="index"  open="(" separator="," close=")">
+                    #{item}
                 </foreach>
             </if>
         </where>

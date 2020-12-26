@@ -18,6 +18,7 @@ import com.bw.edu.ctb.service.usr.UsrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,7 @@ public class MCController {
     private UsrService usrService;
 
     /** get user's unit ex_stt */
-    @RequestMapping("gu")
+    @PostMapping("gu")
     public Result gu(UnitQO unitQO, HttpServletRequest request){
         try{
             logger.error("gu. r=" + request.getRemoteAddr());
@@ -93,7 +94,7 @@ public class MCController {
     }
 
     /** get user's tts batch */
-    @RequestMapping("gt")
+    @PostMapping("gt")
     public Result gt(TTBactchQO ttBactchQO, HttpServletRequest request){
         try{
             logger.error("gt. r=" + request.getRemoteAddr());
@@ -155,12 +156,4 @@ public class MCController {
         return eb;
     }
 
-    /** get batch of titles */
-    @RequestMapping("gb")
-    public Result queryTitle(TitleQO titleQO, HttpServletRequest request){
-        logger.error("query title. raddr=" + request.getRemoteAddr());
-        Result titleDTOResult = new Result();
-        List<CtbTitleEntity> titleEntityList = null;
-        return Result.success(titleEntityList);
-    }
 }

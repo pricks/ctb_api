@@ -1,0 +1,5 @@
+locals-use postman to test:
+http://localhost:8080/l/fgc?atk=317351cf226748e880a725926eff20281607613369450
+http://localhost:8080/mc/gt?uid=1&un=1&dl=1&eok=1&atk=317351cf226748e880a725926eff20281607613369450
+
+http://localhost:8080/t/ps

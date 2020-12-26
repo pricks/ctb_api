@@ -7,7 +7,7 @@
         id,gc,gm,uid,un,dl,max_kpid,tids,max_tid,status
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),now(),#{uid},#{un},#{dl},#{max_kpid},#{tids},#{max_tid},#{status}
+        #{id},now(),now(),#{uid},#{un},#{dl},#{maxKpid},#{tids},#{maxTid},#{status}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.KptBatchEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -20,8 +20,7 @@
     <!-- 查询项 -->
     <sql id="query">
         <where>
-            <if test="id != null">id = #{id} </if>
-            <if test="uid != null">and uid = #{uid} </if>
+            <if test="uid != null">uid = #{uid} </if>
             <if test="un != null">and un = #{un} </if>
             <if test="dl != null">and dl = #{dl} </if>
             <if test="status != null">and status = #{status} </if>
