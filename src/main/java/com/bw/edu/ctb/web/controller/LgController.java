@@ -76,7 +76,7 @@ public class LgController {
             for(SGEntity sg : sgRS.getData()){
                 SsDTO ss = new SsDTO();
                 ss.setSc(sg.getSc());
-                ss.setSn(ss.getSn());
+                ss.setSn(sg.getSn());
                 ssDTOList.add(ss);
             }
             return Result.success(ssDTOList);

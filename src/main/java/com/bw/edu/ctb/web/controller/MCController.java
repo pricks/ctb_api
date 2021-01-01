@@ -5,6 +5,7 @@ import com.bw.edu.ctb.common.constants.Keys;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
+import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.common.util.JacksonUtil;
 import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.dao.entity.*;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
 @RestController
 @RequestMapping("/mc")
@@ -61,18 +64,28 @@ public class MCController {
             }
 
             Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
+            if(!unitRs.isSuccess()){
+                promoteException(unitRs.getCode(), unitRs.getMessage());
+            }
+            if(CollectionUtil.isEmpty(unitRs.getData())){
+                return Result.failure("no unit","还没有录入单元信息");
+            }
             Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl(bUsr.getId(), unitQO.getCl());
             if(null == exSttByclEntityResult.getData()){
                 //写表，写入一条空记录
                 SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
                 String sttStr = JacksonUtil.serialize(stt);
                 ExSttByclEntity ebe = new ExSttByclEntity();
-                ebe.setUid(1L);
+                ebe.setUid(bUsr.getId());
                 ebe.setDg(unitQO.getDg());
                 ebe.setGd(unitQO.getGd());
                 ebe.setCl(unitQO.getCl());
                 ebe.setStt(sttStr);
-                exSttService.updateStt(ebe);
+                Result<Void> rs = exSttService.create(ebe);
+                if(!rs.isSuccess()){
+                    logger.error(String.format("[fatal] create ex_stt_bycl failed. errCode=%s, errMsg=%s", rs.getCode(), rs.getMessage()));
+                    return Result.failure();
+                }
 
                 return Result.success(sttStr);
             }else{

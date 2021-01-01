@@ -27,6 +27,19 @@ public class ExSttService {
     @Autowired
     private ExSttByclManager exSttByclManager;
 
+    public Result<Void> create(ExSttByclEntity ebe){
+        try{
+            exSttByclManager.save(ebe);
+            return Result.success();
+        }catch (CtbException e){
+            logger.error("saveStt failed. ebe="+ebe);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("saveStt failed because system. ebe="+ebe, e);
+            return Result.failure();
+        }
+    }
+
     public Result<Void> updateStt(ExSttByclEntity ebe){
         try{
             exSttByclManager.update(ebe);
