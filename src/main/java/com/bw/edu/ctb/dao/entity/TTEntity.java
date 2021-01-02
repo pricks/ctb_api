@@ -13,7 +13,7 @@ public class TTEntity {
     private String tc;//content
     private String tcEnc;//encription
     private Integer ts;//status
-    private Integer tType;
+    private Integer type;
     private Boolean oi;//offline
     private Long tgi;//group id
     private String ots;//optional answers
@@ -91,12 +91,12 @@ public class TTEntity {
         this.ts = ts;
     }
 
-    public Integer gettType() {
-        return tType;
+    public Integer getTType() {
+        return type;
     }
 
-    public void settType(Integer tType) {
-        this.tType = tType;
+    public void setTType(Integer tType) {
+        this.type = tType;
     }
 
     public Boolean getOi() {

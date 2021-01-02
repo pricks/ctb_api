@@ -34,7 +34,6 @@ public class KptBatchManager {
      */
     public KptBatchEntity queryLastValid(KptBatchQO kptBatchQO){
         kptBatchQO.setNum(1);
-        kptBatchQO.setStatus(BatchStatusEnum.GENERATED.getCode());
         List<KptBatchEntity> kptBatchEntityList = kptBatchMapper.select(kptBatchQO);
 
         /**
@@ -46,6 +45,7 @@ public class KptBatchManager {
             if(null == kb.getTids() || "".equals(kb.getTids())){
                 throw new CtbException(CtbExceptionEnum.ANSWER_IS_NULL);
             }
+            return kb;
         }
         return null;
     }

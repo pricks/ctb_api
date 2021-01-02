@@ -19,6 +19,7 @@ import com.bw.edu.ctb.service.usr.UsrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -87,14 +88,14 @@ public class MCController {
                     return Result.failure();
                 }
 
-                return Result.success(sttStr);
+                return Result.success(stt);
             }else{
                 if(exSttByclEntityResult.isSuccess()){
-                    return Result.success(exSttByclEntityResult.getData().getStt());
+                    SttClDO stt = JacksonUtil.deserialize(exSttByclEntityResult.getData().getStt(), SttClDO.class);
+                    return Result.success(stt);
                 }else{
                     SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
-                    String sttStr = JacksonUtil.serialize(stt);
-                    return Result.success(sttStr);
+                    return Result.success(stt);
                 }
             }
         }catch (CtbException e){
@@ -117,6 +118,16 @@ public class MCController {
                     || null==ttBactchQO.getUn() || null==ttBactchQO.getDl()
                     || null==ttBactchQO.getEok()){
                 return Result.failure();
+            }
+            if(StringUtil.isNotWideEmpty(ttBactchQO.getMkp())){
+                Long mkp=Long.valueOf(ttBactchQO.getMkp());
+                Assert.isTrue(mkp>0,"mkp error");
+                ttBactchQO.setMaxKpId(mkp);
+            }
+            if(StringUtil.isNotWideEmpty(ttBactchQO.getMt())){
+                Long mt=Long.valueOf(ttBactchQO.getMt());
+                Assert.isTrue(mt>0,"mt error");
+                ttBactchQO.setMaxTid(mt);
             }
             Result<BUsr> bUsrRS = usrService.getByAtk(ttBactchQO.getAtk());
             BUsr bUsr = bUsrRS.getData();
@@ -155,11 +166,11 @@ public class MCController {
             TTEntity tt = tts.get(k);
             EBatchTT et = new EBatchTT();
             et.setTt_g(false);//todo 这里要真正进行判断
-            et.setT_idx(k);
+            et.setT_idx(k+1);
             et.setTid(tt.getId());
             et.setTt_ct(tt.getTc());
             et.setTt_offline(tt.getOi());
-            et.setTt_type(tt.gettType());
+            et.setTt_type(tt.getTType());
             et.setT_ops(null);//todo
             et.setTt_answer(tt.getTca());
             et.setT_g_count(0);//todo

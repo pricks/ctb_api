@@ -20,7 +20,7 @@ public class TTDAOTest extends CtbApplicationTests {
         ttEntity.setDl(2);
         ttEntity.setTc("3*3-7=");
         ttEntity.setTs(1);
-        ttEntity.settType(1);
+        ttEntity.setTType(1);
         ttEntity.setEok(1);
         ttEntity.setOi(false);
         ttEntity.setTgi(3L);

@@ -10,6 +10,8 @@ public class TTBactchQO implements Serializable {
     private Integer eok;
     private Long maxKpId;
     private Long maxTid;
+    private String mkp;
+    private String mt;
 
     public String getAtk() {
         return atk;
@@ -65,5 +67,21 @@ public class TTBactchQO implements Serializable {
 
     public void setMaxTid(Long maxTid) {
         this.maxTid = maxTid;
+    }
+
+    public String getMkp() {
+        return mkp;
+    }
+
+    public void setMkp(String mkp) {
+        this.mkp = mkp;
+    }
+
+    public String getMt() {
+        return mt;
+    }
+
+    public void setMt(String mt) {
+        this.mt = mt;
     }
 }

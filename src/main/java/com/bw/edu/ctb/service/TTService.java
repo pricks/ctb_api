@@ -2,6 +2,7 @@ package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.bizutils.KptBatchUtil;
 import com.bw.edu.ctb.common.constants.SystemConstants;
+import com.bw.edu.ctb.common.enums.KptBatchStatusEnum;
 import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.Keys;
@@ -159,6 +160,7 @@ public class TTService {
         kq.setUid(ttBactchQO.getUid());
         kq.setUn(ttBactchQO.getUn());
         kq.setDl(ttBactchQO.getDl());
+        kq.setStatus(KptBatchStatusEnum.CREATED.getCode());
         return kq;
     }
 

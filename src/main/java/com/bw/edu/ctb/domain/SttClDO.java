@@ -36,7 +36,7 @@ public class SttClDO implements Serializable {
                             ec=0;
                             sd.setGc(DateUtil.format(new Date()));
                         }
-                        sd.setEc(++ec);
+                        sd.setEc(ec+1);
 
                         sd.setMaxKpId(ee.getMaxk());
                         sd.setMaxTid(ee.getMaxt());
@@ -52,6 +52,7 @@ public class SttClDO implements Serializable {
                         //是否已结束全部review
                         if(null==kb){
                             sd.setOver(true);
+                            sd.setRd(sd.getRd()+1);//sd.rd从一开始就不为空
                         }else{
                             sd.setOver(false);
                         }
@@ -59,7 +60,13 @@ public class SttClDO implements Serializable {
 
                         //计算总体进度 todo 本次不做
 
-                        //计算已review的kps todo 本次不做
+                        //计算已review的kp detail
+                        Integer rkp=sd.getRkp();
+                        if(null==rkp){
+                            rkp=0;
+                        }
+                        sd.setRkp(rkp+ee.getCkc());
+
 
                         //计算错误次数top3的kp detail todo 本次不做
                     }
@@ -198,8 +205,8 @@ public class SttClDO implements Serializable {
             List<SttDlDO> dls = new ArrayList<>(DlEnum.size());
             for(DlEnum de : DlEnum.values()){
                 SttDlDO d = SttDlDO.newInstance().dl(de.getCode())
-                                .dlname(de.getName()).tkp(100)
-                                .rkp(0).ekp(0);
+                                .dlname(de.getName()).rd(1).tkp(100)
+                                .rkp(0).ekp(0).lscore(0).ec(0);
                 if(de.getCode().equals(DlEnum.BASIC.getCode())){
                     d.active(true);
                 }

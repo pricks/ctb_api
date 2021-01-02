@@ -70,7 +70,7 @@ public class LgController {
             if(!sgRS.isSuccess() || CollectionUtil.isEmpty(sgRS.getData())){
                 //获取默认的gd & class
                 logger.error("[fatal error] query no subjects. dg="+dg+", gd="+gd);
-                return Result.failure();
+                return Result.failure("NO_SUBJS", "NO_SUBJS");
             }
             List<SsDTO> ssDTOList = new ArrayList<>(sgRS.getData().size());
             for(SGEntity sg : sgRS.getData()){

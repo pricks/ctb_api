@@ -7,6 +7,7 @@ import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -29,7 +30,11 @@ public class TsearchMnager {
         if(maxNum> SystemConstants.MAX_PAGE_DATA_NUM){
             maxNum = SystemConstants.MAX_PAGE_DATA_NUM;
         }
+        Assert.notNull(kpid, "kpid is null");
+        Assert.notNull(eok, "eok is null");
+        Assert.notNull(tkrs, "tkrs is null");
         KpEntity k = kpManager.getByIdNotNull(kpid);
+        if(null == maxTid) maxTid = 0L;
         Long maxKpId = searchKpDetails(k, maxTid, eok, maxNum, tkrs, true, true);
         if(tkrs.size()>maxNum){
             tkrs = tkrs.subList(0, maxNum-1);
