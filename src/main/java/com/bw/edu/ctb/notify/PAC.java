@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.Random;
@@ -38,8 +39,9 @@ public class PAC {
 
     public void produce(Long erid){
         if(queue.size()>MAX_CAPACITY){
+            logger.error("[fatal] queue exceeded!");
             return;
-        }//超过最大容量，直接走补偿链路
+        }//超过最大容量，这里直接返回，不抛异常，走补偿链路
         try {
             queue.put(erid);
         } catch (InterruptedException e) {

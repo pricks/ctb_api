@@ -27,6 +27,10 @@ public class KptBatchManager {
         kptBatchMapper.updateStatus(id, oriStatus, tarStatus);
     }
 
+    public KptBatchEntity selectById(Long id){
+        return kptBatchMapper.selectById(id);
+    }
+
     /**
      * 查询最后一条有效的批次
      * @param kptBatchQO

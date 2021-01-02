@@ -11,4 +11,5 @@ public interface KptBatchMapper {
     int save(KptBatchEntity kptBatchEntity);
     List<KptBatchEntity> select(KptBatchQO kptBatchQO);
     void updateStatus(Long id, Integer oriStatus, Integer tarStatus);
+    KptBatchEntity selectById(Long id);
 }

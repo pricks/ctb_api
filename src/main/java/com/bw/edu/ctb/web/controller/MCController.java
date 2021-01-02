@@ -3,7 +3,6 @@ package com.bw.edu.ctb.web.controller;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.Keys;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
-import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
 import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.common.util.JacksonUtil;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,7 +168,7 @@ public class MCController {
             et.setTid(tt.getId());
             et.setTt_ct(tt.getTc());
             et.setTt_offline(tt.getOi());
-            et.setTt_type(tt.getTType());
+            et.setTt_type(tt.getType());
             et.setT_ops(null);//todo
             et.setTt_answer(tt.getTca());
             et.setT_g_count(0);//todo

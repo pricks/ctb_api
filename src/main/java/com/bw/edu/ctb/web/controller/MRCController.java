@@ -2,11 +2,14 @@ package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.dao.entity.ExRecEntity;
+import com.bw.edu.ctb.dao.entity.KptBatchEntity;
 import com.bw.edu.ctb.dao.entity.SGEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dto.SsDTO;
 import com.bw.edu.ctb.exception.CtbException;
+import com.bw.edu.ctb.manager.KptBatchManager;
 import com.bw.edu.ctb.service.ExRecService;
+import com.bw.edu.ctb.service.KptBatchService;
 import com.bw.edu.ctb.service.SGService;
 import com.bw.edu.ctb.service.usr.UsrService;
 import com.bw.edu.ctb.common.util.CollectionUtil;
@@ -34,13 +37,17 @@ public class MRCController {
     private ExRecService exRecService;
     @Autowired
     private SGService sgService;
+    @Autowired
+    private KptBatchService kptBatchService;
 
     /** commit rv_rec */
     @PostMapping("/c")
     public Result<List<SsDTO>> tijiao_rv_record(ExRecVO exRecVO, HttpServletRequest request){
         try{
             //verify
-            if(null==exRecVO || StringUtil.isEmpty(exRecVO.getAtk()) || StringUtil.isEmpty(exRecVO.getTts())){
+            if(null==exRecVO || StringUtil.isEmpty(exRecVO.getAtk())
+                    || StringUtil.isEmpty(exRecVO.getTts())
+                    || null==exRecVO.getKptBatch()){
                 return Result.failure();
             }
             Result<BUsr> bUsrRS = usrService.getByAtk(exRecVO.getAtk());
@@ -50,28 +57,14 @@ public class MRCController {
                 return Result.failure();//表示登录失败
             }
 
+            Result<KptBatchEntity> kptBatchEntityResult = kptBatchService.selectById(exRecVO.getKptBatch());
+            if(!kptBatchEntityResult.isSuccess() || null==kptBatchEntityResult.getData()){
+                promoteException(kptBatchEntityResult.getCode(), kptBatchEntityResult.getMessage());
+            }
+
             //create ex_rec
-            Long eid = createExRec(exRecVO, bUsr.getId());
-
-            //produce
-
-
-            Integer dg = Integer.valueOf(request.getParameter("dg"));
-            Integer gd = Integer.valueOf(request.getParameter("gd"));
-            Result<List<SGEntity>> sgRS = sgService.select(dg, gd);
-            if(!sgRS.isSuccess() || CollectionUtil.isEmpty(sgRS.getData())){
-                //获取默认的gd & class
-                logger.error("[fatal error] query no subjects. dg="+dg+", gd="+gd);
-                return Result.failure();
-            }
-            List<SsDTO> ssDTOList = new ArrayList<>(sgRS.getData().size());
-            for(SGEntity sg : sgRS.getData()){
-                SsDTO ss = new SsDTO();
-                ss.setSc(sg.getSc());
-                ss.setSn(ss.getSn());
-                ssDTOList.add(ss);
-            }
-            return Result.success(ssDTOList);
+            Long eid = createExRec(exRecVO, bUsr.getId(), kptBatchEntityResult.getData());
+            return Result.success();
         }catch (CtbException e){
             logger.error("fs biz-error", e);
             return Result.failure(e);
@@ -81,7 +74,7 @@ public class MRCController {
         }
     }
 
-    private Long createExRec(ExRecVO exRecVO, Long uid){
+    private Long createExRec(ExRecVO exRecVO, Long uid, KptBatchEntity k){
         ExRecEntity ee = new ExRecEntity();
         ee.setUn(exRecVO.getUn());
         ee.setDl(exRecVO.getDl());
@@ -94,8 +87,8 @@ public class MRCController {
         ee.setwTts(exRecVO.getWtts());
         ee.setScore(exRecVO.getScore());
         ee.setCkc(exRecVO.getCkc());
-        ee.setMaxk(exRecVO.getMaxk());//发给客户端的tt batch就是按照kn排序的
-        ee.setMaxt(exRecVO.getMaxt());
+        ee.setMaxk(k.getMaxKpid());//发给客户端的tt batch就是按照kn排序的
+        ee.setMaxt(k.getMaxTid());
         Result<Long> saveRS = exRecService.create(ee);
         if(!saveRS.isSuccess() || null==saveRS.getData()){
             promoteException(saveRS.getCode(), saveRS.getMessage());

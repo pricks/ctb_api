@@ -91,11 +91,11 @@ public class TTEntity {
         this.ts = ts;
     }
 
-    public Integer getTType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setTType(Integer tType) {
+    public void setType(Integer tType) {
         this.type = tType;
     }
 

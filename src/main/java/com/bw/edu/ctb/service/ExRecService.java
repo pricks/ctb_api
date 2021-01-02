@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExRecService {
@@ -23,10 +24,10 @@ public class ExRecService {
     private PAC pac;
 
     /**
-     * todo 添加事务
      * @param exRecEntity
      * @return
      */
+    @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
     public Result<Long> create(ExRecEntity exRecEntity){
         try {
             if(null==exRecEntity || null==exRecEntity.getBatchId()){
