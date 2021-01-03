@@ -12,6 +12,8 @@ public class TTBactchQO implements Serializable {
     private Long maxTid;
     private String mkp;
     private String mt;
+    private Integer rd;
+    private Integer rl;//reload，是否开启新一轮测试，此时将从第一个节点重新搜索tt
 
     public String getAtk() {
         return atk;
@@ -83,5 +85,21 @@ public class TTBactchQO implements Serializable {
 
     public void setMt(String mt) {
         this.mt = mt;
+    }
+
+    public Integer getRd() {
+        return rd;
+    }
+
+    public void setRd(Integer rd) {
+        this.rd = rd;
+    }
+
+    public Integer getRl() {
+        return rl;
+    }
+
+    public void setRl(Integer rl) {
+        this.rl = rl;
     }
 }

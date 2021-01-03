@@ -11,11 +11,11 @@ public class ExRecEntity {
     private Long un;
     private Integer rd;
     private Integer dl;
-    private Long batchId;//kptBatch or pracBatch
+    private Long bid;//kptBatch or pracBatch
     private String tts;
     private String kns;
-    private String wKns;//wrong-answered kn id set
-    private String wTts;//wrong-answered tt id set
+    private String wkns;//wrong-answered kn id set
+    private String wtts;//wrong-answered tt id set
     private Integer score;
     private Integer ckc;//correct kp count
     private Long maxk;//max id of kp
@@ -74,12 +74,12 @@ public class ExRecEntity {
         this.dl = dl;
     }
 
-    public Long getBatchId() {
-        return batchId;
+    public Long getBid() {
+        return bid;
     }
 
-    public void setBatchId(Long batchId) {
-        this.batchId = batchId;
+    public void setBid(Long bid) {
+        this.bid = bid;
     }
 
     public String getTts() {
@@ -98,20 +98,20 @@ public class ExRecEntity {
         this.kns = kns;
     }
 
-    public String getwKns() {
-        return wKns;
+    public String getWkns() {
+        return wkns;
     }
 
-    public void setwKns(String wKns) {
-        this.wKns = wKns;
+    public void setWkns(String wkns) {
+        this.wkns = wkns;
     }
 
-    public String getwTts() {
-        return wTts;
+    public String getWtts() {
+        return wtts;
     }
 
-    public void setwTts(String wTts) {
-        this.wTts = wTts;
+    public void setWtts(String wtts) {
+        this.wtts = wtts;
     }
 
     public Integer getScore() {

@@ -17,7 +17,7 @@ public class ExRecDAOTest extends CtbApplicationTests {
         e.setUn(1L);
         e.setRd(1);
         e.setDl(2);
-        e.setBatchId(1L);
+        e.setBid(1L);
         e.setTts("1,2,3,5");
         e.setKns("3,6,6,7");
         e.setScore(8);

@@ -30,11 +30,11 @@ public class ExRecService {
     @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
     public Result<Long> create(ExRecEntity exRecEntity){
         try {
-            if(null==exRecEntity || null==exRecEntity.getBatchId()){
+            if(null==exRecEntity || null==exRecEntity.getBid()){
                 return Result.success();
             }
 
-            kptBatchManager.updateStatus(exRecEntity.getBatchId(), KptBatchStatusEnum.CREATED.getCode(), KptBatchStatusEnum.COMMITED.getCode());
+            kptBatchManager.updateStatus(exRecEntity.getBid(), KptBatchStatusEnum.CREATED.getCode(), KptBatchStatusEnum.COMMITED.getCode());
             exRecManager.save(exRecEntity);
 
             pac.produce(exRecEntity.getId());

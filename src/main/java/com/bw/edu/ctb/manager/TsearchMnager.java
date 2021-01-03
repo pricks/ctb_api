@@ -27,6 +27,9 @@ public class TsearchMnager {
      * @return 最后的kp节点ID
      */
     public Long searchKpDetails(Long kpid, Long maxTid, Integer eok, int maxNum, List<TkrEntity> tkrs){
+        if(maxNum <= 0){
+            return null;
+        }
         if(maxNum> SystemConstants.MAX_PAGE_DATA_NUM){
             maxNum = SystemConstants.MAX_PAGE_DATA_NUM;
         }

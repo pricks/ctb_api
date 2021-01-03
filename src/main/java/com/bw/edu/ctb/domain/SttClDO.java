@@ -49,10 +49,19 @@ public class SttClDO implements Serializable {
                             sd.setAscore(sd.getAscore()+ee.getScore());
                         }
 
+                        //计算已review的kp detail
+                        Integer rkp=sd.getRkp();
+                        if(null==rkp){
+                            rkp=0;
+                        }
+                        sd.setRkp(rkp+ee.getCkc());
+
                         //是否已结束全部review
                         if(null==kb){
                             sd.setOver(true);
+                            sd.setEc(0);
                             sd.setRd(sd.getRd()+1);//sd.rd从一开始就不为空
+                            sd.setRkp(0);//置为0
                         }else{
                             sd.setOver(false);
                         }
@@ -60,12 +69,7 @@ public class SttClDO implements Serializable {
 
                         //计算总体进度 todo 本次不做
 
-                        //计算已review的kp detail
-                        Integer rkp=sd.getRkp();
-                        if(null==rkp){
-                            rkp=0;
-                        }
-                        sd.setRkp(rkp+ee.getCkc());
+
 
 
                         //计算错误次数top3的kp detail todo 本次不做

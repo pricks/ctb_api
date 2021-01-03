@@ -2,7 +2,6 @@ package com.bw.edu.ctb.bizutils;
 
 import com.bw.edu.ctb.common.constants.Symbols;
 import com.bw.edu.ctb.common.enums.BatchStatusEnum;
-import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.dao.entity.KptBatchEntity;
 import com.bw.edu.ctb.dao.entity.TkrEntity;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KptBatchUtil {
-    public static KptBatchEntity genKptBatch(Long uid, Long un, Integer dl, Long maxKpid, List<TkrEntity> tkrs, List<Long> ttids) {
+    public static KptBatchEntity genKptBatch(Long uid, Long un, Integer dl, Integer rd, Long maxKpid, List<TkrEntity> tkrs, List<Long> ttids) {
         int sz1=0, sz2=0;
         if(CollectionUtil.isNotEmpty(tkrs)){
             sz1 = tkrs.size();
@@ -31,7 +30,8 @@ public class KptBatchUtil {
         kb.setUid(uid);
         kb.setUn(un);
         kb.setDl(dl);
-        kb.setMaxKpid(maxKpid);
+        kb.setRd(rd);
+        kb.setMaxk(maxKpid);
 
 
         List<Long> tids = new ArrayList<>(size);
@@ -55,7 +55,7 @@ public class KptBatchUtil {
         }
         kb.setTids(sb.toString());
 
-        kb.setMaxTid(tids.get(tsize-1));
+        kb.setMaxt(tids.get(tsize-1));
         kb.setStatus(BatchStatusEnum.GENERATED.getCode());
         return kb;
     }

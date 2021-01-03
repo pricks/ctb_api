@@ -14,8 +14,6 @@ import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.manager.*;
 import com.bw.edu.ctb.common.util.StringUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,16 +72,16 @@ public class ExRecConsumer {
      */
     @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
     private void writeDB(ExRecEntity ee, KptBatchEntity kb, ExSttByclEntity ebe){
-        kptBatchManager.updateStatus(ee.getBatchId(), KptBatchStatusEnum.COMMITED.getCode(), KptBatchStatusEnum.GEN_BATCH.getCode());
-        kptBatchManager.create(kb);
+        kptBatchManager.updateStatus(ee.getBid(), KptBatchStatusEnum.COMMITED.getCode(), KptBatchStatusEnum.GEN_BATCH.getCode());
+        if(null!=kb) kptBatchManager.create(kb);
         if(null!=ebe){
             exSttByclManager.update(ebe);
         }
     }
 
     private ExSttByclEntity updateExStt(ExRecEntity ee, KptBatchEntity kb){
-        Long uid = kb.getUid();
-        Long un = kb.getUn();
+        Long uid = ee.getUid();
+        Long un = ee.getUn();
 
         UnitEntity ue = unitManager.getByCode(un);
         if(null==ue){
@@ -112,9 +110,10 @@ public class ExRecConsumer {
             exSttByclEntity.setStt(JacksonUtil.serialize(stt));
             return exSttByclEntity;
         } catch (Exception e) {
-            logger.error("[fatal] 反序列化失败. exSttBycl="+exSttByclEntity);//TODO monitor
-            return null;
+            logger.error("[fatal] 反序列化失败. exSttByclId="+exSttByclEntity.getId());//TODO monitor
+            promoteException(CtbExceptionEnum.DESERIALIZE_FAILED, "exSttByclId="+exSttByclEntity.getId());
         }
+        return exSttByclEntity;
     }
 
 
@@ -127,19 +126,19 @@ public class ExRecConsumer {
         //新生成的batch中，需要保留上次做错的题目
         int maxNum = SystemConstants.MAX_TTS_NUM;
         List<Long> wttList = null;
-        String wtts = er.getwTts();
+        String wtts = er.getWtts();
         if(StringUtil.isNotEmpty(wtts)){
-            List<String> stl = Arrays.asList(er.getwTts().split(Symbols.COMMA));
+            List<String> stl = Arrays.asList(er.getWtts().split(Symbols.COMMA));
             wttList = CollectionUtil.transfer(stl);
             maxNum = SystemConstants.MAX_TTS_NUM-wttList.size();
         }
 
         List<TkrEntity> tkrs = new ArrayList<>();
-        Long maxKpid = tsearchMnager.searchKpDetails(er.getMaxk(), er.getMaxt(), DlEnum.getEokType(er.getDl()).getCode(), maxNum,tkrs);
-        if(tkrs.size() == 0){
-            return null;//说明当前单元下还没有titles
+        Long maxKpid = tsearchMnager.searchKpDetails(er.getMaxk(), er.getMaxt(), DlEnum.getEokType(er.getDl()).getCode(), maxNum, tkrs);
+        if(tkrs.size() == 0 && CollectionUtil.isEmpty(wttList)){
+            return null;//说明当前单元下还没有titles，并且也没有历史错题
         }
-        KptBatchEntity kb = KptBatchUtil.genKptBatch(er.getUid(), er.getUn(), er.getDl(), maxKpid, tkrs, wttList);
+        KptBatchEntity kb = KptBatchUtil.genKptBatch(er.getUid(), er.getUn(), er.getDl(), er.getRd(), maxKpid, tkrs, wttList);
         return kb;
     }
 }

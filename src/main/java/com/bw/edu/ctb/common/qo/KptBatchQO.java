@@ -6,6 +6,7 @@ public class KptBatchQO extends Paging implements Serializable {
     private Long uid;
     private Long un;
     private Integer dl;
+    private Integer rd;
     private Integer status;
 
     public Long getUid() {
@@ -38,5 +39,13 @@ public class KptBatchQO extends Paging implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getRd() {
+        return rd;
+    }
+
+    public void setRd(Integer rd) {
+        this.rd = rd;
     }
 }

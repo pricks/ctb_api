@@ -114,7 +114,7 @@ public class MCController {
             //verify
             if(null==ttBactchQO || StringUtil.isEmpty(ttBactchQO.getAtk())
                     || null==ttBactchQO.getUn() || null==ttBactchQO.getDl()
-                    || null==ttBactchQO.getEok()){
+                    || null==ttBactchQO.getEok() || null==ttBactchQO.getRd()){
                 return Result.failure();
             }
             if(StringUtil.isNotWideEmpty(ttBactchQO.getMkp())){

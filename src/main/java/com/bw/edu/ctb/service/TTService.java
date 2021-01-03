@@ -46,16 +46,40 @@ public class TTService {
         List<TTEntity> ttEntityList = null;
 
         //查询batch
-        KptBatchEntity kb = kptBatchManager.queryLastValid(buildKptBatchQO(ttBactchQO));
-
-        //如果batch查不到，实时生成batch
-        if(null == kb){
+        KptBatchEntity kb = null;
+        if(new Integer(1).equals(ttBactchQO.getRl())){
+            ttBactchQO.setMaxTid(null);
+            ttBactchQO.setMaxKpId(null);
             kb = queryTTSAndGenBatch(ttBactchQO);
             if(null==kb){
                 logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
                 return Result.success();//用户友好
             }
+        }//开启新一轮测试，直接从0开始查询tt
+        else{
+            kb = kptBatchManager.queryLastValid(buildKptBatchQO(ttBactchQO, KptBatchStatusEnum.CREATED.getCode()));
+
+            //如果batch查不到，实时生成batch
+            if(null == kb){
+                /**
+                 * 查询"已提交"的kptBatch，如果有，
+                 * 基于该版本生成新的batch，不影响
+                 * app端用户继续review
+                 */
+                kb = kptBatchManager.queryLastValid(buildKptBatchQO(ttBactchQO, KptBatchStatusEnum.COMMITED.getCode()));
+                if(null!=kb){
+                    ttBactchQO.setMaxTid(kb.getMaxt());
+                    ttBactchQO.setMaxKpId(kb.getMaxk());
+                }
+
+                kb = queryTTSAndGenBatch(ttBactchQO);
+                if(null==kb){
+                    logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
+                    return Result.success();//用户友好
+                }
+            }
         }
+
 
         //查询titles
         List<TTEntity> tts = ttManager.queryByIds(CollectionUtil.transfer(Arrays.asList(kb.getTids().split(Symbols.COMMA))));
@@ -86,7 +110,7 @@ public class TTService {
     }
 
     /**
-     * 根据批次搜索titles todo 要生成batch
+     * 根据批次搜索titles
      * @param ttBactchQO
      * @return
      */
@@ -101,7 +125,7 @@ public class TTService {
         if(tkrs.size() == 0){
             return null;//说明当前单元下还没有titles
         }
-        KptBatchEntity kb = KptBatchUtil.genKptBatch(ttBactchQO.getUid(), ttBactchQO.getUn(), ttBactchQO.getDl(), maxKpid, tkrs, null);
+        KptBatchEntity kb = KptBatchUtil.genKptBatch(ttBactchQO.getUid(), ttBactchQO.getUn(), ttBactchQO.getDl(), ttBactchQO.getRd(), maxKpid, tkrs, null);
 
         //生成kptBatch
         kptBatchManager.create(kb);
@@ -112,7 +136,7 @@ public class TTService {
         kb.setUid(ttBactchQO.getUid());
         kb.setUn(ttBactchQO.getUn());
         kb.setDl(ttBactchQO.getDl());
-        kb.setMaxKpid(maxKpid);
+        kb.setMaxk(maxKpid);
 
         StringBuilder sb = new StringBuilder();
         int tsize = tids.size();
@@ -124,7 +148,7 @@ public class TTService {
         }
         kb.setTids(sb.toString());
 
-        kb.setMaxTid(tids.get(tsize-1));
+        kb.setMaxt(tids.get(tsize-1));
         kb.setStatus(BatchStatusEnum.GENERATED.getCode());
         kptBatchManager.create(kb);
     }
@@ -155,12 +179,13 @@ public class TTService {
         return maxKpId;
     }
 
-    private KptBatchQO buildKptBatchQO(TTBactchQO ttBactchQO) {
+    private KptBatchQO buildKptBatchQO(TTBactchQO ttBactchQO, int status) {
         KptBatchQO kq = new KptBatchQO();
         kq.setUid(ttBactchQO.getUid());
         kq.setUn(ttBactchQO.getUn());
         kq.setDl(ttBactchQO.getDl());
-        kq.setStatus(KptBatchStatusEnum.CREATED.getCode());
+        kq.setRd(ttBactchQO.getRd());
+        kq.setStatus(status);
         return kq;
     }
 

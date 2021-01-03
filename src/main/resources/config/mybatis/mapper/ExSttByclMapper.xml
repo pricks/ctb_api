@@ -19,7 +19,7 @@
 
     <update id="update" parameterType="com.bw.edu.ctb.dao.entity.ExSttByclEntity" >
         update ex_stt_bycl
-        set gm=#{gm},stt=#{stt}
+        set gm=now(),stt=#{stt}
         where id=#{id}
     </update>
 

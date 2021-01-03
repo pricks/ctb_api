@@ -1,18 +1,16 @@
 package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.enums.KptBatchStatusEnum;
 import com.bw.edu.ctb.dao.entity.ExRecEntity;
 import com.bw.edu.ctb.dao.entity.KptBatchEntity;
-import com.bw.edu.ctb.dao.entity.SGEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dto.SsDTO;
 import com.bw.edu.ctb.exception.CtbException;
-import com.bw.edu.ctb.manager.KptBatchManager;
 import com.bw.edu.ctb.service.ExRecService;
 import com.bw.edu.ctb.service.KptBatchService;
 import com.bw.edu.ctb.service.SGService;
 import com.bw.edu.ctb.service.usr.UsrService;
-import com.bw.edu.ctb.common.util.CollectionUtil;
 import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.web.vo.ExRecVO;
 import org.slf4j.Logger;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -61,6 +58,11 @@ public class MRCController {
             if(!kptBatchEntityResult.isSuccess() || null==kptBatchEntityResult.getData()){
                 promoteException(kptBatchEntityResult.getCode(), kptBatchEntityResult.getMessage());
             }
+            KptBatchEntity k = kptBatchEntityResult.getData();
+            if(KptBatchStatusEnum.COMMITED.getCode().equals(k.getStatus())){
+                logger.error("[fatal] kptbatch has been commited. batchId="+k.getId());
+                return Result.failure();//前端app不感知
+            }
 
             //create ex_rec
             Long eid = createExRec(exRecVO, bUsr.getId(), kptBatchEntityResult.getData());
@@ -80,15 +82,15 @@ public class MRCController {
         ee.setDl(exRecVO.getDl());
         ee.setUid(uid);
         ee.setRd(exRecVO.getRd());
-        ee.setBatchId(exRecVO.getKptBatch());
+        ee.setBid(exRecVO.getKptBatch());
         ee.setTts(exRecVO.getTts());
         ee.setKns(exRecVO.getKns());
-        ee.setwKns(exRecVO.getWkns());
-        ee.setwTts(exRecVO.getWtts());
+        ee.setWkns(exRecVO.getWkns());
+        ee.setWtts(exRecVO.getWtts());
         ee.setScore(exRecVO.getScore());
         ee.setCkc(exRecVO.getCkc());
-        ee.setMaxk(k.getMaxKpid());//发给客户端的tt batch就是按照kn排序的
-        ee.setMaxt(k.getMaxTid());
+        ee.setMaxk(k.getMaxk());//发给客户端的tt batch就是按照kn排序的
+        ee.setMaxt(k.getMaxt());
         Result<Long> saveRS = exRecService.create(ee);
         if(!saveRS.isSuccess() || null==saveRS.getData()){
             promoteException(saveRS.getCode(), saveRS.getMessage());

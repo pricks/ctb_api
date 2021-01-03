@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.ExRecEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,uid,un,rd,dl,batch_id,tts,kns,w_kns,w_tts,score,ckc,maxk,maxt
+        id,gc,uid,un,rd,dl,bid,tts,kns,wkns,wtts,score,ckc,maxk,maxt
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),#{uid},#{un},#{rd},#{dl},#{batchId},#{tts},#{kns},#{wKns},#{wTts},#{score},#{ckc},#{maxk},#{maxt}
+        #{id},now(),#{uid},#{un},#{rd},#{dl},#{bid},#{tts},#{kns},#{wkns},#{wtts},#{score},#{ckc},#{maxk},#{maxt}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.ExRecEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -23,6 +23,7 @@
         from ex_rec
         where uid=#{uid}
         order by gc desc
+        limit 1
     </select>
 
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">

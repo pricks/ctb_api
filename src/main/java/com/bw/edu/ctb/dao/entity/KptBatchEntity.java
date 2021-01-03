@@ -8,10 +8,11 @@ public class KptBatchEntity {
     private Date gm;
     private Long uid;
     private Long un;
+    private Integer rd;
     private Integer dl;
-    private Long maxKpid;
+    private Long maxk;
     private String tids;
-    private Long maxTid;
+    private Long maxt;
     private Integer status;
 
     public Long getId() {
@@ -62,12 +63,12 @@ public class KptBatchEntity {
         this.dl = dl;
     }
 
-    public Long getMaxKpid() {
-        return maxKpid;
+    public Long getMaxk() {
+        return maxk;
     }
 
-    public void setMaxKpid(Long maxKpid) {
-        this.maxKpid = maxKpid;
+    public void setMaxk(Long maxk) {
+        this.maxk = maxk;
     }
 
     public String getTids() {
@@ -78,12 +79,12 @@ public class KptBatchEntity {
         this.tids = tids;
     }
 
-    public Long getMaxTid() {
-        return maxTid;
+    public Long getMaxt() {
+        return maxt;
     }
 
-    public void setMaxTid(Long maxTid) {
-        this.maxTid = maxTid;
+    public void setMaxt(Long maxt) {
+        this.maxt = maxt;
     }
 
     public Integer getStatus() {
@@ -92,5 +93,13 @@ public class KptBatchEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getRd() {
+        return rd;
+    }
+
+    public void setRd(Integer rd) {
+        this.rd = rd;
     }
 }
