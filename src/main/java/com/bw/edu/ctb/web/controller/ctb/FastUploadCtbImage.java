@@ -26,12 +26,43 @@ public class FastUploadCtbImage {
     }
 
     /**
-     * upload file
+     * upload file 4 tinymce
      * */
     @RequestMapping(value = {"upload", "upload/"}, method = RequestMethod.POST)
 //    @ResponseBody
     @CrossOrigin
-    public Map<String, String> fileUpload(@RequestParam("upload") MultipartFile file){
+    public Map<String, String> fileUpload4tm(@RequestParam("file") MultipartFile file){
+        Map<String, String> result = new HashMap<>();
+
+        if(file.isEmpty()){
+            result.put("success", "0");
+            return result;
+        }
+        String fileName = file.getOriginalFilename();
+        int size = (int) file.getSize();
+        try {
+
+            String url = QCosUtil.uploadFileFromInputStream(fileName, (FileInputStream)file.getInputStream());
+            System.out.println("url===="+url);
+
+            //固定值
+            result.put("uploaded", "1");
+            result.put("file", url);
+            //必须这样{"uploaded":"1","url", "图片URL"} 或者自己修改CKEditor5 js源代码
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    }
+
+    /**
+     * upload file 4 ckeditor
+     * */
+    @RequestMapping(value = {"upload4CK", "upload/"}, method = RequestMethod.POST)
+//    @ResponseBody
+    @CrossOrigin
+    public Map<String, String> fileUpload4CK(@RequestParam("upload") MultipartFile file){
         Map<String, String> result = new HashMap<>();
 
         if(file.isEmpty()){

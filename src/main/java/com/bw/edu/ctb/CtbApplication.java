@@ -29,7 +29,7 @@ public class CtbApplication {
 	/**
 	 * Spring当前激活的profile
 	 */
-	public static final String ENV = ENV_DEV;
+	public static final String ENV = "env";
 
 	/**
 	 * 日志输出的类型：file - 文件；console - 控制台。
@@ -69,6 +69,7 @@ public class CtbApplication {
 			// 设置log输出的类型为console
 			System.setProperty(LOG_OUTPUT_TYPE, "console");
 		}
+		System.setProperty(LOG_OUTPUT_TYPE, "console");//todo 上线后删除本行
 
 		PropertiesOnStartup.parse();
 	}

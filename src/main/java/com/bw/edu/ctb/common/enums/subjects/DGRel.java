@@ -2,6 +2,9 @@ package com.bw.edu.ctb.common.enums.subjects;
 
 import com.bw.edu.ctb.common.enums.DlEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * relation of dagang & grade
  */
@@ -19,13 +22,14 @@ public enum DGRel {
 
     ;
 
-    public GradeEnum getGrade(Integer dagangCode){
+    public static List<GradeEnum> getGrade(Integer dagangCode){
+        List<GradeEnum> gradeEnums = new ArrayList<>();
         for(DGRel e : DGRel.values()){
             if(e.getCode().equals(dagangCode)){
-                return e.getGe();
+                gradeEnums.add(e.getGe());
             }
         }
-        return null;
+        return gradeEnums;
     }
 
     private Integer code;
