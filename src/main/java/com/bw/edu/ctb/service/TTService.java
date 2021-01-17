@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,26 @@ public class TTService {
     private TkrManager tkrManager;
     @Autowired
     private KptBatchManager kptBatchManager;
+
+    @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
+    public Result<Void> saveTT(TTEntity ttEntity, Long kpId){
+        try {
+            ttManager.create(ttEntity);
+
+            TkrEntity tkr = new TkrEntity();
+            tkr.setKpid(kpId);
+            tkr.setTid(ttEntity.getId());
+            tkr.setEok(ttEntity.getEok());
+            tkrManager.create(tkr);
+            return Result.success();
+        }catch (CtbException e){
+            logger.error("biz-err. kpid="+kpId+", t="+ttEntity);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("sys-err. kpid="+kpId+", t="+ttEntity, e);
+            return Result.failure();
+        }
+    }
 
     public Result<List<TTEntity>> queryKpDetails(TTBactchQO ttBactchQO){
         List<TTEntity> ttEntityList = null;

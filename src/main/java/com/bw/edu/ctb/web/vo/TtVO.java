@@ -9,7 +9,7 @@ public class TtVO implements Serializable {
     private Long cl;//subject code
     private Long un;//unit code
     private Integer dl;
-    private List kp;
+    private List<Long> kp;//前端页面传过来是个arrya，叶子节点是list的最后一个元素
     private Integer type;
     private String content;
     private Integer ops;
@@ -58,11 +58,11 @@ public class TtVO implements Serializable {
         this.dl = dl;
     }
 
-    public List getKp() {
+    public List<Long> getKp() {
         return kp;
     }
 
-    public void setKp(List kp) {
+    public void setKp(List<Long> kp) {
         this.kp = kp;
     }
 

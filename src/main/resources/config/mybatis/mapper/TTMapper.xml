@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.TTEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,gm,un,dl,eok,tc,tc_enc,ts,t_type,oi,tgi,ots,tat,tav,tca,aid
+        id,gc,gm,un,dl,eok,tc,tc_enc,ts,type,oi,tgi,ots,tat,tav,tca,aid
     </sql>
     <sql id="BaseProperties" >
         #{id},now(),now(),#{un},#{dl},#{eok},#{tc},#{tcEnc},#{ts},#{type},#{oi},#{tgi},#{ots},#{tat},#{tav},#{tca},#{aid}

@@ -91,8 +91,8 @@ public class TTEntity {
         return type;
     }
 
-    public void setType(Integer tType) {
-        this.type = tType;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Boolean getOi() {

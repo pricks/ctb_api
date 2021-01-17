@@ -1,14 +1,15 @@
 package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
+import com.bw.edu.ctb.common.enums.EokEnum;
 import com.bw.edu.ctb.common.enums.StatusEnum;
 import com.bw.edu.ctb.common.enums.subjects.DGRel;
 import com.bw.edu.ctb.common.enums.subjects.GradeEnum;
 import com.bw.edu.ctb.common.enums.subjects.TTypeEnum;
 import com.bw.edu.ctb.common.qo.KpQO;
-import com.bw.edu.ctb.common.qo.TitleQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
 import com.bw.edu.ctb.common.util.CollectionUtil;
+import com.bw.edu.ctb.common.util.JacksonUtil;
 import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.dao.entity.*;
 import com.bw.edu.ctb.dto.SsDTO;
@@ -16,16 +17,15 @@ import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.service.KpService;
 import com.bw.edu.ctb.service.SGService;
+import com.bw.edu.ctb.service.TTService;
 import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.web.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +45,8 @@ public class SubjectController {
     private UnitService unitService;
     @Autowired
     private KpService kpService;
+    @Autowired
+    private TTService ttService;
 
     @GetMapping("/gd")
     @CrossOrigin
@@ -239,41 +241,64 @@ public class SubjectController {
 
     @PostMapping("/w")
     @CrossOrigin
-    public Map<String, String> __save__t(@RequestBody TtVO ttVO){
-        Map<String, String> result = new HashMap<>();
-
+    public Result __save__t(@RequestBody TtVO ttVO){
         try {
-            //1.校验
             checkTitle(ttVO);
-
-            //2.convert
             TTEntity t = convert(ttVO);
-
-            //3.save
-//            int saveRs = titleMapper.save(titleEntity);
-//            if(saveRs <= 0){
-//                System.out.println("保存失败");
-//            }
-            //必须这样{"uploaded":"1","url", "图片URL"} 或者自己修改CKEditor5 js源代码
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return result;
+            Result<Void> ttRs = ttService.saveTT(t, ttVO.getKp().get(ttVO.getKp().size()-1));
+            if(!ttRs.isSuccess()){ return Result.failure(); }
+            return Result.success();
+        } catch (CtbException e){
+            logger.error("b/w biz-error", e);
+            return Result.failure(e);
+        } catch (Exception e){
+            logger.error("b/w sys-error", e);
+            return Result.failure();
         }
     }
-
-    private TTEntity convert(TtVO ttVO){
+    private TTEntity convert(TtVO ttVO) throws Exception{
         TTEntity t = new TTEntity();
         t.setUn(ttVO.getUn());
         t.setDl(ttVO.getDl());
         t.setTc(ttVO.getContent());
-        t.setEok(1);
+        t.setEok(EokEnum.KP_DETAIL.getCode());
         t.setType(ttVO.getType());
         t.setAid(1L);
         t.setOi(t.getType().equals(TTypeEnum.DANXUAN.getCode())?false:true);
         t.setTs(StatusEnum.PULISHED.getCode());
-        if(TTypeEnum.DANXUAN.getCode().equals(ttVO.getOps())){
-            t.setTca(ttVO.getOps().toString());
+        if(TTypeEnum.DANXUAN.getCode().equals(ttVO.getType())){
+            Integer ca = ttVO.getOps();
+            if(ca.equals(1)) t.setTca("A");
+            if(ca.equals(2)) t.setTca("B");
+            if(ca.equals(3)) t.setTca("C");
+            if(ca.equals(4)) t.setTca("D");
+
+            List<Map<String, String>> maps = new ArrayList<>(4);
+            if(StringUtil.isNotEmpty(ttVO.getaA())){
+                Map<String, String> ops = new HashMap<>();
+                ops.put("idx", "A");
+                ops.put("cont", ttVO.getaA());
+                maps.add(ops);
+            }
+            if(StringUtil.isNotEmpty(ttVO.getaB())){
+                Map<String, String> ops = new HashMap<>();
+                ops.put("idx", "B");
+                ops.put("cont", ttVO.getaB());
+                maps.add(ops);
+            }
+            if(StringUtil.isNotEmpty(ttVO.getaC())){
+                Map<String, String> ops = new HashMap<>();
+                ops.put("idx", "C");
+                ops.put("cont", ttVO.getaC());
+                maps.add(ops);
+            }
+            if(StringUtil.isNotEmpty(ttVO.getaD())){
+                Map<String, String> ops = new HashMap<>();
+                ops.put("idx", "D");
+                ops.put("cont", ttVO.getaD());
+                maps.add(ops);
+            }
+            t.setOts(JacksonUtil.serialize(maps));
         }
         return t;
     }
@@ -301,7 +326,7 @@ public class SubjectController {
         }
         if(null == ttVO.getDg() || null==ttVO.getGd()
                 || null==ttVO.getCl() || null==ttVO.getUn()
-                || null==ttVO.getDl() || null==ttVO.getKp() || null==ttVO.getType()){
+                || null==ttVO.getDl() || CollectionUtil.isEmpty(ttVO.getKp()) || null==ttVO.getType()){
             promoteException(CtbExceptionEnum.PARAM_NOT_RULED, "ttVO="+ttVO);
         }
         if(null == ttVO.getContent() || "".equals(ttVO.getContent().trim())){
