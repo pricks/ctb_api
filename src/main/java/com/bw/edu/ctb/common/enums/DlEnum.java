@@ -3,7 +3,7 @@ package com.bw.edu.ctb.common.enums;
 public enum DlEnum {
 
     BASIC(1, "基础知识"),
-    DIFICAULT(2, "重难点"),
+    DIFICAULT(2, "总结与重点"),
     MOST_WRONG(3, "易错"),
     EXERCISE(4, "测试"),
 

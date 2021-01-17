@@ -18,7 +18,13 @@ public class KpManager {
     private KpMapper kpMapper;
     private static final String ORDER_FIELD = "korder";
 
-    public List<KpEntity> queryByUn(KpQO kpQO){
+    public List<KpEntity> query(KpQO kpQO){
+        kpQO.setSortProperty(ORDER_FIELD);
+        kpQO.setSortMode(SortEnum.ASC.getMode());
+        return kpMapper.select(kpQO);
+    }
+
+    public List<KpEntity> queryFirstLevel(KpQO kpQO){
         kpQO.setLevel(1);
         kpQO.setSortProperty(ORDER_FIELD);
         kpQO.setSortMode(SortEnum.ASC.getMode());

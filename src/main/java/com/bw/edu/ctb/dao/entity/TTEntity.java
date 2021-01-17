@@ -76,11 +76,7 @@ public class TTEntity {
 
     public void setTc(String tc) {
         this.tc = tc;
-        this.setTcEnc(MD5Util.stringToMD5(tc));
-    }
-
-    public void setTcEnc(String tcEnc) {
-        this.tcEnc = tcEnc;
+        this.tcEnc = MD5Util.stringToMD5(tc);
     }
 
     public Integer getTs() {

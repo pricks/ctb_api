@@ -170,7 +170,7 @@ public class TTService {
             kpQO.setDl(dl);
             kpQO.setStatus(StatusEnum.PULISHED.getCode());
             kpQO.setNum(1);
-            List<KpEntity> kps = kpManager.queryByUn(kpQO);
+            List<KpEntity> kps = kpManager.queryFirstLevel(kpQO);
             if(null==kps || kps.size()==0){
                 return null;
             }

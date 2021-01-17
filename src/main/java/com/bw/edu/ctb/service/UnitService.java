@@ -41,6 +41,17 @@ public class UnitService {
     }
 
     public Result<List<UnitEntity>> queryByCl(UnitQO uq){
-        return Result.success(unitManager.queryByCl(uq));
+        try {
+            if(null==uq || (null==uq.getCode() && null==uq.getDg())){
+                promoteException(CtbExceptionEnum.PARAM_NOT_RULED);
+            }//避免全表扫描
+            return Result.success(unitManager.queryByCl(uq));
+        } catch (CtbException e){
+            logger.error("biz-err. uq="+uq);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("sys-err. uq="+uq, e);
+            return Result.failure();
+        }
     }
 }
