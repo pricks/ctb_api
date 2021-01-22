@@ -31,6 +31,10 @@ public class CtbApplication {
 	 */
 	public static final String ENV = "env";
 
+	public static final String PROTOCOL = "prot";
+	public static final String PROTOCOL_HTTPS = "https";
+	public static final String PORT = "server.port";
+
 	/**
 	 * 日志输出的类型：file - 文件；console - 控制台。
 	 */
@@ -47,8 +51,9 @@ public class CtbApplication {
 	 * 设置默认的系统参数
 	 */
 	private static void setupDefaultSystemProperties() {
-		System.out.println("设置系统参数");
-		// 在本地启动项目时，未通过jvm参数指定项目名称，则进行默认指定，避免CMS tools等强依赖的工具报错。
+		System.out.println("设置系统参数. log = "+ System.getProperty("edu-ctb.log.home.dir"));
+		// 在本地启动项目时，未通过jvm参数指定项目名称，则进行默认指定，避免CMS tools等强依赖的工具报错
+		PropertiesOnStartup.parse();
 		if (System.getProperty(PROJECT_NAME) == null) {
 			System.setProperty(PROJECT_NAME, "edu-ctb");
 		}
@@ -68,10 +73,15 @@ public class CtbApplication {
 
 			// 设置log输出的类型为console
 			System.setProperty(LOG_OUTPUT_TYPE, "console");
+			System.setProperty("server.ssl.enabled", "false");
 		}
-		System.setProperty(LOG_OUTPUT_TYPE, "console");//todo 上线后删除本行
+		if(System.getProperty(PROTOCOL) == null){
+			String port = System.getProperty(PORT);
+			if(null==port || "443".equals(port)){port = "8080";}
+			System.setProperty(PORT, port);
+		}
 
-		PropertiesOnStartup.parse();
+
 	}
 
 }

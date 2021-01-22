@@ -47,10 +47,10 @@ public class PropertiesOnStartup {
         ds = ds.substring(idx+3);
         String skt = ds;
 
-//        System.setProperty("server.ssl.key-store-password", sslkspwd);
-//        System.setProperty("server.http-port", webport);
-//        System.setProperty("server.port", sslport);
-        //        System.setProperty("server.ssl.keyStoreType", skt);
+        System.setProperty("server.ssl.key-store-password", sslkspwd);
+        System.setProperty("server.http-port", webport);
+        System.setProperty("server.port", sslport);
+        System.setProperty("server.ssl.keyStoreType", skt);
         System.setProperty("spring.datasource.jdbc-url", String.format("jdbc:mysql://%s.%s.%s.%s:3306/edu_ct?useUnicode=true&characterEncoding=utf-8",ip1,ip2,ip3,ip4));
         System.setProperty("spring.datasource.username", du);
         System.setProperty("spring.datasource.password", dp);
