@@ -75,13 +75,11 @@ public class CtbApplication {
 			System.setProperty(LOG_OUTPUT_TYPE, "console");
 			System.setProperty("server.ssl.enabled", "false");
 		}
-		if(System.getProperty(PROTOCOL) == null){
-			String port = System.getProperty(PORT);
-			if(null==port || "443".equals(port)){port = "8080";}
-			System.setProperty(PORT, port);
+		if(System.getProperty(PROTOCOL) == null || !"https".equalsIgnoreCase(System.getProperty(PROTOCOL))){
+			String port = System.getProperty("port");
+			if(port!=null){
+				System.setProperty(PORT, port);
+			}
 		}
-
-
 	}
-
 }
