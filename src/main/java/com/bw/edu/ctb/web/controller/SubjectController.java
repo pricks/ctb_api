@@ -300,6 +300,11 @@ public class SubjectController {
             }
             t.setOts(JacksonUtil.serialize(maps));
         }
+        if(TTypeEnum.WENDA.getCode().equals(ttVO.getType())
+                || TTypeEnum.TIANKONG.getCode().equals(ttVO.getType())
+                || TTypeEnum.YINGYONG.getCode().equals(ttVO.getType())){
+            t.setTat(ttVO.getAnswer());
+        }
         return t;
     }
 
@@ -332,8 +337,15 @@ public class SubjectController {
         if(null == ttVO.getContent() || "".equals(ttVO.getContent().trim())){
             promoteException(CtbExceptionEnum.PARAM_NOT_RULED, "ttVO="+ttVO);
         }
-        if(ttVO.getType().equals(TTypeEnum.DANXUAN.getCode())){
+        if(TTypeEnum.DANXUAN.getCode().equals(ttVO.getType())){
             if(null==ttVO.getOps()){
+                promoteException(CtbExceptionEnum.PARAM_NOT_RULED, "ttVO="+ttVO);
+            }
+        }
+        if(TTypeEnum.WENDA.getCode().equals(ttVO.getType())
+            || TTypeEnum.TIANKONG.getCode().equals(ttVO.getType())
+            || TTypeEnum.YINGYONG.getCode().equals(ttVO.getType())){
+            if(StringUtil.isEmpty(ttVO.getAnswer())){
                 promoteException(CtbExceptionEnum.PARAM_NOT_RULED, "ttVO="+ttVO);
             }
         }

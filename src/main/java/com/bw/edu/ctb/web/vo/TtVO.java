@@ -17,6 +17,7 @@ public class TtVO implements Serializable {
     private String aB;
     private String aC;
     private String aD;
+    private String answer;
 
     public Integer getDg() {
         return dg;
@@ -120,5 +121,13 @@ public class TtVO implements Serializable {
 
     public void setaD(String aD) {
         this.aD = aD;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }
