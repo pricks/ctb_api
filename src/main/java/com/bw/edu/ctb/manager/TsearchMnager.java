@@ -60,7 +60,6 @@ public class TsearchMnager {
             throw new CtbException(CtbExceptionEnum.EOK_IS_NULL);
         }
         Long kpid = k.getId();
-        int size = tkrs.size();
 
         //1.查询当前kp下的tt，如果超过 maxNum 个，就返回前面 maxNum 个；否则进入第2步
         List<TkrEntity> kpDetails = tkrManager.queryTTs(k.getId(), eok, maxNum);
@@ -70,6 +69,8 @@ public class TsearchMnager {
                     if(te.getTid() > maxTid){
                         tkrs.add(te);
                     }
+
+                    //todo 通过tkr的gc和exSttBycl的gc，计算出该用户的总共知识点
                 }
             }else{
                 tkrs.addAll(kpDetails);

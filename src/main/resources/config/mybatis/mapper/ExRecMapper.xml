@@ -31,4 +31,10 @@
         from ex_rec
         where id=#{id}
     </select>
+
+    <select id="queryByBid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select *
+        from ex_rec
+        where bid=#{bid}
+    </select>
 </mapper>

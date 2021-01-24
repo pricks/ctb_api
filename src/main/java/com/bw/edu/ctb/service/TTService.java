@@ -12,10 +12,8 @@ import com.bw.edu.ctb.common.constants.Symbols;
 import com.bw.edu.ctb.common.qo.KpQO;
 import com.bw.edu.ctb.common.qo.KptBatchQO;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
-import com.bw.edu.ctb.dao.entity.KpEntity;
-import com.bw.edu.ctb.dao.entity.KptBatchEntity;
-import com.bw.edu.ctb.dao.entity.TTEntity;
-import com.bw.edu.ctb.dao.entity.TkrEntity;
+import com.bw.edu.ctb.common.util.StringUtil;
+import com.bw.edu.ctb.dao.entity.*;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.manager.*;
@@ -42,6 +40,8 @@ public class TTService {
     private TkrManager tkrManager;
     @Autowired
     private KptBatchManager kptBatchManager;
+    @Autowired
+    private ExRecManager exRecManager;
 
     @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
     public Result<Void> saveTT(TTEntity ttEntity, Long kpId){
@@ -71,7 +71,7 @@ public class TTService {
         if(new Integer(1).equals(ttBactchQO.getRl())){
             ttBactchQO.setMaxTid(null);
             ttBactchQO.setMaxKpId(null);
-            kb = queryTTSAndGenBatch(ttBactchQO);
+            kb = queryTTSAndGenBatch(ttBactchQO, null);
             if(null==kb){
                 logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
                 return Result.success();//用户友好
@@ -93,7 +93,7 @@ public class TTService {
                     ttBactchQO.setMaxKpId(kb.getMaxk());
                 }
 
-                kb = queryTTSAndGenBatch(ttBactchQO);
+                kb = queryTTSAndGenBatch(ttBactchQO, kb);
                 if(null==kb){
                     logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
                     return Result.success();//用户友好
@@ -135,18 +135,34 @@ public class TTService {
      * @param ttBactchQO
      * @return
      */
-    private KptBatchEntity queryTTSAndGenBatch(TTBactchQO ttBactchQO){
+    private KptBatchEntity queryTTSAndGenBatch(TTBactchQO ttBactchQO, KptBatchEntity old){
         Long maxKpId = getMaxKpid(ttBactchQO);
         Long maxTid = ttBactchQO.getMaxTid();//maxTid可以为空
         Integer eok = ttBactchQO.getEok();
 
+        int maxNum = SystemConstants.MAX_TTS_NUM;
+        List<Long> wttList = null;
+        if(old != null){
+            ExRecEntity ee = exRecManager.queryByBid(old.getId());
+            if(null==ee){
+                throw new CtbException(CtbExceptionEnum.KP_IS_NULL);
+            }
+            String wtts = ee.getWtts();
+            if(StringUtil.isNotEmpty(wtts)){
+                List<String> stl = Arrays.asList(ee.getWtts().split(Symbols.COMMA));
+                wttList = CollectionUtil.transfer(stl);
+                maxNum = SystemConstants.MAX_TTS_NUM-wttList.size();
+            }
+        }
+
+
         //查询当前kp下的tt，注：这些tt的id必须大于 maxTid
         List<TkrEntity> tkrs = new ArrayList<>();
         Long maxKpid = tsearchMnager.searchKpDetails(maxKpId, maxTid, eok, SystemConstants.MAX_TTS_NUM, tkrs);
-        if(tkrs.size() == 0){
-            return null;//说明当前单元下还没有titles
+        if(tkrs.size() == 0 && CollectionUtil.isEmpty(wttList)){
+            return null;//说明当前单元下还没有titles，并且也没有历史错题
         }
-        KptBatchEntity kb = KptBatchUtil.genKptBatch(ttBactchQO.getUid(), ttBactchQO.getUn(), ttBactchQO.getDl(), ttBactchQO.getRd(), maxKpid, tkrs, null);
+        KptBatchEntity kb = KptBatchUtil.genKptBatch(ttBactchQO.getUid(), ttBactchQO.getUn(), ttBactchQO.getDl(), ttBactchQO.getRd(), maxKpid, tkrs, wttList);
 
         //生成kptBatch
         kptBatchManager.create(kb);

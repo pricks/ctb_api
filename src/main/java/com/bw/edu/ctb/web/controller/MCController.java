@@ -110,30 +110,8 @@ public class MCController {
     public Result gt(TTBactchQO ttBactchQO, HttpServletRequest request){
         try{
             logger.error("gt. r=" + request.getRemoteAddr());
-
             //verify
-            if(null==ttBactchQO || StringUtil.isEmpty(ttBactchQO.getAtk())
-                    || null==ttBactchQO.getUn() || null==ttBactchQO.getDl()
-                    || null==ttBactchQO.getEok() || null==ttBactchQO.getRd()){
-                return Result.failure();
-            }
-            if(StringUtil.isNotWideEmpty(ttBactchQO.getMkp())){
-                Long mkp=Long.valueOf(ttBactchQO.getMkp());
-                Assert.isTrue(mkp>0,"mkp error");
-                ttBactchQO.setMaxKpId(mkp);
-            }
-            if(StringUtil.isNotWideEmpty(ttBactchQO.getMt())){
-                Long mt=Long.valueOf(ttBactchQO.getMt());
-                Assert.isTrue(mt>0,"mt error");
-                ttBactchQO.setMaxTid(mt);
-            }
-            Result<BUsr> bUsrRS = usrService.getByAtk(ttBactchQO.getAtk());
-            BUsr bUsr = bUsrRS.getData();
-            if(null==bUsr){
-                logger.error("[hacker attach!] not existed usr");
-                return Result.failure();//表示登录失败
-            }
-            ttBactchQO.setUid(bUsr.getId());
+            if (verify(ttBactchQO)) return Result.failure();
 
             Result<List<TTEntity>> ttRs = ttService.queryKpDetails(ttBactchQO);
             List<TTEntity> tts = ttRs.getData();
@@ -149,6 +127,32 @@ public class MCController {
             logger.error("gu sys-error. ttBactchQO="+ttBactchQO, e);
             return Result.failure();
         }
+    }
+
+    private boolean verify(TTBactchQO ttBactchQO) {
+        if(null==ttBactchQO || StringUtil.isEmpty(ttBactchQO.getAtk())
+                || null==ttBactchQO.getUn() || null==ttBactchQO.getDl()
+                || null==ttBactchQO.getEok() || null==ttBactchQO.getRd()){
+            return true;
+        }
+        if(StringUtil.isNotWideEmpty(ttBactchQO.getMkp())){
+            Long mkp=Long.valueOf(ttBactchQO.getMkp());
+            Assert.isTrue(mkp>0,"mkp error");
+            ttBactchQO.setMaxKpId(mkp);
+        }
+        if(StringUtil.isNotWideEmpty(ttBactchQO.getMt())){
+            Long mt=Long.valueOf(ttBactchQO.getMt());
+            Assert.isTrue(mt>0,"mt error");
+            ttBactchQO.setMaxTid(mt);
+        }
+        Result<BUsr> bUsrRS = usrService.getByAtk(ttBactchQO.getAtk());
+        BUsr bUsr = bUsrRS.getData();
+        if(null==bUsr){
+            logger.error("[hacker attach!] not existed usr");
+            return true;
+        }
+        ttBactchQO.setUid(bUsr.getId());
+        return false;
     }
 
     private EBatch build(Long kpId, Integer dl, List<TTEntity> tts){

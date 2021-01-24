@@ -23,6 +23,10 @@ public class ExRecManager {
         return exRecMapper.getById(id);
     }
 
+    public ExRecEntity queryByBid(Long bid){
+        return exRecMapper.queryByBid(bid);
+    }
+
     /**
      * 查询用户的最后一次练习记录
      * @param uid

@@ -27,15 +27,13 @@ public class ExRecService {
      * @param exRecEntity
      * @return
      */
-    @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
     public Result<Long> create(ExRecEntity exRecEntity){
         try {
             if(null==exRecEntity || null==exRecEntity.getBid()){
                 return Result.success();
             }
 
-            kptBatchManager.updateStatus(exRecEntity.getBid(), KptBatchStatusEnum.CREATED.getCode(), KptBatchStatusEnum.COMMITED.getCode());
-            exRecManager.save(exRecEntity);
+            writeDB(exRecEntity);
 
             pac.produce(exRecEntity.getId());
             return Result.success(exRecEntity.getId());
@@ -44,6 +42,27 @@ public class ExRecService {
             return Result.failure(e);
         } catch(Exception e){
             logger.error("createExrec failed because system. exRecEntity="+exRecEntity, e);
+            return Result.failure();
+        }
+    }
+
+    @Transactional(transactionManager = "basicTransactionManager", rollbackFor = Throwable.class)
+    private void writeDB(ExRecEntity exRecEntity) {
+        kptBatchManager.updateStatus(exRecEntity.getBid(), KptBatchStatusEnum.CREATED.getCode(), KptBatchStatusEnum.COMMITED.getCode());
+        exRecManager.save(exRecEntity);
+    }
+
+    public Result<ExRecEntity> queryByBid(Long bid){
+        try {
+            if(null==bid || bid<1L){
+                return Result.success();
+            }
+            return Result.success(exRecManager.queryByBid(bid));
+        } catch (CtbException e){
+            logger.error("failed. bid="+bid);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("failed because system. bid="+bid, e);
             return Result.failure();
         }
     }

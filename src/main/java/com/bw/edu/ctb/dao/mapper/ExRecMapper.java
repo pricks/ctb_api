@@ -8,4 +8,5 @@ public interface ExRecMapper {
     int save(ExRecEntity exRecEntity);
     ExRecEntity getById(Long id);
     Long selectLatestExr(Long uid);
+    ExRecEntity queryByBid(Long bid);
 }

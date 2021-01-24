@@ -55,7 +55,15 @@ public class KptBatchUtil {
         }
         kb.setTids(sb.toString());
 
-        kb.setMaxt(tids.get(tsize-1));
+        //compute max tid
+        if(sz1 > 0 && sz2 > 0){
+            Long t1 = tkrs.get(sz1-1).getTid();
+            Long t2 = ttids.get(sz2-1);
+            kb.setMaxt(t1>t2?t1:t2);
+        }else{
+            kb.setMaxt(tids.get(tsize-1));
+        }
+
         kb.setStatus(BatchStatusEnum.GENERATED.getCode());
         return kb;
     }

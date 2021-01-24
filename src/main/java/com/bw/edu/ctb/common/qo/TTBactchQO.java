@@ -1,5 +1,7 @@
 package com.bw.edu.ctb.common.qo;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 
 public class TTBactchQO implements Serializable {
@@ -14,6 +16,11 @@ public class TTBactchQO implements Serializable {
     private String mt;
     private Integer rd;
     private Integer rl;//reload，是否开启新一轮测试，此时将从第一个节点重新搜索tt
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
     public String getAtk() {
         return atk;
