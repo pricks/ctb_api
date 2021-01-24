@@ -40,7 +40,9 @@ public class TsearchMnager {
         if(null == maxTid) maxTid = 0L;
         Long maxKpId = searchKpDetails(k, maxTid, eok, maxNum, tkrs, true, true);
         if(tkrs.size()>maxNum){
-            tkrs = tkrs.subList(0, maxNum-1);
+            for(int i=maxNum;i<(tkrs.size()-1);i++){
+                tkrs.remove(i);
+            }
         }
         return maxKpId;
     }

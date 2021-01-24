@@ -73,7 +73,7 @@ public class TTService {
             ttBactchQO.setMaxKpId(null);
             kb = queryTTSAndGenBatch(ttBactchQO, null);
             if(null==kb){
-                logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
+                logger.info("[fatal] 未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
                 return Result.success();//用户友好
             }
         }//开启新一轮测试，直接从0开始查询tt
@@ -137,6 +137,8 @@ public class TTService {
      */
     private KptBatchEntity queryTTSAndGenBatch(TTBactchQO ttBactchQO, KptBatchEntity old){
         Long maxKpId = getMaxKpid(ttBactchQO);
+        if(null==maxKpId)return null;
+
         Long maxTid = ttBactchQO.getMaxTid();//maxTid可以为空
         Integer eok = ttBactchQO.getEok();
 
@@ -145,7 +147,7 @@ public class TTService {
         if(old != null){
             ExRecEntity ee = exRecManager.queryByBid(old.getId());
             if(null==ee){
-                throw new CtbException(CtbExceptionEnum.KP_IS_NULL);
+                throw new CtbException(CtbExceptionEnum.EXREC_NULL);
             }
             String wtts = ee.getWtts();
             if(StringUtil.isNotEmpty(wtts)){
@@ -158,7 +160,7 @@ public class TTService {
 
         //查询当前kp下的tt，注：这些tt的id必须大于 maxTid
         List<TkrEntity> tkrs = new ArrayList<>();
-        Long maxKpid = tsearchMnager.searchKpDetails(maxKpId, maxTid, eok, SystemConstants.MAX_TTS_NUM, tkrs);
+        Long maxKpid = tsearchMnager.searchKpDetails(maxKpId, maxTid, eok, maxNum, tkrs);
         if(tkrs.size() == 0 && CollectionUtil.isEmpty(wttList)){
             return null;//说明当前单元下还没有titles，并且也没有历史错题
         }
@@ -209,6 +211,7 @@ public class TTService {
             kpQO.setNum(1);
             List<KpEntity> kps = kpManager.queryFirstLevel(kpQO);
             if(null==kps || kps.size()==0){
+                logger.error("当前单元下还没有知识点分类. ttBactchQO="+ttBactchQO);
                 return null;
             }
             maxKpId = kps.get(0).getId();

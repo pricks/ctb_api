@@ -22,6 +22,7 @@ public enum CtbExceptionEnum {
     EX_STT_BYCL_IS_NULL(11003008, "EX_STT_BYCL_IS_NULL", "没有ex_stt_bycl"),
     TTID_NULL_FOR_BATCH(11003009, "TTID_NULL_FOR_BATCH", "没有tts，无法创建batch实例"),
     EX_STT_BYCL_CONT_NULL(11003010, "EX_STT_BYCL_CONT_NULL", "ex_stt字段为空"),
+    EXREC_NULL(11003011, "EXREC_NULL", "练习记录不存在"),
 
 
     /** ======================LOGIN错误码：1004开头============================ */

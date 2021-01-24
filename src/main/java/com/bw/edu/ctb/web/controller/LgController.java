@@ -143,7 +143,7 @@ public class LgController {
             Result<BUsr> bUsrRS = usrService.getByAtk(token);
             BUsr bUsr = bUsrRS.getData();
             if(null==bUsr){
-                logger.error("[hacker attach!] not existed usr");
+                logger.error("[hacker attach!] not existed usr. atk="+token);
                 return Result.failure();//表示登录失败
             }
             if(System.currentTimeMillis() >= bUsr.getExpire()){

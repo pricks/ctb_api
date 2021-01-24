@@ -121,7 +121,7 @@ public class MCController {
             String kpidStr = ttRs.getAttr(Keys.KPT_BATCH_ID);
             return Result.success(build(Long.valueOf(kpidStr), ttBactchQO.getDl(), tts));
         }catch (CtbException e){
-            logger.error("gu biz-error", e);
+            logger.error("gu biz-error. ttBactchQO="+ttBactchQO, e);
             return Result.failure(e);
         }catch (Exception e){
             logger.error("gu sys-error. ttBactchQO="+ttBactchQO, e);
