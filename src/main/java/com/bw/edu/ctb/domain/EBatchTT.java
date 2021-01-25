@@ -1,5 +1,9 @@
 package com.bw.edu.ctb.domain;
 
+import com.bw.edu.ctb.common.util.JacksonUtil;
+import com.bw.edu.ctb.common.util.StringUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -74,6 +78,17 @@ public class EBatchTT implements Serializable {
 
     public void setT_ops(List<EBatchOpt> t_ops) {
         this.t_ops = t_ops;
+    }
+
+    public void setT_ops(String ots) {
+        if(StringUtil.isEmpty(ots)){
+            return;
+        }
+        try {
+            this.t_ops = (List<EBatchOpt>) JacksonUtil.deserialize(ots, new TypeReference<List<EBatchOpt>>(){/**/});
+        }catch (Exception e){
+
+        }
     }
 
     public String getTt_answer() {

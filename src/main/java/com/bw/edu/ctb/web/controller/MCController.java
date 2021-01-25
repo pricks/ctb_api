@@ -15,6 +15,7 @@ import com.bw.edu.ctb.service.ExSttService;
 import com.bw.edu.ctb.service.TTService;
 import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.service.usr.UsrService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,13 +174,19 @@ public class MCController {
             et.setTt_ct(tt.getTc());
             et.setTt_offline(tt.getOi());
             et.setTt_type(tt.getType());
-            et.setT_ops(null);//todo
+            et.setT_ops(tt.getOts());
             et.setTt_answer(tt.getTca());
             et.setT_g_count(0);//todo
             eBatchTTList.add(et);
         }
         eb.setTt_list(eBatchTTList);
         return eb;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String s = "[{\"idx\":\"A\",\"cont\":\"fdas\"},{\"idx\":\"B\",\"cont\":\"fdsa\"},{\"idx\":\"C\",\"cont\":\"123\"}]";
+        List<EBatchOpt> list =  (List<EBatchOpt>) JacksonUtil.deserialize(s, new TypeReference<List<EBatchOpt>>(){/**/});
+        System.out.println("===list="+ list.size());
     }
 
 }
