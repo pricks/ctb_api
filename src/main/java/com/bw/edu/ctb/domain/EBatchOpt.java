@@ -8,4 +8,20 @@ import java.io.Serializable;
 public class EBatchOpt implements Serializable {
     private String idx;
     private String cont;
+
+    public String getIdx() {
+        return idx;
+    }
+
+    public void setIdx(String idx) {
+        this.idx = idx;
+    }
+
+    public String getCont() {
+        return cont;
+    }
+
+    public void setCont(String cont) {
+        this.cont = cont;
+    }
 }
