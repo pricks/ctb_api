@@ -2,6 +2,7 @@ package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.Keys;
+import com.bw.edu.ctb.common.qo.ExSttByclQO;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
 import com.bw.edu.ctb.common.util.CollectionUtil;
@@ -70,7 +71,12 @@ public class MCController {
             if(CollectionUtil.isEmpty(unitRs.getData())){
                 return Result.failure("no unit","还没有录入单元信息");
             }
-            Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl(bUsr.getId(), unitQO.getCl());
+            ExSttByclQO exSttByclQO = new ExSttByclQO();
+            exSttByclQO.setDg(unitQO.getDg());
+            exSttByclQO.setGd(unitQO.getGd());
+            exSttByclQO.setCl(unitQO.getCl());
+            exSttByclQO.setUid(bUsr.getId());
+            Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl(exSttByclQO);
             if(null == exSttByclEntityResult.getData()){
                 //写表，写入一条空记录
                 SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
