@@ -6,6 +6,7 @@ public enum ThirdTypeEnum {
     ALIPAY(2, "alipay"),
     TOUTIAO(3, "toutiao"),
     QQ(4, "qq"),
+    TMP(5, "temp"),//新用户临时登录
 
     ;
 

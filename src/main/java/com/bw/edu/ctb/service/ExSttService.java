@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -55,22 +56,30 @@ public class ExSttService {
 
     /**
      * 查询指定用户在当前课程下的ex_stt_by_class todo 走缓存
-     * @param uid
-     * @param cl
+     * @param exSttByclQO
      * @return
      */
-    public Result<ExSttByclEntity> queryExSttBycl(Long uid, Integer cl){
-        ExSttByclQO exSttQO = new ExSttByclQO();
-        exSttQO.setUid(uid);
-        exSttQO.setCl(cl);
-        List<ExSttByclEntity> exSttEntityList = exSttByclManager.select(exSttQO);
-        if(null==exSttEntityList || exSttEntityList.size()==0){
-            return Result.success();
+    public Result<ExSttByclEntity> queryExSttBycl(ExSttByclQO exSttByclQO){
+        try{
+            if(null==exSttByclQO || exSttByclQO.getDg()==null || exSttByclQO.getGd()==null
+                || exSttByclQO.getCl()==null || exSttByclQO.getUid()==null){
+                throw new CtbException(CtbExceptionEnum.PARAM_NULL);
+            }
+            List<ExSttByclEntity> exSttEntityList = exSttByclManager.select(exSttByclQO);
+            if(null==exSttEntityList || exSttEntityList.size()==0){
+                return Result.success();
+            }
+            if(exSttEntityList.size() > 1){
+                throw new CtbException(CtbExceptionEnum.EX_STT_BYCL_TOO_MANY, "esbQO="+exSttByclQO);
+            }
+            return Result.success(exSttEntityList.get(0));
+        }catch (CtbException e){
+            logger.error("biz-err. esbQO="+exSttByclQO);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("sys-err. esbQO="+exSttByclQO, e);
+            return Result.failure();
         }
-        if(exSttEntityList.size() > 1){
-            throw new CtbException(CtbExceptionEnum.EX_STT_BYCL_TOO_MANY, "uid="+uid+", cl="+cl);
-        }
-        return Result.success(exSttEntityList.get(0));
     }
 
     /**
