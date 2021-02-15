@@ -247,67 +247,33 @@ public class LgController {
 
     /** temp login, for new user login... */
     @PostMapping("/tmpg")
-    public Result<UsrDTO> tmp_lg(UserVO user, HttpServletRequest request){
+    public Result<UsrDTO> tmp_lg(HttpServletRequest request){
         try{
-            logger.error("g. r=" + request.getRemoteAddr() + ", model="+user);
-            if(null==user || StringUtil.isEmpty(user.getAvatar())){
+            logger.error("tmpLogin. r=" + request.getRemoteAddr());
+            String brand = request.getParameter("brand");
+            String model = request.getParameter("model");
+            String screenHeight = request.getParameter("screenHeight");
+            String deviceId = request.getParameter("deviceId");
+            String ip = request.getRemoteAddr();
+
+            if(StringUtil.isEmpty(brand) && StringUtil.isEmpty(model)){
+                logger.error("[hacker] brand=null && model=null");
                 promoteException(CtbExceptionEnum.USER_INFO_NULL);
             }
-            if(null==user.getAtype() && null==user.getType()){
-                logger.error("[hacker] atype==null");
-                promoteException(CtbExceptionEnum.USER_INFO_NULL);
+            Login lg = new Login(0L, ip);//游客
+            lg.setMark("brand="+brand+", model="+model+", screenHeight="+screenHeight+", deviceId="+deviceId);
+            Result<Void> rs = usrService.login(lg);
+            if(!rs.isSuccess()){
+                promoteException(rs.getCode(),rs.getMessage());
             }
-            if(ThirdTypeEnum.TMP.getCode().equals(user.getType())){
-                Result<TUsr> rs = usrService.queryTusrByNick(user.getNick(), user.getType());
-                if(!rs.isSuccess()){
-                    promoteException(rs.getCode(),rs.getMessage());
-                }
-                TUsr tUsr = rs.getData();
-                if(null == tUsr){
-                    Result<BUsr> createRS = usrService.createNewTUsr(build(user));
-                    BUsr bUsr = createRS.getData();
-                    UsrDTO usrDTO = new UsrDTO();
-                    usrDTO.setAtk(bUsr.getToken());
-
-                    Result<Void> lrs = usrService.login(new Login(bUsr.getId(), request.getRemoteAddr()));
-                    if(!lrs.isSuccess()){
-                        logger.error("write login record failed. new nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
-                        return Result.failure();
-                    }
-                    return Result.success(usrDTO);
-                }else{
-                    //写登录记录
-                    Result<Void> lrs = usrService.login(new Login(tUsr.getUid(), request.getRemoteAddr()));
-                    if(!lrs.isSuccess()){
-                        logger.error("write login record failed. old nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
-                        return Result.failure();
-                    }
-
-                    //延长token
-                    Result<BUsr> urs = usrService.updateToken(tUsr.getUid());
-                    if(!urs.isSuccess()){
-                        logger.error("token update failed. nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
-                        return Result.failure();
-                    }
-                    UsrDTO usrDTO = new UsrDTO();
-                    usrDTO.setAtk(urs.getData().getToken());
-                    return Result.success(usrDTO);
-                }
-            }else{
-                logger.error("[hacker] login type != tmp");
-                promoteException(CtbExceptionEnum.USER_INFO_NULL);
-            }
-
-            logger.error("[fatal error] unsupported login type. user="+user);
-            promoteException(CtbExceptionEnum.UN_SUPPORTED_LOGIN_TYPE);
+            return Result.success();
         }catch (CtbException e){
-            logger.error("tg biz-error. usr="+user, e);
+            logger.error("biz-err. ip="+request.getRemoteAddr(), e);
             return Result.failure(e);
         }catch (Exception e){
-            logger.error("tg sys-error. usr="+user, e);
+            logger.error("sys-err. ip="+request.getRemoteAddr(), e);
             return Result.failure();
         }
-        return Result.failure();
     }
 
 

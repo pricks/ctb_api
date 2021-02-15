@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.usr.Login" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,uid,ip
+        id,gc,uid,ip,mark
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),#{uid},#{ip}
+        #{id},now(),#{uid},#{ip},#{mark}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.usr.Login" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

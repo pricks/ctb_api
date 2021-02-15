@@ -7,6 +7,7 @@ public class Login {
     private Date gc;
     private Long uid;
     private String ip;
+    private String mark;//备注信息
 
     public Login(Long uid, String ip){
         this.uid = uid;
@@ -43,5 +44,13 @@ public class Login {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
     }
 }
