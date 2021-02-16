@@ -1,7 +1,5 @@
 package com.bw.edu.ctb.domain;
 
-import java.util.Date;
-
 public class UsrE {
     private Long uid;
     private String oid;//open id

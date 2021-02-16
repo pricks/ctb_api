@@ -7,10 +7,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.net.URL;
 
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@EnableTransactionManagement
 @SpringBootApplication
 @ServletComponentScan
 //@MapperScan({"com.bw.edu.ctb.dao.mapper","com.bw.edu.ctb.dao.mapper.usr"})

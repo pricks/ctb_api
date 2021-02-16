@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.usr.LUsr" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,gm,uid,name,pwd,mb,ats
+        id,gc,gm,uid,name,pwd,mb,ats,atk
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),now(),#{uid},#{name},#{pwd},#{mb},#{ats}
+        #{id},now(),now(),#{uid},#{name},#{pwd},#{mb},#{ats},#{atk}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.usr.LUsr" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -22,5 +22,10 @@
         select *
         from ulsr
         where uid=#{uid}
+    </select>
+    <select id="getByMb" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select *
+        from ulsr
+        where mb=#{mb}
     </select>
 </mapper>

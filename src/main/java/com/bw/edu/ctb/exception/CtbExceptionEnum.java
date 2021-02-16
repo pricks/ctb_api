@@ -30,6 +30,10 @@ public enum CtbExceptionEnum {
     USER_TYPE_NULL(11004002, "USER_TYPE_NULL", "用户信息错误"),
     MULTIPLE_SAME_TUSR(11004003, "MULTIPLE_SAME_TUSR", "用户重复"),
     UN_SUPPORTED_LOGIN_TYPE(11004004, "UN_SUPPORTED_LOGIN_TYPE", "不支持的登录方式"),
+    MB_ERROR(11004005, "MB_ERROR", "手机号格式不对"),
+    MB_LEN(11004006, "MB_LEN", "手机号长度不对"),
+    PWD_LEN(11004007, "PWD_LEN", "密码太长"),
+    PWD_MOT_MATCH(11004008, "PWD_MOT_MATCH", "密码错误"),
 
 
     /** ======================各模块通用错误码：999开头============================ */

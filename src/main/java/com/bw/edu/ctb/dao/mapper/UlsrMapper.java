@@ -7,4 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UlsrMapper {
     int save(LUsr lUsr);
     LUsr getByUid(Long uid);
+    LUsr getByMb(String mb);
 }

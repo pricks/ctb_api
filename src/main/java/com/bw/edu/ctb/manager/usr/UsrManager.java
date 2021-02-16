@@ -1,14 +1,8 @@
 package com.bw.edu.ctb.manager.usr;
 
 import com.bw.edu.ctb.common.qo.usr.TUsrQO;
-import com.bw.edu.ctb.dao.entity.usr.AURel;
-import com.bw.edu.ctb.dao.entity.usr.BUsr;
-import com.bw.edu.ctb.dao.entity.usr.Login;
-import com.bw.edu.ctb.dao.entity.usr.TUsr;
-import com.bw.edu.ctb.dao.mapper.UarelMapper;
-import com.bw.edu.ctb.dao.mapper.UbsrMapper;
-import com.bw.edu.ctb.dao.mapper.UlgMapper;
-import com.bw.edu.ctb.dao.mapper.UtsrMapper;
+import com.bw.edu.ctb.dao.entity.usr.*;
+import com.bw.edu.ctb.dao.mapper.*;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.common.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +17,8 @@ public class UsrManager {
     @Autowired
     private UbsrMapper ubsrMapper;
     @Autowired
+    private UlsrMapper ulsrMapper;
+    @Autowired
     private UarelMapper uarelMapper;
     @Autowired
     private UtsrMapper utsrMapper;
@@ -32,17 +28,24 @@ public class UsrManager {
     public BUsr getById(Long id){
         return ubsrMapper.getByUid(id);
     }
-
+    public LUsr getByMb(String mb){
+        return ulsrMapper.getByMb(mb);
+    }
     public void updateToken(BUsr bUsr){
         ubsrMapper.updateToken(bUsr);
     }
-
     public BUsr getByAtk(String token){
         return ubsrMapper.getByAtk(token);
     }
 
     public void createBusr(BUsr bUsr){
         int rs = ubsrMapper.save(bUsr);
+        if(rs < 1){
+            promoteException(CtbExceptionEnum.DB_WRITE_ERROR);
+        }
+    }
+    public void createLusr(LUsr lUsr){
+        int rs = ulsrMapper.save(lUsr);
         if(rs < 1){
             promoteException(CtbExceptionEnum.DB_WRITE_ERROR);
         }
