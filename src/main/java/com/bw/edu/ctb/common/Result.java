@@ -52,12 +52,13 @@ public class Result<T> implements Serializable {
     public static Result failure(){
         Result result = new Result();
         result.setSuccess(false);
+        result.setCode("SYSTEM ERROR");
         result.setMessage("SYSTEM ERROR");
         return result;
     }
 
     public static Result failure(CtbException e){
-        return failure(e.getCode(), e.getMessage());
+        return failure(e.getCode(), e.getDesc());
     }
 
     public String getCode() {
