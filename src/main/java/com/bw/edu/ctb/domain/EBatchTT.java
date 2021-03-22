@@ -19,6 +19,7 @@ public class EBatchTT implements Serializable {
     private String sel;
     private Integer correct;
     private Long r_kp_id;
+    private Integer dl;
 
     private Integer t_g_count;
     private String tt_g_rpm;
@@ -145,5 +146,13 @@ public class EBatchTT implements Serializable {
 
     public void setT_g_list(List<EBatchTT> t_g_list) {
         this.t_g_list = t_g_list;
+    }
+
+    public Integer getDl() {
+        return dl;
+    }
+
+    public void setDl(Integer dl) {
+        this.dl = dl;
     }
 }

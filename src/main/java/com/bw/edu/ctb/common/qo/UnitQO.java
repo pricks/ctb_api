@@ -7,6 +7,7 @@ public class UnitQO extends Paging implements Serializable {
     private Integer dg;
     private Integer gd;
     private Integer cl;
+    private Long un;
     private String atk;
     private Integer status;
 
@@ -56,5 +57,13 @@ public class UnitQO extends Paging implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getUn() {
+        return un;
+    }
+
+    public void setUn(Long un) {
+        this.un = un;
     }
 }

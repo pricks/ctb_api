@@ -2,6 +2,9 @@ package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.Keys;
+import com.bw.edu.ctb.common.enums.SortEnum;
+import com.bw.edu.ctb.common.enums.subjects.DGRel;
+import com.bw.edu.ctb.common.enums.subjects.DagangEnum;
 import com.bw.edu.ctb.common.qo.ExSttByclQO;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
@@ -11,7 +14,9 @@ import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.dao.entity.*;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.domain.*;
+import com.bw.edu.ctb.dto.GCDTO;
 import com.bw.edu.ctb.exception.CtbException;
+import com.bw.edu.ctb.service.ExRecService;
 import com.bw.edu.ctb.service.ExSttService;
 import com.bw.edu.ctb.service.TTService;
 import com.bw.edu.ctb.service.UnitService;
@@ -44,10 +49,105 @@ public class MCController {
     private TTService ttService;
     @Autowired
     private UsrService usrService;
+    @Autowired
+    private ExRecService exRecService;
+
+    /** get user's latest unit exercise record */
+    @PostMapping("glu")
+    public Result mcctl_glu(UnitQO unitQO, HttpServletRequest request){
+        try{
+            logger.error("glu. r=" + request.getRemoteAddr());
+
+            //verify
+            if(null==unitQO || StringUtil.isEmpty(unitQO.getAtk())
+                    || null==unitQO.getGd() || null==unitQO.getDg()
+                    || null==unitQO.getCl()){
+                return Result.failure();
+            }
+            Result<BUsr> bUsrRS = usrService.getByAtk(unitQO.getAtk());
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
+
+            Result<Long> unRS = exRecService.selectLatestExr(bUsr.getId());
+            if(!unRS.isSuccess() || null==unRS.getData()){
+                //获取class下第一个unit，即code最小的那个
+                unitQO.setSortProperty("code");
+                unitQO.setSortMode(SortEnum.ASC.getMode());
+                Result<List<UnitEntity>> unsRS = unitService.queryByCl(unitQO);
+                if(!unsRS.isSuccess() || CollectionUtil.isEmpty(unsRS.getData())){
+                    return Result.failure("no unit","还没有录入单元信息");
+                }
+                return Result.success(unsRS.getData().get(0));
+            }else{
+                return Result.success(unRS.getData());
+            }
+        }catch (CtbException e){
+            logger.error("glu biz-error", e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("glu sys-error. unitQO="+unitQO, e);
+            return Result.failure();
+        }
+    }
+
+    /** get user's titles by unit */
+    @PostMapping("gtbu")
+    public Result mcctl_gtbu(UnitQO unitQO, HttpServletRequest request){
+        try{
+            logger.error("glu. r=" + request.getRemoteAddr());
+
+            //verify
+            if(null==unitQO || StringUtil.isEmpty(unitQO.getAtk())
+                    || null==unitQO.getGd() || null==unitQO.getDg()
+                    || null==unitQO.getCl() || null==unitQO.getUn()){
+                return Result.failure();
+            }
+            Result<BUsr> bUsrRS = usrService.getByAtk(unitQO.getAtk());
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
+
+            //查询课程下的所有单元统计信息
+            Result<SttClDO> exSttByclRS = getExSttBycl(unitQO, bUsr);
+            if(!exSttByclRS.isSuccess()){
+                return exSttByclRS;
+            }
+            SttClDO sttClDO = exSttByclRS.getData();
+            SttDlDO sttDlDO = sttClDO.getBasicDl(unitQO.getUn());
+            if(null==sttDlDO){
+                return Result.failure("no unit","还没有录入知识点");
+            }
+
+            //查询tts
+            TTBactchQO ttBactchQO = new TTBactchQO();
+            ttBactchQO.setUid(bUsr.getId());
+            ttBactchQO.setAtk(unitQO.getAtk());
+            ttBactchQO.setUn(unitQO.getUn());
+            ttBactchQO.setDl(sttDlDO.getDl());
+            ttBactchQO.setEok(1);
+            ttBactchQO.setRd(sttDlDO.getRd());
+            ttBactchQO.setRl((sttDlDO.getEc()==0&&sttDlDO.getRd()>1)?1:0);
+            ttBactchQO.setMaxKpId(sttDlDO.getMaxKpId());
+            ttBactchQO.setMaxTid(sttDlDO.getMaxTid());
+            return getTts(ttBactchQO);
+        }catch (CtbException e){
+            logger.error("glu biz-error", e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("glu sys-error. unitQO="+unitQO, e);
+            return Result.failure();
+        }
+    }
+
 
     /** get user's unit ex_stt */
     @PostMapping("gu")
-    public Result gu(UnitQO unitQO, HttpServletRequest request){
+    public Result mcctl_gu(UnitQO unitQO, HttpServletRequest request){
         try{
             logger.error("gu. r=" + request.getRemoteAddr());
 
@@ -64,46 +164,7 @@ public class MCController {
                 return Result.failure();//表示登录失败
             }
 
-            Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
-            if(!unitRs.isSuccess()){
-                promoteException(unitRs.getCode(), unitRs.getMessage());
-            }
-            if(CollectionUtil.isEmpty(unitRs.getData())){
-                return Result.failure("no unit","还没有录入单元信息");
-            }
-
-            ExSttByclQO qo = new ExSttByclQO();
-            qo.setUid(bUsr.getId());
-            qo.setDg(unitQO.getDg());
-            qo.setGd(unitQO.getGd());
-            qo.setCl(unitQO.getCl());
-            Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl(qo);
-            if(null == exSttByclEntityResult.getData()){
-                //写表，写入一条空记录
-                SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
-                String sttStr = JacksonUtil.serialize(stt);
-                ExSttByclEntity ebe = new ExSttByclEntity();
-                ebe.setUid(bUsr.getId());
-                ebe.setDg(unitQO.getDg());
-                ebe.setGd(unitQO.getGd());
-                ebe.setCl(unitQO.getCl());
-                ebe.setStt(sttStr);
-                Result<Void> rs = exSttService.create(ebe);
-                if(!rs.isSuccess()){
-                    logger.error(String.format("[fatal] create ex_stt_bycl failed. errCode=%s, errMsg=%s", rs.getCode(), rs.getMessage()));
-                    return Result.failure();
-                }
-
-                return Result.success(stt);
-            }else{
-                if(exSttByclEntityResult.isSuccess()){
-                    SttClDO stt = JacksonUtil.deserialize(exSttByclEntityResult.getData().getStt(), SttClDO.class);
-                    return Result.success(stt);
-                }else{
-                    SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
-                    return Result.success(stt);
-                }
-            }
+            return getExSttBycl(unitQO, bUsr);
         }catch (CtbException e){
             logger.error("gu biz-error", e);
             return Result.failure(e);
@@ -113,21 +174,55 @@ public class MCController {
         }
     }
 
+    private Result<SttClDO> getExSttBycl(UnitQO unitQO, BUsr bUsr) throws Exception {
+        Result<List<UnitEntity>> unitRs = unitService.queryByCl(unitQO);
+        if(!unitRs.isSuccess()){
+            promoteException(unitRs.getCode(), unitRs.getMessage());
+        }
+        if(CollectionUtil.isEmpty(unitRs.getData())){
+            return Result.failure("no unit","还没有录入单元信息");
+        }
+
+        ExSttByclQO qo = new ExSttByclQO();
+        qo.setUid(bUsr.getId());
+        qo.setDg(unitQO.getDg());
+        qo.setGd(unitQO.getGd());
+        qo.setCl(unitQO.getCl());
+        Result<ExSttByclEntity> exSttByclEntityResult = exSttService.queryExSttBycl(qo);
+        if(null == exSttByclEntityResult.getData()){
+            //写表，写入一条空记录
+            SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
+            String sttStr = JacksonUtil.serialize(stt);
+            ExSttByclEntity ebe = new ExSttByclEntity();
+            ebe.setUid(bUsr.getId());
+            ebe.setDg(unitQO.getDg());
+            ebe.setGd(unitQO.getGd());
+            ebe.setCl(unitQO.getCl());
+            ebe.setStt(sttStr);
+            Result<Void> rs = exSttService.create(ebe);
+            if(!rs.isSuccess()){
+                logger.error(String.format("[fatal] create ex_stt_bycl failed. errCode=%s, errMsg=%s", rs.getCode(), rs.getMessage()));
+                return Result.failure();
+            }
+
+            return Result.success(stt);
+        }else{
+            if(exSttByclEntityResult.isSuccess()){
+                SttClDO stt = JacksonUtil.deserialize(exSttByclEntityResult.getData().getStt(), SttClDO.class);
+                return Result.success(stt);
+            }else{
+                SttClDO stt = SttClDO.buildEmpty(unitRs.getData(), UnitDO.build(unitQO));
+                return Result.success(stt);
+            }
+        }
+    }
+
     /** get user's tts batch */
     @PostMapping("gt")
-    public Result gt(TTBactchQO ttBactchQO, HttpServletRequest request){
+    public Result mcctl_gt(TTBactchQO ttBactchQO, HttpServletRequest request){
         try{
             logger.error("gt. r=" + request.getRemoteAddr());
-            //verify
-            if (verify(ttBactchQO)) return Result.failure();
-
-            Result<List<TTEntity>> ttRs = ttService.queryKpDetails(ttBactchQO);
-            List<TTEntity> tts = ttRs.getData();
-            if(null==tts || tts.size()==0){
-                return Result.success();
-            }
-            String kpidStr = ttRs.getAttr(Keys.KPT_BATCH_ID);
-            return Result.success(build(Long.valueOf(kpidStr), ttBactchQO.getDl(), tts));
+            return getTts(ttBactchQO);
         }catch (CtbException e){
             logger.error("gu biz-error. ttBactchQO="+ttBactchQO, e);
             return Result.failure(e);
@@ -135,6 +230,19 @@ public class MCController {
             logger.error("gu sys-error. ttBactchQO="+ttBactchQO, e);
             return Result.failure();
         }
+    }
+
+    private Result getTts(TTBactchQO ttBactchQO) {
+        //verify
+        if (verify(ttBactchQO)) return Result.failure();
+
+        Result<List<TTEntity>> ttRs = ttService.queryKpDetails(ttBactchQO);
+        List<TTEntity> tts = ttRs.getData();
+        if(null==tts || tts.size()==0){
+            return Result.success();
+        }
+        String kpidStr = ttRs.getAttr(Keys.KPT_BATCH_ID);
+        return Result.success(build(Long.valueOf(kpidStr), ttBactchQO.getDl(), tts));
     }
 
     private boolean verify(TTBactchQO ttBactchQO) {
@@ -179,6 +287,7 @@ public class MCController {
             et.setT_idx(k+1);
             et.setTid(tt.getId());
             et.setTt_ct(tt.getTc());
+            et.setDl(tt.getDl());
             et.setTt_offline(tt.getOi());
             et.setTt_type(tt.getType());
             et.setT_ops(tt.getOts());

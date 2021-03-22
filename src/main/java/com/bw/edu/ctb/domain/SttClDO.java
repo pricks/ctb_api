@@ -20,6 +20,30 @@ public class SttClDO implements Serializable {
     private List<SttUnDO> tops;
     private List<SttUnDO> uns;
 
+    /**
+     * 获取指定单元下的dl="基础"的统计信息
+     * @param un
+     * @return
+     */
+    public SttDlDO getBasicDl(Long un){
+        List<SttDlDO> sttDlDOS = null;
+        for(SttUnDO su : uns){
+            if(su.getUn().equals(un)){
+                sttDlDOS = su.getDls();
+                break;
+            }
+        }
+        if(sttDlDOS==null){
+            return null;
+        }
+        for(SttDlDO sd : sttDlDOS){
+            if(DlEnum.BASIC.getCode().equals(sd.getDl())){
+                return sd;
+            }
+        }
+        return null;
+    }
+
     public void update(ExRecEntity ee, KptBatchEntity kb){
         Long un = ee.getUn();
         Integer dl = ee.getDl();
