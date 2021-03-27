@@ -46,7 +46,7 @@
 
     <update id="updateStatus" parameterType="java.util.Map">
         update kpt_batch
-        set status=#{tarStatus}
+        set status=#{tarStatus}, gm=now()
         where id=#{id} and status=#{oriStatus}
     </update>
 </mapper>

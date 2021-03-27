@@ -4,10 +4,10 @@
     <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.ExRecEntity" autoMapping="true" />
 
     <sql id="Base_Column_List" >
-        id,gc,uid,un,rd,dl,bid,tts,kns,wkns,wtts,score,ckc,maxk,maxt
+        id,gc,uid,cl,un,rd,dl,bid,tts,kns,wkns,wtts,score,ckc,maxk,maxt
     </sql>
     <sql id="BaseProperties" >
-        #{id},now(),#{uid},#{un},#{rd},#{dl},#{bid},#{tts},#{kns},#{wkns},#{wtts},#{score},#{ckc},#{maxk},#{maxt}
+        #{id},now(),#{uid},#{cl},#{un},#{rd},#{dl},#{bid},#{tts},#{kns},#{wkns},#{wtts},#{score},#{ckc},#{maxk},#{maxt}
     </sql>
 
     <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.ExRecEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -22,6 +22,15 @@
         select un
         from ex_rec
         where uid=#{uid}
+        order by gc desc
+        limit 1
+    </select>
+
+    <!-- 查询指定用户、指定课程下的最后一次练习记录 -->
+    <select id="selectLatestExrByCl" parameterType="com.bw.edu.ctb.common.qo.ExRecQO" resultType="java.lang.Long">
+        select un
+        from ex_rec
+        where uid=#{uid} and cl=#{cl}
         order by gc desc
         limit 1
     </select>

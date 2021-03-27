@@ -2,9 +2,11 @@ package com.bw.edu.ctb.web.controller;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.Keys;
+import com.bw.edu.ctb.common.enums.DlEnum;
 import com.bw.edu.ctb.common.enums.SortEnum;
 import com.bw.edu.ctb.common.enums.subjects.DGRel;
 import com.bw.edu.ctb.common.enums.subjects.DagangEnum;
+import com.bw.edu.ctb.common.qo.ExRecQO;
 import com.bw.edu.ctb.common.qo.ExSttByclQO;
 import com.bw.edu.ctb.common.qo.TTBactchQO;
 import com.bw.edu.ctb.common.qo.UnitQO;
@@ -16,19 +18,20 @@ import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.domain.*;
 import com.bw.edu.ctb.dto.GCDTO;
 import com.bw.edu.ctb.exception.CtbException;
+import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.service.ExRecService;
 import com.bw.edu.ctb.service.ExSttService;
 import com.bw.edu.ctb.service.TTService;
 import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.service.usr.UsrService;
+import com.bw.edu.ctb.web.vo.LatestUnitVO;
+import com.bw.edu.ctb.web.vo.UnitVO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -71,7 +74,7 @@ public class MCController {
                 return Result.failure();//表示登录失败
             }
 
-            Result<Long> unRS = exRecService.selectLatestExr(bUsr.getId());
+            Result<Long> unRS = exRecService.selectLatestExrByCl(new ExRecQO(bUsr.getId(), unitQO.getCl()));
             if(!unRS.isSuccess() || null==unRS.getData()){
                 //获取class下第一个unit，即code最小的那个
                 unitQO.setSortProperty("code");
@@ -80,9 +83,34 @@ public class MCController {
                 if(!unsRS.isSuccess() || CollectionUtil.isEmpty(unsRS.getData())){
                     return Result.failure("no unit","还没有录入单元信息");
                 }
-                return Result.success(unsRS.getData().get(0));
+                return Result.success(LatestUnitVO.build(unsRS.getData().get(0)));
             }else{
-                return Result.success(unRS.getData());
+                Long un = unRS.getData();
+                unitQO.setUn(un);
+                //查询课程下的所有单元统计信息
+                Result<SttClDO> exSttByclRS = getExSttBycl(unitQO, bUsr);
+                if(!exSttByclRS.isSuccess()){
+                    //1.如果没有查到历史练习统计信息
+                    return queryUnit(un);
+                }
+
+                //2.如果查询到了历史练习统计信息
+                SttClDO sttClDO = exSttByclRS.getData();
+                SttDlDO sttDlDO = sttClDO.getBasicDl(un);
+                if(null==sttDlDO){
+                    //2.1.如果有课程的历史练习统计信息，但是没有单元的历史统计
+                    return queryUnit(un);
+                }
+                LatestUnitVO luv = new LatestUnitVO();
+                luv.setUn(un);
+                for(SttUnDO su : sttClDO.getUns()){
+                    if(su.getUn().equals(un)){
+                        luv.setUname(su.getUname());
+                    }
+                }
+                luv.setRd(sttDlDO.getRd());
+                luv.setEc(sttDlDO.getEc());
+                return Result.success(luv);
             }
         }catch (CtbException e){
             logger.error("glu biz-error", e);
@@ -91,6 +119,14 @@ public class MCController {
             logger.error("glu sys-error. unitQO="+unitQO, e);
             return Result.failure();
         }
+    }
+
+    private Result queryUnit(Long un) {
+        Result<UnitEntity> unitEntityResult = unitService.getByCode(un);
+        if (unitEntityResult == null || !unitEntityResult.isSuccess() || null == unitEntityResult.getData()) {
+            throw new CtbException(CtbExceptionEnum.UNIT_IS_NULL);
+        }
+        return Result.success(LatestUnitVO.build(unitEntityResult.getData()));
     }
 
     /** get user's titles by unit */
@@ -120,7 +156,8 @@ public class MCController {
             SttClDO sttClDO = exSttByclRS.getData();
             SttDlDO sttDlDO = sttClDO.getBasicDl(unitQO.getUn());
             if(null==sttDlDO){
-                return Result.failure("no unit","还没有录入知识点");
+                sttDlDO = new SttDlDO();
+                sttDlDO.setDl(DlEnum.BASIC.getCode());
             }
 
             //查询tts
@@ -131,7 +168,11 @@ public class MCController {
             ttBactchQO.setDl(sttDlDO.getDl());
             ttBactchQO.setEok(1);
             ttBactchQO.setRd(sttDlDO.getRd());
-            ttBactchQO.setRl((sttDlDO.getEc()==0&&sttDlDO.getRd()>1)?1:0);
+            if(null==sttDlDO.getEc() || null==sttDlDO.getRd()){
+                ttBactchQO.setRd(0);
+            }else{
+                ttBactchQO.setRl((sttDlDO.getEc()==0&&sttDlDO.getRd()>1)?1:0);
+            }
             ttBactchQO.setMaxKpId(sttDlDO.getMaxKpId());
             ttBactchQO.setMaxTid(sttDlDO.getMaxTid());
             return getTts(ttBactchQO);
@@ -180,7 +221,7 @@ public class MCController {
             promoteException(unitRs.getCode(), unitRs.getMessage());
         }
         if(CollectionUtil.isEmpty(unitRs.getData())){
-            return Result.failure("no unit","还没有录入单元信息");
+            return Result.failure("no unit","the units have not been registered.");
         }
 
         ExSttByclQO qo = new ExSttByclQO();
@@ -228,6 +269,48 @@ public class MCController {
             return Result.failure(e);
         }catch (Exception e){
             logger.error("gu sys-error. ttBactchQO="+ttBactchQO, e);
+            return Result.failure();
+        }
+    }
+
+    @PostMapping("u")
+    public Result query__un(UnitQO unitQO, HttpServletRequest request){
+        try{
+            logger.error("glu. r=" + request.getRemoteAddr());
+
+            //verify
+            if(null==unitQO || StringUtil.isEmpty(unitQO.getAtk())
+                    || null==unitQO.getGd() || null==unitQO.getDg()
+                    || null==unitQO.getCl()){
+                return Result.failure();
+            }
+            Result<BUsr> bUsrRS = usrService.getByAtk(unitQO.getAtk());
+            BUsr bUsr = bUsrRS.getData();
+            if(null==bUsr){
+                logger.error("[hacker attach!] not existed usr");
+                return Result.failure();//表示登录失败
+            }
+
+            unitQO.setSortProperty("code");
+            unitQO.setSortMode(SortEnum.ASC.getMode());
+            Result<List<UnitEntity>> unsRS = unitService.queryByCl(unitQO);
+            if(CollectionUtil.isNotEmpty(unsRS.getData())){
+                List<UnitVO> uvs = new ArrayList<>(unsRS.getData().size());
+                for(UnitEntity ue : unsRS.getData()){
+                    UnitVO uv = new UnitVO();
+                    uv.setUc(ue.getCode());
+                    uv.setUn(ue.getName());
+                    uvs.add(uv);
+                }
+                return Result.success(uvs);
+            }else{
+                return Result.failure("no unit","还没有录入单元信息");
+            }
+        }catch (CtbException e){
+            logger.error("glu biz-error", e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("glu sys-error. unitQO="+unitQO, e);
             return Result.failure();
         }
     }

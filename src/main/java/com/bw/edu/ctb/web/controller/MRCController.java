@@ -4,12 +4,15 @@ import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.enums.KptBatchStatusEnum;
 import com.bw.edu.ctb.dao.entity.ExRecEntity;
 import com.bw.edu.ctb.dao.entity.KptBatchEntity;
+import com.bw.edu.ctb.dao.entity.UnitEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
 import com.bw.edu.ctb.dto.SsDTO;
 import com.bw.edu.ctb.exception.CtbException;
+import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.service.ExRecService;
 import com.bw.edu.ctb.service.KptBatchService;
 import com.bw.edu.ctb.service.SGService;
+import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.service.usr.UsrService;
 import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.web.vo.ExRecVO;
@@ -36,6 +39,8 @@ public class MRCController {
     private SGService sgService;
     @Autowired
     private KptBatchService kptBatchService;
+    @Autowired
+    private UnitService unitService;
 
     /** commit rv_rec */
     @PostMapping("/c")
@@ -91,6 +96,14 @@ public class MRCController {
         ee.setCkc(exRecVO.getCkc());
         ee.setMaxk(k.getMaxk());//发给客户端的tt batch就是按照kn排序的
         ee.setMaxt(k.getMaxt());
+
+        //获取cl
+        Result<UnitEntity> unitEntityResult = unitService.getByCode(ee.getUn());
+        if(null==unitEntityResult || !unitEntityResult.isSuccess() || null==unitEntityResult.getData()){
+            throw new CtbException(CtbExceptionEnum.UNIT_IS_NULL);
+        }
+        ee.setCl(unitEntityResult.getData().getCl());
+
         Result<Long> saveRS = exRecService.create(ee);
         if(!saveRS.isSuccess() || null==saveRS.getData()){
             promoteException(saveRS.getCode(), saveRS.getMessage());

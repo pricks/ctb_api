@@ -1,6 +1,7 @@
 package com.bw.edu.ctb.dao;
 
 import com.bw.edu.ctb.CtbApplicationTests;
+import com.bw.edu.ctb.common.qo.ExRecQO;
 import com.bw.edu.ctb.dao.entity.ExRecEntity;
 import com.bw.edu.ctb.dao.mapper.ExRecMapper;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,12 @@ public class ExRecDAOTest extends CtbApplicationTests {
     @Test
     public void testSelectLatestExr(){
         Long un = exRecMapper.selectLatestExr(1L);
+        System.out.println("====un="+un);
+    }
+
+    @Test
+    public void testSelectLatestExrByCl(){
+        Long un = exRecMapper.selectLatestExrByCl(new ExRecQO(1L, 2));
         System.out.println("====un="+un);
     }
 }

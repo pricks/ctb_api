@@ -2,6 +2,7 @@ package com.bw.edu.ctb.service;
 
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.enums.KptBatchStatusEnum;
+import com.bw.edu.ctb.common.qo.ExRecQO;
 import com.bw.edu.ctb.dao.entity.ExRecEntity;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.manager.ExRecManager;
@@ -78,6 +79,22 @@ public class ExRecService {
             return Result.failure(e);
         } catch(Exception e){
             logger.error("selectLatestExr failed because system. uid="+uid, e);
+            return Result.failure();
+        }
+    }
+
+    public Result<Long> selectLatestExrByCl(ExRecQO exRecQO){
+        try {
+            if(null==exRecQO || null==exRecQO.getUid() || exRecQO.getUid()<1L || null==exRecQO.getCl()){
+                logger.error("exRecQO is null");
+                return Result.success();
+            }
+            return Result.success(exRecManager.selectLatestExrByCl(exRecQO));
+        } catch (CtbException e){
+            logger.error("biz error. exRecQO="+exRecQO);
+            return Result.failure(e);
+        } catch(Exception e){
+            logger.error("system error. exRecQO="+exRecQO, e);
             return Result.failure();
         }
     }

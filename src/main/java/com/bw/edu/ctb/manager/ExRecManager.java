@@ -1,5 +1,6 @@
 package com.bw.edu.ctb.manager;
 
+import com.bw.edu.ctb.common.qo.ExRecQO;
 import com.bw.edu.ctb.dao.entity.ExRecEntity;
 import com.bw.edu.ctb.dao.mapper.ExRecMapper;
 import com.bw.edu.ctb.exception.CtbException;
@@ -34,5 +35,9 @@ public class ExRecManager {
      */
     public Long selectLatestExr(Long uid){
         return exRecMapper.selectLatestExr(uid);
+    }
+
+    public Long selectLatestExrByCl(ExRecQO exRecQO){
+        return exRecMapper.selectLatestExrByCl(exRecQO);
     }
 }

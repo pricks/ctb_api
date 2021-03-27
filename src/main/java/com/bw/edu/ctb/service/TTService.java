@@ -88,15 +88,25 @@ public class TTService {
                  * app端用户继续review
                  */
                 kb = kptBatchManager.queryLastValid(buildKptBatchQO(ttBactchQO, KptBatchStatusEnum.COMMITED.getCode()));
-                if(null!=kb){
-                    ttBactchQO.setMaxTid(kb.getMaxt());
-                    ttBactchQO.setMaxKpId(kb.getMaxk());
-                }
+//                if(null!=kb){
+//                    ttBactchQO.setMaxTid(kb.getMaxt());
+//                    ttBactchQO.setMaxKpId(kb.getMaxk());
+//                }
+//
+//                kb = queryTTSAndGenBatch(ttBactchQO, kb);
+//                if(null==kb){
+//                    logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
+//                    return Result.success();//用户友好
+//                }
 
-                kb = queryTTSAndGenBatch(ttBactchQO, kb);
-                if(null==kb){
-                    logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
-                    return Result.success();//用户友好
+                if(kb!=null){
+                    kptBatchManager.updateStatus(kb.getId(), KptBatchStatusEnum.COMMITED.getCode(), KptBatchStatusEnum.CREATED.getCode());
+                }else {
+                    kb = queryTTSAndGenBatch(ttBactchQO, kb);
+                    if(null==kb){
+                        logger.info("未查询到tt. ttBactchQO="+ttBactchQO);//todo monitor
+                        return Result.success();//用户友好
+                    }
                 }
             }
         }
