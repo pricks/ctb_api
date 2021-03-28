@@ -74,44 +74,48 @@ public class MCController {
                 return Result.failure();//表示登录失败
             }
 
-            Result<Long> unRS = exRecService.selectLatestExrByCl(new ExRecQO(bUsr.getId(), unitQO.getCl()));
-            if(!unRS.isSuccess() || null==unRS.getData()){
-                //获取class下第一个unit，即code最小的那个
-                unitQO.setSortProperty("code");
-                unitQO.setSortMode(SortEnum.ASC.getMode());
-                Result<List<UnitEntity>> unsRS = unitService.queryByCl(unitQO);
-                if(!unsRS.isSuccess() || CollectionUtil.isEmpty(unsRS.getData())){
-                    return Result.failure("no unit","还没有录入单元信息");
-                }
-                return Result.success(LatestUnitVO.build(unsRS.getData().get(0)));
-            }else{
-                Long un = unRS.getData();
-                unitQO.setUn(un);
-                //查询课程下的所有单元统计信息
-                Result<SttClDO> exSttByclRS = getExSttBycl(unitQO, bUsr);
-                if(!exSttByclRS.isSuccess()){
-                    //1.如果没有查到历史练习统计信息
-                    return queryUnit(un);
-                }
-
-                //2.如果查询到了历史练习统计信息
-                SttClDO sttClDO = exSttByclRS.getData();
-                SttDlDO sttDlDO = sttClDO.getBasicDl(un);
-                if(null==sttDlDO){
-                    //2.1.如果有课程的历史练习统计信息，但是没有单元的历史统计
-                    return queryUnit(un);
-                }
-                LatestUnitVO luv = new LatestUnitVO();
-                luv.setUn(un);
-                for(SttUnDO su : sttClDO.getUns()){
-                    if(su.getUn().equals(un)){
-                        luv.setUname(su.getUname());
+            Long un = unitQO.getUn();
+            if(null==un){
+                Result<Long> unRS = exRecService.selectLatestExrByCl(new ExRecQO(bUsr.getId(), unitQO.getCl()));
+                if(!unRS.isSuccess() || null==unRS.getData()){
+                    //获取class下第一个unit，即code最小的那个
+                    unitQO.setSortProperty("code");
+                    unitQO.setSortMode(SortEnum.ASC.getMode());
+                    Result<List<UnitEntity>> unsRS = unitService.queryByCl(unitQO);
+                    if(!unsRS.isSuccess() || CollectionUtil.isEmpty(unsRS.getData())){
+                        return Result.failure("no unit","还没有录入单元信息");
                     }
+                    return Result.success(LatestUnitVO.build(unsRS.getData().get(0)));
                 }
-                luv.setRd(sttDlDO.getRd());
-                luv.setEc(sttDlDO.getEc());
-                return Result.success(luv);
+                un = unRS.getData();
             }
+
+            unitQO.setUn(un);
+            //查询课程下的所有单元统计信息
+            Result<SttClDO> exSttByclRS = getExSttBycl(unitQO, bUsr);
+            if(!exSttByclRS.isSuccess()){
+                //1.如果没有查到历史练习统计信息
+                return queryUnit(un);
+            }
+
+            //2.如果查询到了历史练习统计信息
+            SttClDO sttClDO = exSttByclRS.getData();
+            SttDlDO sttDlDO = sttClDO.getBasicDl(un);
+            if(null==sttDlDO){
+                //2.1.如果有课程的历史练习统计信息，但是没有单元的历史统计
+                return queryUnit(un);
+            }
+            LatestUnitVO luv = new LatestUnitVO();
+            luv.setUn(un);
+            for(SttUnDO su : sttClDO.getUns()){
+                if(su.getUn().equals(un)){
+                    luv.setUname(su.getUname());
+                }
+            }
+            luv.setRd(sttDlDO.getRd());
+            luv.setEc(sttDlDO.getEc());
+            return Result.success(luv);
+
         }catch (CtbException e){
             logger.error("glu biz-error", e);
             return Result.failure(e);

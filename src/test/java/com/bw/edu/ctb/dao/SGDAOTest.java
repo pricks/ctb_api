@@ -14,10 +14,10 @@ public class SGDAOTest extends CtbApplicationTests {
 
     @Test
     public void testCreate(){
-        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X1.getCode(), 1, "语文");
-        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X1.getCode(), 2, "小古文");
-        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X1.getCode(), 3, "数学");
-        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X1.getCode(), 4, "口算");
+        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X11.getCode(), 1, "语文");
+        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X11.getCode(), 2, "小古文");
+        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X11.getCode(), 3, "数学");
+        create(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X11.getCode(), 4, "口算");
     }
 
     private void create(int dg, int gd, int sc, String sn){

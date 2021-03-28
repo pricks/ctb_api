@@ -10,8 +10,10 @@ import java.util.List;
  */
 public enum DGRel {
     /**====================== 人教版 =========================*/
-    D1_X1(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X1),
-    D1_X2(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X2),
+    D1_X11(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X11),
+    D1_X12(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X12),
+    D1_X21(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X21),
+    D1_X22(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X22),
     D1_X3(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X3),
     D1_X4(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X4),
     D1_X5(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X5),

@@ -3,8 +3,10 @@ package com.bw.edu.ctb.common.enums.subjects;
 import com.bw.edu.ctb.common.enums.DlEnum;
 
 public enum GradeEnum {
-    X1(1, "1年级"),
-    X2(2, "2年级"),
+    X11(11, "1年级上"),
+    X12(12, "1年级下"),
+    X21(21, "2年级上"),
+    X22(22, "2年级下"),
     X3(3, "3年级"),
     X4(4, "4年级"),
     X5(5, "5年级"),

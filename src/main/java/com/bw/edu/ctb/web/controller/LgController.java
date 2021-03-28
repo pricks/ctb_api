@@ -110,8 +110,13 @@ public class LgController {
                 //获取默认的gd & class
                 GCDTO gcdto = new GCDTO();
                 gcdto.setDg(DagangEnum.RENJIAOBAN.getCode());
-                gcdto.setGd(DGRel.D1_X1.getGe().getCode());
-                gcdto.setGdn(DGRel.D1_X1.getGe().getName());
+
+                /**
+                 * todo app上的年级选择暂时关闭，仅面向2年级小朋友，因此这里先设定为X22。
+                 * 等后面app上的年级选择功能上线后，这里改成X11
+                 */
+                gcdto.setGd(DGRel.D1_X22.getGe().getCode());
+                gcdto.setGdn(DGRel.D1_X22.getGe().getName());
                 return Result.success(gcdto);
             }
 
