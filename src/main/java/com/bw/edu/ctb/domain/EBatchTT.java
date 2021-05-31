@@ -20,6 +20,7 @@ public class EBatchTT implements Serializable {
     private Integer correct;
     private Long r_kp_id;
     private Integer dl;
+    private String tat;//text analysis
 
     private Integer t_g_count;
     private String tt_g_rpm;
@@ -154,5 +155,13 @@ public class EBatchTT implements Serializable {
 
     public void setDl(Integer dl) {
         this.dl = dl;
+    }
+
+    public String getTat() {
+        return tat;
+    }
+
+    public void setTat(String tat) {
+        this.tat = tat;
     }
 }

@@ -379,6 +379,7 @@ public class MCController {
             et.setTt_type(tt.getType());
             et.setT_ops(tt.getOts());
             et.setTt_answer(tt.getTca());
+            et.setTat(tt.getTat());
             et.setT_g_count(0);//todo
             eBatchTTList.add(et);
         }
