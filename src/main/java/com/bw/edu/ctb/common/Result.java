@@ -1,6 +1,7 @@
 package com.bw.edu.ctb.common;
 
 import com.bw.edu.ctb.exception.CtbException;
+import com.bw.edu.ctb.exception.CtbExceptionEnum;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -47,6 +48,10 @@ public class Result<T> implements Serializable {
         result.setCode(code);
         result.setMessage(message);
         return result;
+    }
+
+    public static Result failure(CtbExceptionEnum exceptionEnum){
+        return failure(exceptionEnum.getCode(), exceptionEnum.getDesc());
     }
 
     public static Result failure(){

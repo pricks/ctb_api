@@ -61,6 +61,44 @@ public class FastUploadCtbImage {
     }
 
 
+
+    /**
+     * upload file 4 ctb
+     * */
+    @RequestMapping(value = {"uct", "uct/"}, method = RequestMethod.POST)
+//    @ResponseBody
+    @CrossOrigin
+    public Map<String, String> fileUpload4Ctb(@RequestParam("ct") MultipartFile file, HttpServletRequest request){
+        Map<String, String> result = new HashMap<>();
+
+        if(file.isEmpty()){
+            result.put("success", "0");
+            result.put("errCode", "file_null");
+            result.put("errMsg", "上传的图片为空");
+            return result;
+        }
+        String fileName = file.getOriginalFilename();
+        int size = (int) file.getSize();
+        try {
+
+//            String url = QCosUtil.uploadFileFromInputStream(fileName, (FileInputStream)file.getInputStream());
+//            System.out.println("url===="+url);
+
+            //固定值
+            result.put("success", "1");
+//            result.put("file", url);
+            //必须这样{"uploaded":"1","url", "图片URL"} 或者自己修改CKEditor5 js源代码
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", "0");
+            result.put("errCode", "sys_error");
+            result.put("errMsg", "系统异常");
+            return result;
+        }
+    }
+
+
     /**
      * upload file 4 scratch
      * */

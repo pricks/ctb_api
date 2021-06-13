@@ -35,6 +35,11 @@ public enum CtbExceptionEnum {
     PWD_LEN(11004007, "PWD_LEN", "密码太长"),
     PWD_MOT_MATCH(11004008, "PWD_MOT_MATCH", "密码错误"),
 
+    /** ======================CTB错误码：1005开头============================ */
+    FILE_NULL(11005001, "FILE_NULL", "文件为空"),
+    FILE_COUNT_OVER(11005002, "FILE_COUNT_OVER", "1天最多只能上传5个错题"),
+
+
 
     /** ======================各模块通用错误码：999开头============================ */
     OBJECT_NULL(1999001, "OBJECT_IS_NULL", "对象为空"),
@@ -45,6 +50,7 @@ public enum CtbExceptionEnum {
     PARAM_NOT_RULED(1999006, "PARAM_NOT_RULED", "非法参数"),
     PAC_INTERRUPTED(1999007, "PAC_INTERRUPTED", "线程中断异常"),
     DESERIALIZE_FAILED(1999008, "DESERIALIZE_FAILED", "反序列化失败"),
+    SYS_ERR(1999009, "SYS_ERR", "系统异常");
 
     ;
 

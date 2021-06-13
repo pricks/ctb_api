@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.edu.ctb.dao.mapper.CtbTtMapper" >
+    <resultMap id="BaseResultMap" type="com.bw.edu.ctb.dao.entity.CtbTtEntity" autoMapping="true" />
+
+    <sql id="Base_Column_List" >
+        id,gc,gm,uid,tid,src,errc,un
+    </sql>
+    <sql id="BaseProperties" >
+        #{id},now(),now(),#{uid},#{tid},#{src},#{errc},#{un}
+    </sql>
+
+    <insert id="save" parameterType="com.bw.edu.ctb.dao.entity.CtbTtEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into ctb_tt
+        (<include refid="Base_Column_List"></include>)
+        values
+        (<include refid="BaseProperties"></include>)
+    </insert>
+
+    <!-- 查询项 -->
+    <sql id="queryCondition">
+        <where>
+            <if test="id != null">id = #{id} </if>
+            <if test="uid != null">and uid = #{uid} </if>
+            <if test="un != null">and un = #{un} </if>
+<!--            <if test="maxId != null">and id > #{maxId} </if>-->
+            <if test="maxGm != null">
+                <![CDATA[ and gm > #{maxGm} ]]>
+            </if>
+
+            <if test="sortProperty != null">order by #{sortProperty} #{sortMode}</if>
+            <if test="begin != null">limit #{begin}, #{num}</if>
+        </where>
+    </sql>
+
+    <!-- selectNewest -->
+    <select id="query" parameterType="com.bw.edu.ctb.common.qo.CtbTtQO" resultMap="BaseResultMap">
+        select *
+        from ctb_tt
+        <include refid="queryCondition"/>
+    </select>
+
+    <!-- count -->
+    <select id="countToday" parameterType="com.bw.edu.ctb.common.qo.CtbTtQO" resultType="java.lang.Integer">
+        select count(*)
+        from ctb_tt
+        where uid=#{uid} and gc >= #{gc}
+    </select>
+</mapper>

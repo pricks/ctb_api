@@ -11,7 +11,7 @@ public class Paging implements Serializable {
     /**
      * 分页查询，单页最大查询数据量
      */
-    public static final int MAX_PAGE_SIZE = 200;
+    public static final int MAX_PAGE_SIZE = 20;
 
     // 开始位置--分页使用
     Integer begin;
@@ -55,6 +55,12 @@ public class Paging implements Serializable {
     }
 
     public void setNum(Integer num) {
+        if(null==num || num<=0){
+            num=MAX_PAGE_SIZE;
+        }
+        if(num>500){
+            num=MAX_PAGE_SIZE;
+        }
         this.num = num;
     }
 

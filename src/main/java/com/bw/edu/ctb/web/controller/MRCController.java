@@ -27,6 +27,9 @@ import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * my review controller
+ */
 @RestController
 @RequestMapping("/mr")
 public class MRCController {
