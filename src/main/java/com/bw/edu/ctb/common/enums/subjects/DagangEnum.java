@@ -1,10 +1,11 @@
 package com.bw.edu.ctb.common.enums.subjects;
 
-import com.bw.edu.ctb.common.enums.DlEnum;
-
+/**
+ * 见《编码规则》
+ */
 public enum DagangEnum {
-    RENJIAOBAN(1, "人教版"),
-    SUJIAOBAN(2, "SUJIAOBAN"),
+    RENJIAOBAN(90, "人教版"),
+    SUJIAOBAN(91, "SUJIAOBAN"),
 
     ;
 

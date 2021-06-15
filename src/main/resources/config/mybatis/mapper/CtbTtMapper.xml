@@ -23,7 +23,6 @@
             <if test="id != null">id = #{id} </if>
             <if test="uid != null">and uid = #{uid} </if>
             <if test="un != null">and un = #{un} </if>
-<!--            <if test="maxId != null">and id > #{maxId} </if>-->
             <if test="maxGm != null">
                 <![CDATA[ and gm > #{maxGm} ]]>
             </if>

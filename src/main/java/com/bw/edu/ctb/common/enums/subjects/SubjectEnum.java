@@ -1,7 +1,5 @@
 package com.bw.edu.ctb.common.enums.subjects;
 
-import com.bw.edu.ctb.common.enums.DlEnum;
-
 public enum SubjectEnum {
     YUWEN(1, "语文"),
     SHUXUE(2, "数学"),

@@ -32,9 +32,10 @@ public class CtbTtDAOTest extends CtbApplicationTests {
     @Test
     public void query() throws ParseException {
         CtbTtQO qo = new CtbTtQO();
-        qo.setUid(1L);
-        qo.setMaxGm("2021-06-12 10:01:34");
-        qo.setUn(12L);
+        qo.setUid(17L);
+//        qo.setMaxGm("2021-06-12 10:01:34");
+        qo.setUn(1221L);
+        qo.setNum(2);
         qo.setSortProperty("gm");
         qo.setSortMode(SortEnum.ASC.getMode());
         List<CtbTtEntity> ttEntities = ctbTtMapper.query(qo);

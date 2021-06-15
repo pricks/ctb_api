@@ -3,6 +3,7 @@ package com.bw.edu.ctb.service;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.constants.SystemConstants;
 import com.bw.edu.ctb.common.enums.AuthTypeEnum;
+import com.bw.edu.ctb.common.enums.SortEnum;
 import com.bw.edu.ctb.common.qo.CtbTtQO;
 import com.bw.edu.ctb.common.util.*;
 import com.bw.edu.ctb.dao.entity.CtbTtEntity;
@@ -57,11 +58,23 @@ public class CtbTtService {
             if(null==qo || null==qo.getUid() ){
                 promoteException(CtbExceptionEnum.PARAM_NOT_RULED);
             }
+
+            qo.setNum(5);//todo 测试，后面删掉
+
+            //查询ctb tt
+            qo.setSortProperty("gm");
+            qo.setSortMode(SortEnum.ASC.getMode());
             List<CtbTtEntity> ctbTtEntities = ctbTtManager.query(qo);
             if(CollectionUtil.isEmpty(ctbTtEntities)){
                 return Result.success();
             }
-            List<Long> ttIds = new ArrayList<>(ctbTtEntities.size());
+
+            //获取最后一条ctb tt的gm
+            int size = ctbTtEntities.size();
+            qo.setMaxGm(DateUtil.format(ctbTtEntities.get(size-1).getGm()));
+
+            //查询tt
+            List<Long> ttIds = new ArrayList<>(size);
             for(CtbTtEntity tt : ctbTtEntities){
                 ttIds.add(tt.getTid());
             }

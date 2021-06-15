@@ -5,9 +5,11 @@ import com.bw.edu.ctb.common.util.StringUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class EBatchTT implements Serializable {
+    private String gc;//创建时间
     private Boolean tt_g;
     private Integer t_idx;
     private Long tid;
@@ -25,6 +27,14 @@ public class EBatchTT implements Serializable {
     private Integer t_g_count;
     private String tt_g_rpm;
     private List<EBatchTT> t_g_list;
+
+    public String getGc() {
+        return gc;
+    }
+
+    public void setGc(String gc) {
+        this.gc = gc;
+    }
 
     public Boolean getTt_g() {
         return tt_g;

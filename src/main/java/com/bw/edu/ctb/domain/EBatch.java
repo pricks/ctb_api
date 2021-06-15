@@ -1,7 +1,9 @@
 package com.bw.edu.ctb.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EBatch implements Serializable {
     private Long eb_id;
@@ -9,6 +11,14 @@ public class EBatch implements Serializable {
     private Integer tt_g_merge_count;
     private Integer kp_dl;
     private List<EBatchTT> tt_list;
+    private Map<String, String> properties;//扩展字段
+
+    public void addProp(String k, String v){
+        if(properties == null){
+            properties = new HashMap<>();
+        }
+        properties.put(k, v);
+    }
 
     public Long getEb_id() {
         return eb_id;
@@ -48,5 +58,13 @@ public class EBatch implements Serializable {
 
     public void setTt_list(List<EBatchTT> tt_list) {
         this.tt_list = tt_list;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 }

@@ -32,8 +32,8 @@ public class TTDAOTest extends CtbApplicationTests {
     @Test
     public void testSelect(){
         TTQO ttqo = new TTQO();
-        ttqo.setUn(1L);
-        ttqo.setDl(2);
+        ttqo.setUn(7L);
+        ttqo.setDl(1);
         ttqo.setEok(1);
         List<TTEntity> ttEntityList = ttMapper.select(ttqo);
         System.out.println("=====size="+ttEntityList.size());

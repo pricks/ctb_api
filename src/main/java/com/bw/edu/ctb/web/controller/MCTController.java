@@ -10,6 +10,7 @@ import com.bw.edu.ctb.common.util.*;
 import com.bw.edu.ctb.dao.entity.CtbTtEntity;
 import com.bw.edu.ctb.dao.entity.TTEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
+import com.bw.edu.ctb.domain.EBatch;
 import com.bw.edu.ctb.exception.CtbException;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.bw.edu.ctb.service.CtbTtService;
@@ -23,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
@@ -46,6 +44,7 @@ public class MCTController {
     public Result ctb_list(CtbTtQO qo, HttpServletRequest request){
         try{
             logger.error("glu. r=" + request.getRemoteAddr());
+            logger.error("=======ctb qo="+qo);
 
             //verify
             if(null==qo || StringUtil.isEmpty(qo.getAtk())
@@ -65,7 +64,10 @@ public class MCTController {
             if(!ctbRS.isSuccess() || CollectionUtil.isEmpty(ctbRS.getData())){
                 return Result.failure("NODATA","无数据");
             }
-            return Result.success(TTBuilder.build(null, null, ctbRS.getData()));
+
+            EBatch eb = TTBuilder.build(null, null, ctbRS.getData());
+            eb.addProp("maxGm", qo.getMaxGm());
+            return Result.success(eb);
         }catch (CtbException e){
             logger.error("cl biz-error", e);
             return Result.failure(e);

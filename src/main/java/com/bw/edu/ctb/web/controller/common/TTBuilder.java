@@ -1,5 +1,6 @@
 package com.bw.edu.ctb.web.controller.common;
 
+import com.bw.edu.ctb.common.util.DateUtil;
 import com.bw.edu.ctb.dao.entity.TTEntity;
 import com.bw.edu.ctb.domain.EBatch;
 import com.bw.edu.ctb.domain.EBatchTT;
@@ -21,6 +22,7 @@ public class TTBuilder {
         for(int k=0; k<size; k++){
             TTEntity tt = tts.get(k);
             EBatchTT et = new EBatchTT();
+            et.setGc(DateUtil.format(tt.getGc()));
             et.setTt_g(false);//todo 这里要真正进行判断
             et.setT_idx(k+1);
             et.setTid(tt.getId());
