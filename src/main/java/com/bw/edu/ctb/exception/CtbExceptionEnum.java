@@ -50,7 +50,8 @@ public enum CtbExceptionEnum {
     PARAM_NOT_RULED(1999006, "PARAM_NOT_RULED", "非法参数"),
     PAC_INTERRUPTED(1999007, "PAC_INTERRUPTED", "线程中断异常"),
     DESERIALIZE_FAILED(1999008, "DESERIALIZE_FAILED", "反序列化失败"),
-    SYS_ERR(1999009, "SYS_ERR", "系统异常");
+    SYS_ERR(1999009, "SYS_ERR", "系统异常"),
+    FLOW_CONTROL(1999010, "FLOW_CONTROL", "系统限流"),
 
     ;
 

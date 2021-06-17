@@ -112,17 +112,19 @@ public class MCTController {
             // 4.上传图片总数限制--按天限制，最多5张，多了的话tecent的COS流量费会很高
             checkTotalUploads(uid);
 
+            promoteException(CtbExceptionEnum.FILE_NULL);
+
 
             // 5.幂等 todo
 
 
             // 6.图片压缩和上传 todo 等抽空加一下，优先完成ap上架
             String fileName = file.getOriginalFilename();
-            String url = QCosUtil.uploadFileFromInputStream(fileName, (FileInputStream)file.getInputStream());
+//            String url = QCosUtil.uploadFileFromInputStream(fileName, (FileInputStream)file.getInputStream());
 
 
             // 7.写DB
-            saveCtb(request, uid, url);
+//            saveCtb(request, uid, url);
 
 
             return Result.success();

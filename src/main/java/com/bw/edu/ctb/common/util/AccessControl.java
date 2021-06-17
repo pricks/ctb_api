@@ -1,6 +1,9 @@
 package com.bw.edu.ctb.common.util;
 
+import com.bw.edu.ctb.exception.CtbExceptionEnum;
 import com.google.common.util.concurrent.RateLimiter;
+
+import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
 /**
  * 限流控制器
@@ -12,7 +15,9 @@ public class AccessControl {
     /**
      * 尝试获取令牌
      */
-    public static boolean ctbUploadLimite() {
-        return CTB_UPLOAD_RT.tryAcquire();
+    public static void ctbUploadLimite() {
+        if(!CTB_UPLOAD_RT.tryAcquire()){
+            promoteException(CtbExceptionEnum.FILE_NULL);
+        }
     }
 }
