@@ -1,5 +1,7 @@
 package com.bw.edu.ctb.common.enums.subjects;
 
+@Deprecated
+//以DB中的数据为准
 public enum SubjectEnum {
     YUWEN(1, "语文"),
     SHUXUE(2, "数学"),

@@ -14,17 +14,17 @@ public enum DGRel {
     D1_X22(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X22),
     D1_X31(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X31),
     D1_X32(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X32),
-    D1_X41(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X41),
-    D1_X42(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X42),
-    D1_X51(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X51),
-    D1_X52(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X52),
-    D1_X61(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X61),
-    D1_X62(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X62),
-
-
-    D1_C1(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.C1),
-    D1_C2(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.C2),
-    D1_C3(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.C3),
+//    D1_X41(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X41),
+//    D1_X42(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X42),
+//    D1_X51(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X51),
+//    D1_X52(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X52),
+//    D1_X61(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X61),
+//    D1_X62(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.X62),
+//
+//
+//    D1_C1(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.C1),
+//    D1_C2(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.C2),
+//    D1_C3(DagangEnum.RENJIAOBAN.getCode(), GradeEnum.C3),
 
     ;
 

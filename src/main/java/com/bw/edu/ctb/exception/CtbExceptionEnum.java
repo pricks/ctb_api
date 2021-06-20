@@ -37,7 +37,8 @@ public enum CtbExceptionEnum {
 
     /** ======================CTB错误码：1005开头============================ */
     FILE_NULL(11005001, "FILE_NULL", "文件为空"),
-    FILE_COUNT_OVER(11005002, "FILE_COUNT_OVER", "1天最多只能上传5个错题"),
+    FILE_COUNT_OVER(11005002, "FILE_COUNT_OVER", "1天只能上传5个"),
+    FILE_OVER_FLOW(11005003, "FILE_OVER_FLOW", "图片太大啦"),
 
 
 

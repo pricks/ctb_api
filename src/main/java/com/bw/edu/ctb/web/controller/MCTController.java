@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
+import java.util.Date;
 import java.util.List;
 
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
@@ -112,19 +113,17 @@ public class MCTController {
             // 4.上传图片总数限制--按天限制，最多5张，多了的话tecent的COS流量费会很高
             checkTotalUploads(uid);
 
-            promoteException(CtbExceptionEnum.FILE_NULL);
-
-
             // 5.幂等 todo
 
 
             // 6.图片压缩和上传 todo 等抽空加一下，优先完成ap上架
             String fileName = file.getOriginalFilename();
-//            String url = QCosUtil.uploadFileFromInputStream(fileName, (FileInputStream)file.getInputStream());
-
+            String url = QCosUtil.uploadFileFromInputStream(fileName, (FileInputStream)file.getInputStream());
+            //test
+//            String url = "https://ctb-1302713482.cos.ap-shanghai.myqcloud.com/1624072571839-Ct1kR5gDymhj2456d6738052500272951d2a22be2319.png";
 
             // 7.写DB
-//            saveCtb(request, uid, url);
+            saveCtb(request, uid, url);
 
 
             return Result.success();
@@ -143,7 +142,7 @@ public class MCTController {
         TTEntity t = new TTEntity();
         t.setUn(Long.valueOf(un));
         t.setDl(DlEnum.MOST_WRONG.getCode());
-        t.setTc("<figure class=\"image\"><img src=\""+url+"\"></figure>");
+        t.setTc("<img width='100%' src=\""+url+"\">");
         t.setEok(EokEnum.KP_DETAIL.getCode());
         t.setType(TTypeEnum.WENDA.getCode());
         t.setAid(uid);
@@ -195,6 +194,7 @@ public class MCTController {
         return uid;
     }
 
+    static int MAX_FILE_SIZE = 1024*1024;//1M
     private void checkFile( MultipartFile file ){
         if(file.isEmpty()){
             promoteException(CtbExceptionEnum.FILE_NULL);
@@ -202,6 +202,9 @@ public class MCTController {
         int size = (int) file.getSize();
         if(size == 0){
             promoteException(CtbExceptionEnum.FILE_NULL);
+        }
+        if(size>MAX_FILE_SIZE){
+            promoteException(CtbExceptionEnum.FILE_OVER_FLOW);
         }
     }
 }

@@ -17,7 +17,7 @@ public class AccessControl {
      */
     public static void ctbUploadLimite() {
         if(!CTB_UPLOAD_RT.tryAcquire()){
-            promoteException(CtbExceptionEnum.FILE_NULL);
+            promoteException(CtbExceptionEnum.FLOW_CONTROL);
         }
     }
 }
