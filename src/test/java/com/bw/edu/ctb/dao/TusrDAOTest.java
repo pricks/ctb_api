@@ -28,7 +28,7 @@ public class TusrDAOTest extends CtbApplicationTests {
     @Test
     public void testQueryByNick(){
         TUsrQO q = new TUsrQO();
-        q.setNick("azz");
+        q.setOid("azz");
         q.setType(1);
         List<TUsr> usrList = tUsrMapper.select(q);
         System.out.println("===size="+usrList.size());

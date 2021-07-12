@@ -2,11 +2,9 @@ package com.bw.edu.ctb.common.qo.usr;
 
 import com.bw.edu.ctb.common.qo.Paging;
 
-import java.io.Serializable;
-
 public class TUsrQO extends Paging{
     private Long uid;
-    private String nick;
+    private String oid;
     private Integer type;
 
     public Long getUid() {
@@ -17,12 +15,12 @@ public class TUsrQO extends Paging{
         this.uid = uid;
     }
 
-    public String getNick() {
-        return nick;
+    public String getOid() {
+        return oid;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick;
+    public void setOid(String oid) {
+        this.oid = oid;
     }
 
     public Integer getType() {

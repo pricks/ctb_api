@@ -34,6 +34,7 @@ public enum CtbExceptionEnum {
     MB_LEN(11004006, "MB_LEN", "手机号长度不对"),
     PWD_LEN(11004007, "PWD_LEN", "密码太长"),
     PWD_MOT_MATCH(11004008, "PWD_MOT_MATCH", "密码错误"),
+    GET_WEIXIN_ENCRYPTION_FAILED(11004009, "GET_WEIXIN_ENCRYPTION_FAILED", "获取微信隐私信息失败"),
 
     /** ======================CTB错误码：1005开头============================ */
     FILE_NULL(11005001, "FILE_NULL", "文件为空"),

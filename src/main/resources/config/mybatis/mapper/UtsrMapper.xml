@@ -28,7 +28,7 @@
     <sql id="query">
         <where>
             <if test="uid != null">uid = #{uid} </if>
-            <if test="nick != null">and nick = #{nick} </if>
+            <if test="oid != null">and oid = #{oid} </if>
             <if test="type != null">and type = #{type} </if>
         </where>
     </sql>

@@ -1,11 +1,12 @@
 package com.bw.edu.ctb.web.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bw.edu.ctb.common.Result;
 import com.bw.edu.ctb.common.enums.ThirdTypeEnum;
 import com.bw.edu.ctb.common.enums.subjects.DGRel;
 import com.bw.edu.ctb.common.enums.subjects.DagangEnum;
 import com.bw.edu.ctb.common.enums.subjects.GradeEnum;
-import com.bw.edu.ctb.common.util.MD5Util;
+import com.bw.edu.ctb.common.util.*;
 import com.bw.edu.ctb.dao.entity.SGEntity;
 import com.bw.edu.ctb.dao.entity.UnitEntity;
 import com.bw.edu.ctb.dao.entity.usr.BUsr;
@@ -23,8 +24,6 @@ import com.bw.edu.ctb.service.ExRecService;
 import com.bw.edu.ctb.service.SGService;
 import com.bw.edu.ctb.service.UnitService;
 import com.bw.edu.ctb.service.usr.UsrService;
-import com.bw.edu.ctb.common.util.CollectionUtil;
-import com.bw.edu.ctb.common.util.StringUtil;
 import com.bw.edu.ctb.web.vo.LLVO;
 import com.bw.edu.ctb.web.vo.UserVO;
 import org.slf4j.Logger;
@@ -37,7 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.bw.edu.ctb.exception.CtbExceptionEnum.promoteException;
 
@@ -261,74 +262,117 @@ public class LgController {
     }
 
 
-    /**
-     * decoding encrypted data to get openid
-     *
-     * @param iv
-     * @param encryptedData
-     * @param code
-     * @return
-     */
-    @RequestMapping(value = "/decodeUserInfo", method = RequestMethod.GET)
-    private Map decodeUserInfo(String iv, String encryptedData, String code) {
-        Map map = new HashMap();
-        // login code can not be null
-        if (code == null || code.length() == 0) {
-            map.put("status", 0);
-            map.put("msg", "code 不能为空");
-            return map;
-        }
-        // mini-Program's AppID
-        String wechatAppId = "你的小程序的AppID";
+    @PostMapping("/to")
+    private Result<Void> thirdOauthLogin(UserVO user, HttpServletRequest request) {
+        try{
+            logger.error("to. r=" + request.getRemoteAddr() + ", model="+user);
+            if (StringUtil.isEmpty(user.getCode()) || user.getType()==null) {
+                promoteException(CtbExceptionEnum.USER_INFO_NULL);
+            }
+            getWeixinEncryption(user);
 
-        // mini-Program's session-key
-        String wechatSecretKey = "你的小程序的session-key";
+            if(ThirdTypeEnum.WEIXIN.getCode().equals(user.getType())){
+                Result<TUsr> rs = usrService.queryTusrByOid(user.getOpenId(), user.getType());
+                if(!rs.isSuccess()){
+                    promoteException(rs.getCode(),rs.getMessage());
+                }
+                TUsr tUsr = rs.getData();
+                if(null == tUsr){
+                    Result<BUsr> createRS = usrService.createNewTUsr(build(user));
+                    BUsr bUsr = createRS.getData();
+                    UsrDTO usrDTO = new UsrDTO();
+                    usrDTO.setAtk(bUsr.getToken());
 
-        String grantType = "authorization_code";
+                    Result<Void> lrs = usrService.login(new Login(bUsr.getId(), request.getRemoteAddr()));
+                    if(!lrs.isSuccess()){
+                        logger.error("write login record failed. new nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
+                        return Result.failure();
+                    }
+                    return Result.success(usrDTO);
+                }else{
+                    //写登录记录
+                    Result<Void> lrs = usrService.login(new Login(tUsr.getUid(), request.getRemoteAddr()));
+                    if(!lrs.isSuccess()){
+                        logger.error("write login record failed. old nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
+                        return Result.failure();
+                    }
 
-        // using login code to get sessionId and openId
-        String params = "appid=" + wechatAppId + "&secret=" + wechatSecretKey + "&js_code=" + code + "&grant_type=" + grantType;
-
-        // sending request
-        String sr = HttpRequest.sendGet("https://api.weixin.qq.com/sns/jscode2session", params);
-
-        // analysis request content
-        JSONObject json = JSONObject.fromObject(sr);
-
-        // getting session_key
-        String sessionKey = json.get("session_key").toString();
-
-        // getting open_id
-        String openId = json.get("openid").toString();
-
-        // decoding encrypted info with AES
-        try {
-            String result = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "UTF-8");
-            if (null != result && result.length() > 0) {
-                map.put("status", 1);
-                map.put("msg", "解密成功");
-
-                JSONObject userInfoJSON = JSONObject.fromObject(result);
-                Map userInfo = new HashMap();
-                userInfo.put("openId", userInfoJSON.get("openId"));
-                userInfo.put("nickName", userInfoJSON.get("nickName"));
-                userInfo.put("gender", userInfoJSON.get("gender"));
-                userInfo.put("city", userInfoJSON.get("city"));
-                userInfo.put("province", userInfoJSON.get("province"));
-                userInfo.put("country", userInfoJSON.get("country"));
-                userInfo.put("avatarUrl", userInfoJSON.get("avatarUrl"));
-                userInfo.put("unionId", userInfoJSON.get("unionId"));
-                map.put("userInfo", userInfo);
-                return map;
+                    //延长token
+                    Result<BUsr> urs = usrService.updateToken(tUsr.getUid());
+                    if(!urs.isSuccess()){
+                        logger.error("token update failed. nick="+user.getNick()+", remote ip="+request.getRemoteAddr());
+                        return Result.failure();
+                    }
+                    UsrDTO usrDTO = new UsrDTO();
+                    usrDTO.setAtk(urs.getData().getToken());
+                    return Result.success(usrDTO);
+                }
             }
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        }catch (CtbException e){
+            logger.error("tg biz-error. usr="+user, e);
+            return Result.failure(e);
+        }catch (Exception e){
+            logger.error("tg sys-error. usr="+user, e);
+            return Result.failure();
         }
-        map.put("status", 0);
-        map.put("msg", "解密失败");
-        return map;
+        return Result.failure();
+    }
+
+    /**
+     * 获取微信mp的openId和unionId。
+     *
+     * 注：
+     *      获取不到用户的avatar, gender, nickname等user profile信息，
+     *      这部分信息需要在app端通过 getUserProfile() 去获取
+     *
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    private void getWeixinEncryption(UserVO user) throws Exception {
+        try {
+            // mini-Program's AppID
+            String wechatAppId = "wxd01ba96bc3cce9db";
+            // mini-Program's session-key
+            String wechatSecretKey = "0022cb28409eb8089c931b20ea0b69b5";
+            String grantType = "authorization_code";
+            // using login code to get sessionId and openId
+            String params = "appid=" + wechatAppId + "&secret=" + wechatSecretKey + "&js_code=" + user.getCode() + "&grant_type=" + grantType;
+            // sending request
+            String sr = HttpRequest.sendGet("https://api.weixin.qq.com/sns/jscode2session", params);
+
+            // analysis request content
+            JSONObject json = JSONObject.parseObject(sr);
+            // getting session_key
+            String sessionKey = json.get("session_key").toString();
+            // getting open_id
+            String openId = json.get("openid").toString();
+            user.setOpenId(openId);
+
+
+
+            //以下主要为了获取unionId，虽然当前本app并没有申请unionId，但是这段代码先放在这里占位
+            String result = AesCbuUtil.decrypt(user.getEncryptedData(), sessionKey, user.getIv(), "UTF-8");
+            if (null != result && result.length() > 0) {
+
+                JSONObject userInfoJSON = JSONObject.parseObject(result);
+//                return Result.success();
+                Map userInfo = new HashMap();
+//                userInfo.put("openId", userInfoJSON.get("openId")); //这里获取到的openId与上一步通过get请求获取到的openId相同
+//                userInfo.put("nickName", userInfoJSON.get("nickName"));
+//                userInfo.put("gender", userInfoJSON.get("gender"));
+//                userInfo.put("city", userInfoJSON.get("city"));
+//                userInfo.put("province", userInfoJSON.get("province"));
+//                userInfo.put("country", userInfoJSON.get("country"));
+//                userInfo.put("avatarUrl", userInfoJSON.get("avatarUrl"));
+                userInfo.put("unionId", userInfoJSON.get("unionId"));
+                user.setUnionId(userInfoJSON.getString("unionID")); //注：这行代码仅仅是占位，当前本app并没有申请unionId
+            }
+        }catch (Exception e){
+            logger.error("get weixin encrypt failed", e);
+            promoteException(CtbExceptionEnum.GET_WEIXIN_ENCRYPTION_FAILED);
+        }
     }
 
     /** third login, such as weixin/alipay/toutiao... */
@@ -343,7 +387,7 @@ public class LgController {
                 promoteException(CtbExceptionEnum.USER_TYPE_NULL);
             }
             if(ThirdTypeEnum.WEIXIN.getCode().equals(user.getType())){
-                Result<TUsr> rs = usrService.queryTusrByNick(user.getNick(), user.getType());
+                Result<TUsr> rs = usrService.queryTusrByOid(user.getNick(), user.getType());
                 if(!rs.isSuccess()){
                     promoteException(rs.getCode(),rs.getMessage());
                 }

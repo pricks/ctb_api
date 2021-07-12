@@ -4,7 +4,6 @@ import com.bw.edu.ctb.common.qo.usr.TUsrQO;
 import com.bw.edu.ctb.dao.entity.usr.*;
 import com.bw.edu.ctb.dao.mapper.*;
 import com.bw.edu.ctb.exception.CtbExceptionEnum;
-import com.bw.edu.ctb.common.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,14 +63,14 @@ public class UsrManager {
     }
 
     /**
-     * 根据nick查询第三方注册用户
-     * @param nick
+     * 根据 openId 查询第三方注册用户
+     * @param openId
      * @param type
      * @return
      */
-    public List<TUsr> queryTusrByNick(String nick, Integer type){
+    public List<TUsr> queryTusrByOpenId(String openId, Integer type){
         TUsrQO q = new TUsrQO();
-        q.setNick(nick);
+        q.setOid(openId);
         q.setType(type);
         return utsrMapper.select(q);
     }

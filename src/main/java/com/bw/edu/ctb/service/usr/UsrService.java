@@ -132,14 +132,14 @@ public class UsrService {
     }
 
     /** 根据nick查询第三方登录用户 */
-    public Result<TUsr> queryTusrByNick(String nick, Integer type){
-        if(StringUtil.isEmpty(nick) || null==type || StringUtil.isEmpty(ThirdTypeEnum.getName(type))){
+    public Result<TUsr> queryTusrByOid(String openId, Integer type){
+        if(StringUtil.isEmpty(openId) || null==type || StringUtil.isEmpty(ThirdTypeEnum.getName(type))){
             return Result.failure(CtbExceptionEnum.USER_INFO_NULL.getCode(), CtbExceptionEnum.USER_INFO_NULL.getDesc());
         }
-        List<TUsr> usrList = usrManager.queryTusrByNick(nick, type);
+        List<TUsr> usrList = usrManager.queryTusrByOpenId(openId, type);
         if(CollectionUtil.isEmpty(usrList)) return Result.success();
         if(usrList.size() > 1){
-            logger.error("[fatal error] many same tusrs. nick="+nick+", type="+type);
+            logger.error("[fatal error] many same tusrs. openId="+openId+", type="+type);
             return Result.failure(CtbExceptionEnum.MULTIPLE_SAME_TUSR.getCode(), CtbExceptionEnum.MULTIPLE_SAME_TUSR.getDesc());
         }
         return Result.success(usrList.get(0));

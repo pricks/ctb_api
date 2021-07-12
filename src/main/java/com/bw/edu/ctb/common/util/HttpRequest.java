@@ -77,7 +77,7 @@ public class HttpRequest {
                 logger.error("关闭GET请求连接异常.", e2);
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -132,6 +132,6 @@ public class HttpRequest {
                 logger.error("发送POST请求异常.", ex);
             }
         }//使用finally块来关闭输出流、输入流
-        return null;
+        return result;
     }
 }
